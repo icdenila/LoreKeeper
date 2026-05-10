@@ -5,41 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LoreKeeper — Mythology & Folklore Chatbot</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-  :root {
-    --bg: #0b1118; --bg2: #111a25; --card: #16202e; --card-h: #1b2840;
-    --bdr: #243044; --fg: #e4dac6; --fg2: #94a3b8; --acc: #c4952e;
-    --acc-h: #daa740; --acc-g: rgba(196,149,48,0.12); --bot: #142030;
-    --usr: #17304d; --ok: #2f8a50; --err: #b93e3e;
-  }
+  :root{--bg:#0b1118;--bg2:#111a25;--card:#16202e;--card-h:#1b2840;--bdr:#243044;--fg:#e4dac6;--fg2:#94a3b8;--acc:#c4952e;--acc-h:#daa740;--acc-g:rgba(196,149,48,.12);--bot:#142030;--usr:#17304d;--ok:#2f8a50;--err:#b93e3e}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--fg);overflow:hidden;height:100vh}
   h1,h2,h3,h4,.fd{font-family:'Cinzel',serif}
-  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}
-  ::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
-  .mi{animation:ms .35s ease-out}
-  @keyframes ms{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-  .td{width:8px;height:8px;background:var(--acc);border-radius:50%;animation:tb 1.2s infinite}
-  .td:nth-child(2){animation-delay:.15s}.td:nth-child(3){animation-delay:.3s}
+  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+  .mi{animation:ms .35s ease-out}@keyframes ms{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .td{width:8px;height:8px;background:var(--acc);border-radius:50%;animation:tb 1.2s infinite}.td:nth-child(2){animation-delay:.15s}.td:nth-child(3){animation-delay:.3s}
   @keyframes tb{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-8px);opacity:1}}
   .ch{transition:all .2s;cursor:pointer}.ch:hover{background:var(--acc);color:var(--bg);transform:translateY(-1px)}
   .fc{background:var(--card);border:1px solid var(--bdr);border-radius:12px;transition:border-color .2s}.fc:hover{border-color:var(--acc)}
   #sb{transition:transform .3s ease}
   @media(max-width:768px){#sb{position:fixed;z-index:50;transform:translateX(-100%)}#sb.op{transform:translateX(0)}#sov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40}#sov.op{display:block}}
-  .to{animation:ti .3s ease-out,to .3s ease-in 2.7s;animation-fill-mode:forwards}
+  .to{animation:ti .3s ease-out,tout .3s ease-in 2.7s;animation-fill-mode:forwards}
   @keyframes ti{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
-  @keyframes to{from{opacity:1}to{opacity:0;transform:translateX(40px)}}
+  @keyframes tout{from{opacity:1}to{opacity:0;transform:translateX(40px)}}
   .ci{transition:all .2s}.ci:hover{background:var(--card-h)}
-  .lg{animation:gp 3s ease-in-out infinite}
-  @keyframes gp{0%,100%{text-shadow:0 0 8px rgba(196,149,48,.3)}50%{text-shadow:0 0 20px rgba(196,149,48,.6)}}
+  .lg{animation:gp 3s ease-in-out infinite}@keyframes gp{0%,100%{text-shadow:0 0 8px rgba(196,149,48,.3)}50%{text-shadow:0 0 20px rgba(196,149,48,.6)}}
   #ci:focus{outline:none;box-shadow:0 0 0 2px rgba(196,149,48,.4)}
   #pc{position:fixed;inset:0;z-index:0;pointer-events:none}
-  .tb{transition:all .2s}.tb.ac{color:var(--acc);border-bottom:2px solid var(--acc)}
+  .tb2{transition:all .2s}.tb2.ac{color:var(--acc);border-bottom:2px solid var(--acc)}
   .ab{transition:all .15s}.ab:hover{background:var(--acc-g);border-color:var(--acc)}
   .sb{font-size:10px;padding:2px 8px;border-radius:9999px;display:inline-flex;align-items:center;gap:4px}
+  .lb{font-size:10px;padding:2px 10px;border-radius:9999px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;transition:all .2s;border:1px solid var(--bdr)}
+  .lb:hover,.lb.act{border-color:var(--acc);color:var(--acc);background:var(--acc-g)}
+  .lb.act{color:var(--acc)}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -55,24 +48,29 @@
       </div>
     </div>
     <div class="flex border-b border-[var(--bdr)]">
-      <button class="tb ac flex-1 py-3 text-sm font-medium text-center" data-t="col" onclick="st('col')"><i class="fas fa-bookmark mr-1"></i>Collection</button>
-      <button class="tb flex-1 py-3 text-sm font-medium text-center text-[var(--fg2)]" data-t="his" onclick="st('his')"><i class="fas fa-clock-rotate-left mr-1"></i>History</button>
+      <button class="tb2 ac flex-1 py-3 text-sm font-medium text-center" data-t="col" onclick="stb('col')"><i class="fas fa-bookmark mr-1"></i><span data-t="col_label">Collection</span></button>
+      <button class="tb2 flex-1 py-3 text-sm font-medium text-center text-[var(--fg2)]" data-t="his" onclick="stb('his')"><i class="fas fa-clock-rotate-left mr-1"></i><span data-t="his_label">History</span></button>
     </div>
     <div id="tcol" class="flex-1 overflow-y-auto p-3"><div id="cl"></div></div>
-    <div id="this" class="flex-1 overflow-y-auto p-3 hidden"><div id="hl"></div></div>
+    <div id="this2" class="flex-1 overflow-y-auto p-3 hidden"><div id="hl"></div></div>
     <div class="p-4 border-t border-[var(--bdr)]">
-      <button onclick="cad()" class="ab w-full py-2 px-3 rounded-lg border border-[var(--bdr)] text-sm text-[var(--fg2)] hover:text-[var(--err)]"><i class="fas fa-trash-can mr-2"></i>Clear All Data</button>
+      <button onclick="cad()" class="ab w-full py-2 px-3 rounded-lg border border-[var(--bdr)] text-sm text-[var(--fg2)] hover:text-[var(--err)]"><i class="fas fa-trash-can mr-2"></i><span data-t="clear_all">Clear All</span></button>
     </div>
   </aside>
   <main class="flex-1 flex flex-col min-w-0">
     <header class="flex items-center justify-between px-4 md:px-6 py-3 border-b border-[var(--bdr)] bg-[var(--bg2)]/80 backdrop-blur-sm">
       <div class="flex items-center gap-3">
         <button onclick="tsb(true)" class="md:hidden w-9 h-9 rounded-lg border border-[var(--bdr)] flex items-center justify-center text-[var(--fg2)] hover:text-[var(--fg)]"><i class="fas fa-bars"></i></button>
-        <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div><span class="text-sm text-[var(--fg2)]">LoreKeeper — Local Mode</span></div>
+        <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div><span id="status_txt" class="text-sm text-[var(--fg2)]">LoreKeeper</span></div>
       </div>
       <div class="flex items-center gap-2">
+        <div class="flex gap-1" id="lang_btns">
+          <button class="lb act" onclick="setLang('en')" data-lang="en">EN</button>
+          <button class="lb" onclick="setLang('fil')" data-lang="fil">FIL</button>
+          <button class="lb" onclick="setLang('hil')" data-lang="hil">HIL</button>
+        </div>
         <button onclick="ec()" class="w-9 h-9 rounded-lg border border-[var(--bdr)] flex items-center justify-center text-[var(--fg2)] hover:text-[var(--fg)]" title="Export"><i class="fas fa-download text-sm"></i></button>
-        <button onclick="cc()" class="w-9 h-9 rounded-lg border border-[var(--bdr)] flex items-center justify-center text-[var(--fg2)] hover:text-[var(--fg)]" title="New Chat"><i class="fas fa-plus text-sm"></i></button>
+        <button onclick="cc()" class="w-9 h-9 rounded-lg border border-[var(--bdr)] flex items-center justify-center text-[var(--fg2)] hover:text-[var(--fg)]" title="New"><i class="fas fa-plus text-sm"></i></button>
       </div>
     </header>
     <div id="cm" class="flex-1 overflow-y-auto px-4 md:px-6 py-4 space-y-4"></div>
@@ -91,464 +89,400 @@
 
 <script>
 // ============================================================
-// MASSIVE KNOWLEDGE BASE — 34 figures with rich detail
+// MULTILINGUAL SYSTEM
 // ============================================================
-const DB = [
-  {n:"Zeus",c:"Greek",d:["Sky","Thunder","Law","Kingship"],r:"King of the Olympian gods, wielder of the thunderbolt. He rules from Mount Olympus, enforcing oaths and cosmic order. Father of many heroes and gods, his temper shakes the very earth.",s:["Thunderbolt","Eagle","Oak Tree","Aegis Shield"],g:"m",rel:["Hera","Poseidon","Athena","Hades","Apollo"],w:"Zeus",
-   story:"The tale of Zeus begins in darkness. His father Cronus, Titan lord of time, devoured each of his children at birth — for a prophecy foretold that his own son would overthrow him, just as Cronus had overthrown his father Uranus. But Rhea, grief-stricken, wrapped a stone in swaddling clothes and fed it to Cronus instead. She hid the infant Zeus in a cave on Crete, where the Curetes clashed their shields to drown his cries. When Zeus grew to manhood, he returned disguised as a cupbearer. He gave Cronus a draught of mustard and wine that forced him to disgorge Zeus's siblings — Hestia, Demeter, Hera, Hades, and Poseidon — all alive and whole. Thus began the Titanomachy: ten years of war between the Olympians and the Titans. With the Hundred-Handed Ones and Cyclopes as allies, Zeus cast Cronus into Tartarus and claimed the sky as his domain. From that day, his thunderbolt has been the final word in every divine dispute."},
-  {n:"Hera",c:"Greek",d:["Marriage","Women","Childbirth","Sovereignty"],r:"Queen of the Olympian gods, protector of marriage and women. Known for her jealous wrath against Zeus's lovers, yet she remains the most powerful goddess on Olympus.",s:["Peacock","Cow","Pomegranate","Diadem"],g:"f",rel:["Zeus","Hephaestus","Ares","Hebe"],w:"Hera",
-   story:"Hera's devotion to marriage is both her strength and her torment. When Zeus first pursued her, she refused him — until he transformed himself into a shivering cuckoo. Taking pity on the bird, she held it to her breast, and Zeus revealed his true form. Yet this marriage, consecrated on Olympus, became her eternal trial. When Zeus loved the mortal Io, Hera turned the girl into a cow and set Argus with his hundred eyes to guard her. When Zeus loved Leto, Hera forbade any land to give her shelter — yet Delos, a floating island, defied her decree so Apollo and Artemis could be born. But Hera's wrath was not mere pettiness — it was the fury of a goddess who understood that the sanctity of marriage was the foundation of civilization itself."},
-  {n:"Poseidon",c:"Greek",d:["Sea","Earthquakes","Horses","Islands"],r:"God of the sea and earthquakes, creator of the first horse. Brother of Zeus and Hades, his moods govern the fate of every sailor.",s:["Trident","Horse","Dolphin","Bull"],g:"m",rel:["Zeus","Hades","Amphitrite","Theseus"],w:"Poseidon",
-   story:"When the three brothers drew lots for the cosmos, Zeus won the sky, Hades the underworld, and Poseidon the sea — yet Poseidon always coveted the land. He contested Athens with Athena, striking the Acropolis with his trident to produce a salt spring. Athena offered the olive tree, and the people chose her gift. Enraged, Poseidon flooded the Thriasian plain. He also fought for Corinth, for Argos, for Aegina — often losing to other gods. But beneath his pride lay fierce loyalty. He built the walls of Troy alongside Apollo, and when King Laomedon refused payment, Poseidon sent a sea monster. He guided Odysseus's son Telemachus and cursed Odysseus himself for blinding his son Polyphemus — demonstrating that the sea gives and the sea takes, and neither gift comes cheap."},
-  {n:"Athena",c:"Greek",d:["Wisdom","Strategic War","Crafts","Justice"],r:"Goddess of wisdom and strategic warfare, born from Zeus's head fully armed. Patron of Athens, protector of heroes.",s:["Owl","Olive Tree","Aegis","Spear"],g:"f",rel:["Zeus","Ares","Odysseus","Perseus"],w:"Athena",
-   story:"Athena's birth shook Olympus. Zeus had swallowed her mother Metis after a prophecy warned that Metis would bear children wiser than their father. But the wisdom grew inside him until a splitting headache drove him to command Hephaestus to split his skull with an axe. From the cleft leaped Athena — fully grown, clad in golden armor, her war-cry echoing to heaven and earth. She became Zeus's favorite child, the only one trusted with his thunderbolt and his aegis. She guided Perseus to slay Medusa by showing him her reflection in his shield. She taught Odysseus cunning when brute force failed. She wove the tapestry that depicted the gods' triumph over the giants — and when the mortal Arachne dared challenge her to a weaving contest, Athena destroyed the girl's blasphemous tapestry and transformed her into the first spider. Wisdom has sharp edges."},
-  {n:"Apollo",c:"Greek",d:["Sun","Music","Prophecy","Healing","Archery"],r:"God of the sun, music, poetry, prophecy, and healing. Twin of Artemis, patron of the Oracle at Delphi where mortals hear the voice of fate.",s:["Lyre","Bow","Laurel Wreath","Raven"],g:"m",rel:["Artemis","Zeus","Dionysus","Asclepius"],w:"Apollo",
-   story:"Apollo came into the world on the island of Delos, born beneath a palm tree while the island stood rooted at last in the sea. Only four days old, he demanded a bow and arrows and set out to find a place for his oracle. He chose Delphi, the navel of the world — but a great serpent, the Python, guarded the sacred spring. Young Apollo slew it with his first arrows and claimed the site. Yet the Python had been a child of Gaia herself, so Zeus commanded Apollo to purify himself and establish the Pythian Games in the serpent's honor. At Delphi, his priestess the Pythia breathed the vapors from the earth and spoke in riddles that shaped the fate of nations. But Apollo's gifts carried sorrow: he loved the nymph Daphne, and when she fled, he chased her until she transformed into a laurel tree — ever after his sacred plant, a crown of leaves that cannot love back."},
-  {n:"Artemis",c:"Greek",d:["Hunt","Moon","Wilderness","Chastity","Childbirth"],r:"Goddess of the hunt and the moon, protector of wild things and young women. Twin of Apollo, she roams the mountains with her band of nymphs.",s:["Bow and Arrow","Deer","Crescent Moon","Hunting Dog"],g:"f",rel:["Apollo","Zeus","Leto","Orion"],w:"Artemis",
-   story:"When Leto labored on Delos, Artemis was born first — and at only minutes old, she helped her mother deliver Apollo. This is why she became the goddess of childbirth even though she swore never to bear children herself. As a young girl, she sat on Zeus's knee and asked for six wishes: a bow and arrows, a chorus of nymphs, a tunic short enough to run in, all the mountains of the earth, a single city, and eternal chastity. Zeus granted every one. Artemis roams the wild places where no man rules, and those who intrude suffer her wrath. Actaeon, the hunter who accidentally saw her bathing, she transformed into a stag — and his own hounds tore him apart. Yet she could show tenderness: she protected the young, she cared for the weak, and when Orion the hunter died — whether by her own arrow or Apollo's trick — she set him among the stars."},
-  {n:"Aphrodite",c:"Greek",d:["Love","Beauty","Desire","Procreation"],r:"Goddess of love and beauty, born from sea foam where Uranus's severed remains fell. Her power over desire affects gods and mortals alike.",s:["Dove","Rose","Myrtle","Sparrow"],g:"f",rel:["Hephaestus","Ares","Eros","Anchises"],w:"Aphrodite",
-   story:"Aphrodite's origin is written in blood and sea-foam. When Cronus castrated his father Uranus and cast the remains into the ocean, the water churned white around the immortal flesh, and from this divine foam Aphrodite rose — the most beautiful being in existence. She stepped ashore on Cyprus, and where her feet touched the ground, flowers bloomed. The gods feared her power would cause chaos, so Zeus married her off to Hephaestus, the lame smith-god. But Aphrodite loved Ares, god of war, and their affair was exposed when Hephaestus crafted an invisible net that trapped them in bed together — and invited all the gods to witness their shame. Yet Aphrodite was not merely vain. In the Trojan War, she protected Paris and saved Aeneas from death, because the judgment that began the war was ultimately her own. Love, she teaches, is not gentle — it is the most dangerous force in the universe."},
-  {n:"Ares",c:"Greek",d:["War","Bloodshed","Violence","Courage"],r:"God of brutal warfare and bloodshed. Represented the chaotic, violent reality of battle, unlike strategic Athena.",s:["Spear","Vulture","Dog","Burning Torch"],g:"m",rel:["Zeus","Hera","Aphrodite","Enyo"],w:"Ares",
-   story:"Ares is the god no one loves — not even his own father. Zeus called him 'most hateful of all the gods who hold Olympus,' for Ares represents war not as strategy but as butchery. He fights without loyalty, switching sides for the thrill of slaughter. Yet even Ares has his stories. When the giants Otus and Ephialtes trapped him in a bronze jar for thirteen months, it was Hermes who rescued him, and only because the world had grown dangerously quiet without war. His love affair with Aphrodite produced children including Eros (desire), Phobos (fear), and Deimos (terror) — the eternal companions of every battlefield. The Spartans honored him above all gods, sacrificing puppies in his name before battle. The Romans, who called him Mars, elevated him to father of their nation. Perhaps the truth is that no civilization, however refined, can pretend that violence does not exist."},
-  {n:"Hades",c:"Greek",d:["Underworld","Death","Wealth","Boundaries"],r:"God of the underworld and ruler of the dead. Not evil — he ensures mortals stay dead and cosmic boundaries are respected.",s:["Cerberus","Scepter","Helm of Darkness","Key"],g:"m",rel:["Zeus","Poseidon","Persephone","Demeter"],w:"Hades",
-   story:"Hades drew the worst lot — the underworld — and made it his kingdom. Unlike his brothers, he rarely leaves his realm. He sits on a throne of ebony, beside Persephone (whom he abducted with Zeus's permission), and judges the dead alongside Minos and Rhadamanthus. The underworld has five rivers: Styx (hatred), Lethe (forgetfulness), Acheron (sorrow), Phlegethon (fire), and Cocytus (wailing). The dead must cross the Styx, paying Charon the ferryman with a coin placed on their tongue in life. Cerberus, the three-headed hound, guards the gate — letting souls in, letting nothing out. Hades owns the Helm of Darkness, which makes its wearer invisible, and he lent it to Perseus and Athena. When Orpheus came to reclaim Eurydice, Hades was moved to tears — the only time the lord of death showed mercy. But Orpheus looked back, and the condition was broken. Hades is not cruel. He is simply the final word."},
-  {n:"Odin",c:"Norse",d:["Wisdom","War","Poetry","Death","Magic"],r:"All-Father, chief of the Aesir. Sacrificed his eye for wisdom and hung himself on Yggdrasil for nine nights to learn the runes.",s:["Gungnir","Ravens (Huginn & Muninn)","Sleipnir","Valknut"],g:"m",rel:["Thor","Loki","Frigg","Baldur","Vidar"],w:"Odin",
-   story:"Odin's hunger for wisdom has no limit. He gave his right eye to Mimir to drink from the well of wisdom — and Mimir's head still counsels him. He hung himself from Yggdrasil, the World Tree, for nine nights with a spear in his side, sacrificing himself to himself, until the runes revealed themselves. He stole the Mead of Poetry from the giants, taking the form of a serpent and then an eagle, and he spat it out as inspiration for poets and skalds. He rides Sleipnir, the eight-legged horse, through all nine worlds. His ravens Huginn (Thought) and Muninn (Memory) fly out each dawn and return each evening to whisper what they've seen. Yet for all his wisdom, he cannot prevent Ragnarok — only delay it. He gathers the bravest fallen warriors to Valhalla, where they fight all day and feast all night, preparing for the final battle where Odin will be swallowed by the wolf Fenrir. Even the All-Father knows that some fates cannot be escaped."},
-  {n:"Thor",c:"Norse",d:["Thunder","Storms","Strength","Protection"],r:"God of thunder, protector of Midgard and mankind. Wields Mjolnir, the mighty hammer that always returns to his hand.",s:["Mjolnir","Goats (Tanngrisnir & Tanngnjostr)","Megingjord","Iron Gloves"],g:"m",rel:["Odin","Loki","Sif","Jormungandr"],w:"Thor",
-   story:"Thor is the god the common people loved most — not because of wisdom or poetry, but because he gets things done. When the giant Thrym stole Mjolnir and demanded Freya as his bride, Thor disguised himself in a wedding dress and veil, took Loki as his bridesmaid, and walked into the giant's hall. When Thrym placed Mjolnir in the bride's hands as was custom, Thor threw off the veil and slaughtered every giant in the hall. When he went fishing with the giant Hymir and his line caught the World Serpent Jormungandr, he braced his feet through the bottom of the boat and hauled the serpent up — but Hymir cut the line in terror. Thor's goats pull his chariot across the sky: he can kill and eat them each night, then resurrect them with Mjolnir the next morning, as long as no bones are broken. At Ragnarok, Thor and Jormungandr will meet one final time. Thor will kill the serpent, then walk nine steps before falling dead from its venom. The protector of mankind will fall — but not before ensuring the world has a chance to begin again."},
-  {n:"Loki",c:"Norse",d:["Mischief","Trickery","Fire","Chaos","Shapeshifting"],r:"Trickster god, shapeshifter and chaos-bringer. Father of monsters, blood-brother of Odin, the cause and solution to every problem in Asgard.",s:["Serpent","Knot","Fly","Laufeyjarson"],g:"m",rel:["Odin","Thor","Sigyn","Fenrir","Hel","Jormungandr"],w:"Loki",
-   story:"Loki is the god who makes stories happen — and the god who ends them. When Thor's hammer was stolen, it was Loki who discovered where and who. When the walls of Asgard needed building, it was Loki who solved the problem (after causing it). He shapeshifts into a fly, a salmon, a mare — he even became a mare and gave birth to Odin's eight-legged horse Sleipnir. He cut off Sif's golden hair and replaced it with dwarf-forged gold. He arranged the death of Baldur, the most beloved god, with a spear of mistletoe — the one thing in all the worlds that had not sworn to harm him. For this, the gods bound Loki to three rocks with the entrails of his son, and a serpent drips venom onto his face. His wife Sigyn catches the venom in a bowl, but when she must empty it, the drops that hit him make him writthe in agony — and the whole earth shakes. This is the Norse explanation for earthquakes. At Ragnarok, Loki will break free and lead the giants against the gods. He and Heimdall will kill each other. Even in death, Loki is the last punchline."},
-  {n:"Freya",c:"Norse",d:["Love","Beauty","War","Magic (Seidr)","Fertility"],r:"Goddess of love, beauty, and war. Leader of the Valkyries, master of seidr magic. She claims half the battle-slain, Odin claims the other half.",s:["Brisingamen","Falcon Cloak","Cats","Boar Hildisvini"],g:"f",rel:["Freyr","Odin","Odr","Hnoss"],w:"Freya",
-   story:"Freya's necklace Brisingamen was bought at a price no other goddess would pay. Four dwarves forged it, and each demanded a night with her as payment. She agreed — and when Odin learned of it, he ordered Loki to steal the necklace in her sleep. Freya confronted Odin, who demanded an impossible price for its return: she must stir up eternal war between two kings, with the dead rising each night to fight again. This she did, and the battle rages still. Freya rides a chariot pulled by two enormous cats, and she owns a cloak of falcon feathers that lets her fly between the worlds. She is the most powerful practitioner of seidr — the magic that sees the future and twists fate. When she weeps, her tears turn to gold on land and amber in the sea. Her husband Odr wandered away long ago, and she seeks him always, weeping as she searches. Half the warriors who die in battle come to her hall Sessrumnir — the other half go to Odin's Valhalla."},
-  {n:"Ra",c:"Egyptian",d:["Sun","Creation","Kingship","Light"],r:"Sun god, king of the Egyptian pantheon. Sails across the sky by day and battles the serpent Apophis in the underworld by night.",s:["Sun Disk","Falcon","Obelisk","Ankh"],g:"m",rel:["Osiris","Set","Horus","Thoth","Sekhmet"],w:"Ra",
-   story:"In the beginning, there was Nun — the primordial waters. From Nun, Ra created himself, then created Shu (air) and Tefnut (moisture), from whom all life descended. Each morning, Ra rises in his solar barque and sails across the sky, bringing light to the world. Each evening, he descends into the Duat — the underworld — where the twelve hours of night hold terrifying dangers. In the seventh hour, Apophis, the colossal serpent of chaos, attacks. Every single night, Ra must defeat it or the sun will never rise again. When Ra grew old, mortals mocked him, so he sent his Eye — the goddess Sekhmet — to punish them. She slaughtered so many that Ra regretted his command and dyed beer red like blood. Sekhmet drank it, fell asleep, and awoke as the gentler Hathor. Eventually, Ra retreated to the heavens, leaving the throne to his grandson Osiris, but his daily journey continues — the eternal cycle of light against darkness."},
-  {n:"Osiris",c:"Egyptian",d:["Underworld","Resurrection","Fertility","Judgement"],r:"God of the dead and resurrection. Murdered and dismembered by Set, reassembled by Isis. He judges the dead in the Hall of Truth.",s:["Crook and Flail","Djed Pillar","Atef Crown","Green Skin"],g:"m",rel:["Isis","Set","Horus","Nephthys","Anubis"],w:"Osiris",
-   story:"Osiris was once a beloved king of Egypt who taught humanity agriculture, law, and civilization. His brother Set, consumed by jealousy, devised a cunning trap: a magnificent chest crafted to fit Osiris perfectly. At a banquet, Set offered the chest to whoever it fit — and when Osiris lay inside, Set's accomplices sealed it and threw it into the Nile. Isis searched the world and found the chest embedded in a tree in Byblos. But Set found it too, and this time he dismembered Osiris into fourteen pieces and scattered them across Egypt. Isis and Nephthys searched again, finding every piece — except one. Isis fashioned a replacement, used her magic to reassemble Osiris, and conceived their son Horus. Osiris could not return to the living world, but he descended to the Duat and became its king — the judge before whom every soul must stand. The heart of the deceased is weighed against the feather of Maat. If the heart is lighter, eternal life awaits. If not, the monster Ammit devours it."},
-  {n:"Isis",c:"Egyptian",d:["Magic","Motherhood","Healing","Protection"],r:"Goddess of magic and motherhood, the most powerful magician among the gods. She reassembled Osiris and protected Horus from every danger.",s:["Throne","Ankh","Tyet Knot","Sycamore"],g:"f",rel:["Osiris","Horus","Set","Nephthys"],w:"Isis",
-   story:"Isis is the goddess whose magic surpasses even Ra's. The story of how she obtained that power tells everything about her cunning. She created a serpent that bit Ra, and when the sun god lay dying — for the venom was beyond even his power — Isis offered to heal him. But the cure required Ra to speak his true secret name. In agony, Ra yielded, and Isis gained mastery over the most powerful being in creation. When Set murdered Osiris, Isis's grief and determination knew no bounds. She found every piece of her husband and used her magic to restore him long enough to conceive Horus. Then she fled to the marshes of the Nile Delta, hiding among the papyrus reeds, raising Horus alone while Set's assassins searched for them. She scorpion-stung, sickened, and healed her own son. She is called the Mother of God, the Lady of a Thousand Names, and her cult spread from Egypt to Greece to Rome — the last great temple to Isis at Philae was not closed until 535 CE, long after Christianity had forbidden her worship."},
-  {n:"Amaterasu",c:"Japanese",d:["Sun","Light","Imperial Line","Weaving"],r:"Sun goddess, ancestor of the Japanese imperial line. Emerged from a cave to restore light to the world after Susanoo's rampage.",s:["Sacred Mirror (Yata no Kagami)","Magatama","Rooster","Rice"],g:"f",rel:["Susanoo","Tsukuyomi","Izanagi"],w:"Amaterasu",
-   story:"When Izanagi returned from Yomi (the land of the dead) and purified himself, he washed his left eye — and Amaterasu, the Sun Goddess, was born. She ruled the High Plain of Heaven, weaving sacred garments and illuminating all the world. But her brother Susanoo, the storm god, went on a rampage: he destroyed her rice fields, defiled her sacred weaving hall (killing one of her attendants), and caused such devastation that Amaterasu, grief-stricken and furious, retreated into the Heavenly Rock Cave (Ama-no-Iwato) and sealed it shut. The world fell into eternal darkness. Eight hundred gods gathered outside the cave and tried everything to lure her out. Finally, the goddess Ame-no-Uzume performed a bawdy, hilarious dance that made all the gods roar with laughter. Curious, Amaterasu opened the cave slightly — and saw her own reflection in a mirror they had placed at the entrance. 'Who is this radiant being?' she wondered. When she stepped out, the world flooded with light again. To this day, the Sacred Mirror is one of the three Imperial Regalia of Japan."},
-  {n:"Susanoo",c:"Japanese",d:["Storms","Sea","Chaos","Heroism"],r:"Storm god, slayer of the eight-headed serpent Yamata no Orochi. Banished from heaven for his destructive rampages, he proved his heroism on earth.",s:["Sword (Kusanagi-no-Tsurugi)","Storm Clouds","Sea"],g:"m",rel:["Amaterasu","Tsukuyomi","Izanagi"],w:"Susanoo",
-   story:"Banished from heaven for tormenting Amaterasu, Susanoo descended to the province of Izumo. There he found an old couple weeping: each year, the eight-headed serpent Yamata no Orochi devoured one of their seven daughters, and only Kushinada-hime remained. Susanoo promised to save her — if they would let him marry her. He transformed Kushinada into a comb and hid her in his hair. Then he set his trap: eight great vats of sake, one for each head. The serpent drank, grew drunk, and fell asleep. Susanoo attacked with his ten-span sword, hacking the creature to pieces. In the serpent's tail, he found a magnificent sword — Kusanagi-no-Tsurugi, the Grass-Cutting Sword — which he presented to Amaterasu as a peace offering. It became one of the three Imperial Regalia of Japan, passed down through emperors for over two thousand years. The storm god who destroyed his sister's heaven became the hero who saved a woman and gave Japan its most sacred treasure."},
-  {n:"Vishnu",c:"Hindu",d:["Preservation","Order","Compassion","Dharma"],r:"Preserver god of the Trimurti. Descends as avatars (Dasavatara) whenever dharma declines and evil rises, restoring cosmic order.",s:["Sudarshana Chakra","Shankha Conch","Gada Mace","Lotus"],g:"m",rel:["Lakshmi","Shiva","Brahma","Krishna","Rama"],w:"Vishnu",
-   story:"Vishnu preserves the cosmos across infinite cycles of creation and destruction. When the demon Hiranyakashipu gained a boon that made him immune to gods, humans, beasts, day, night, inside and outside, he terrorized all creation. His own son Prahlada remained devoted to Vishnu — and when the demon prepared to kill the boy, Vishnu emerged from a pillar as Narasimha: neither man nor beast, neither inside nor outside, at the threshold of day and night. He placed Hiranyakashipu across his lap (neither earth nor sky) and destroyed him with his claws (neither weapon nor weaponless). As Rama, he defeated the demon king Ravana. As Krishna, he guided the Pandavas through the Mahabharata and spoke the Bhagavad Gita. As Kurma the tortoise, he supported Mount Mandara while the gods and demons churned the ocean of milk for the nectar of immortality. Whenever dharma wavers, Vishnu descends — not to judge, but to restore balance."},
-  {n:"Shiva",c:"Hindu",d:["Destruction","Transformation","Meditation","Dance","Yoga"],r:"Destroyer/Transformer of the Trimurti. Lord of the cosmic dance (Nataraja), patron of ascetics and yogis, who destroys to make way for renewal.",s:["Trishula Trident","Damru Drum","Nandi Bull","Third Eye","Crescent Moon"],g:"m",rel:["Parvati","Ganesha","Vishnu","Kartikeya"],w:"Shiva",
-   story:"Shiva's dance of destruction — the Tandava — is not an ending but a transformation. In the cosmic hall of Chidambaram, Shiva performs his dance for the sages. When they fail to recognize his divinity, he reveals his true form: leg raised, hair flying, trident gleaming, a ring of fire around him. The universe trembles. Even the gods cannot watch. But the dance creates as much as it destroys — each step births new worlds from the ashes of the old. Shiva's third eye, normally closed, opens in wrath: when Kama, god of love, shot an arrow to wake Shiva from meditation, the third eye's fire incinerated him instantly. Yet Shiva is also Bholenath — the simple, innocent one. He lives on Mount Kailasa, wears snakes and ash, meditates for eons, and grants boons to any devotee who approaches with genuine love. He drank the halahala poison that emerged from the churning of the ocean, holding it in his throat until it turned blue — earning the name Nilakantha, the Blue-Throated One. Destruction, he teaches, is not the opposite of creation. It is its prerequisite."},
-  {n:"Ganesha",c:"Hindu",d:["Obstacles","Wisdom","New Beginnings","Arts","Letters"],r:"Elephant-headed remover of obstacles, son of Shiva and Parvati. Invoked at the start of every endeavor — no ritual begins without his blessing.",s:["Modak Sweet","Axe (Parashu)","Mouse (Mushika)","Broken Tusk"],g:"m",rel:["Shiva","Parvati","Kartikeya"],w:"Ganesha",
-   story:"How Ganesha got his elephant head is a story of love and rage. Parvati, wanting privacy while bathing, created a boy from turmeric paste and set him to guard her door. When Shiva returned and found a stranger blocking him, he demanded entry. The boy refused. In fury, Shiva cut off his head. Parvati's grief threatened to destroy the universe. To appease her, Shiva ordered his ganas to bring the head of the first creature they found facing north — which was an elephant. Shiva placed it on the boy's body and restored him to life, making him chief of the ganas. Ganesha once lost a tusk in battle, and he used it as a pen to write the Mahabharata as Vyasa dictated it. When asked why he didn't use another pen, he replied: 'When the story is this vast, one must write with whatever is at hand.' The mouse he rides represents the ego — desires and impulses that must be controlled. Ganesha holds the modak in his trunk, the sweetness of spiritual wisdom that he offers to every devotee."},
-  {n:"Quetzalcoatl",c:"Aztec",d:["Wind","Learning","Creation","Civilization","Venus"],r:"Feathered serpent, creator god and bringer of knowledge, maize, and the calendar. Opposed human sacrifice and taught agriculture.",s:["Feathered Serpent","Wind","Venus (Morning Star)","Ehecatl Mask"],g:"m",rel:["Tezcatlipoca","Huitzilopochtli","Xolotl","Coatlicue"],w:"Quetzalcoatl",
-   story:"Quetzalcoatl is the feathered serpent — part bird (sky and spirit) and part serpent (earth and matter) — the bridge between heaven and earth. In the creation myths, he helped create the current world, the Fifth Sun, by leaping into the funeral pyre of the previous era and rising as Venus, the morning star. He descended into Mictlan (the underworld) to retrieve the bones of the previous humanity, and by bleeding onto them, he created the people of this age. He taught them maize cultivation, the calendar, writing, and the arts. Most remarkably, he opposed human sacrifice, offering only butterflies, snakes, and jade to the gods. But his brother and eternal rival Tezcatlipoca, the Smoking Mirror, tricked him. Disguised as an old man, Tezcatlipoca gave Quetzalcoatl a potion that made him drunk and shameful. In his disgrace, Quetzalcoatl sailed east on a raft of serpents, promising to return. When Cortes arrived from the east in 1519, the Aztec emperor Moctezuma wondered if the prophecy had been fulfilled. It had not — but the misunderstanding helped destroy an empire."},
-  {n:"Anansi",c:"Akan",d:["Stories","Wisdom","Trickery","Knowledge"],r:"Spider god of stories and trickery. Bought all the world's stories from the sky god Nyame and distributes them through his webs.",s:["Spider","Web","Stories (Anansesem)","Drum"],g:"m",rel:["Nyame","Turtle","Leopard","Hornets"],w:"Anansi",
-   story:"Once, all stories belonged to Nyame, the sky god. Anansi wanted them. He climbed to heaven on his silken thread and made his offer. Nyame set an impossible price: bring me the hornets that sting, the great leopard that kills, and the pythons that crush. Anansi agreed. For the hornets, he poured water on their nest and offered them a gourd to shelter from the 'rain' — then tied it shut. For the leopard, he dug a pit, and when the leopard fell in, offered to rescue him with a rope — then bound him. For the python, he debated whether a python could be longer than a branch, and when the python stretched out to prove it, Anansi tied him at both ends. Nyame, astonished, handed over all the stories. 'From this day, they shall be called Spider Stories, and whenever a story is told, Anansi shall be named.' This is why every Ashanti tale begins: 'We do not really mean, we do not really mean that what we are about to say is true. A story, a story; let it come, let it go.' Anansi reminds us that brains will always triumph over brawn — and that every great story was once stolen from someone who hoarded it."}
+let CL = 'en'; // Current language
+
+const TR = {
+  welcome_title: {en:"Welcome, Seeker",fil:"Maligayang Pagdating, Manghahalukay",hil:"Malipayon nga Pag-abot, Mangita"},
+  welcome_body: {en:"I am LoreKeeper, the ancient guardian of myths, legends, and folklore from cultures across the world. Ask me about any deity, hero, creature, or legend — or say \"guide me\" and I shall illuminate the paths that await you.",
+    fil:"Ako si LoreKeeper, ang sinaunang tagapangalaga ng mga mito, alamat, at kuwentong-bayan mula sa iba't ibang kultura sa buong mundo. Itanong mo sa akin ang tungkol sa anumang diyos, bayani, nilalang, o alamat — o sabihin mo lang \"giya mo ako\" at iilawan ko ang mga daang naghihintay sa iyo.",
+    hil:"Ako si LoreKeeper, ang daan nga tagapangalaga sang mga mito, alamat, kagistorya halin sa iban-iban nga kultura sa kalibutan. Pamangkita ako about bisan ano nga diyos, bayani, nilalang, ukon alamat — ukon sabton mo lang \"giya ako\" kag paganan-awon ko ang mga dalan nga nagahulat sa imo."},
+  status: {en:"LoreKeeper is active",fil:"LoreKeeper ay aktibo",hil:"LoreKeeper ara kag aktibo"},
+  placeholder: {en:"Ask about any myth, deity, or legend...",fil:"Magtanong tungkol sa mito, diyos, o alamat...",hil:"Pamangkita about sa mito, diyos, ukon alamat..."},
+  collection: {en:"Collection",fil:"Koleksyon",hil:"Koleksyon"},
+  history: {en:"History",fil:"Kasaysayan",hil:"Kasugiran"},
+  clear_all: {en:"Clear All",fil:"Burahin Lahat",hil:"Panaguan Lahat"},
+  no_saved: {en:"No saved figures yet. Discuss a figure and say \"save this\".",fil:"Wala pang na-save na tao. Mag-usap tungkol sa isang tao at sabihing \"i-save ito\".",hil:"Wala pa gid nga na-save. Mag-istorya about sa isa ka tao kag sabton \"i-save ini\"."},
+  no_history: {en:"No conversation history yet.",fil:"Wala pang kasaysayan ng usapan.",hil:"Wala pa gid nga kasugiran sang hambae."},
+  chat_cleared: {en:"Chat cleared",fil:"Na-clear na ang usapan",hil:"Na-clear na ang hambae"},
+  all_cleared: {en:"All data cleared",fil:"Na-clear na lahat ng datos",hil:"Na-clear na tanan nga datos"},
+  saved: {en:"saved to collection",fil:"na-save sa koleksyon",hil:"na-save sa koleksyon"},
+  already_saved: {en:"already in collection",fil:"nasa koleksyon na",hil:"ara na sa koleksyon"},
+  removed: {en:"Removed from collection",fil:"Tinanggal sa koleksyon",hil:"Gin-tanghal sa koleksyon"},
+  restored: {en:"Previous conversation restored",fil:"Na-restore ang nakaraang usapan",hil:"Na-restore ang mga-agi nga hambae"},
+  exported: {en:"Chat exported",fil:"Na-export ang usapan",hil:"Na-export ang hambae"},
+  guide: {en:"guide me",fil:"giya mo ako",hil:"giya ako"},
+  save_this: {en:"save this",fil:"i-save ito",hil:"i-save ini"},
+  show_collection: {en:"show my collection",fil:"ipakita ang koleksyon ko",hil:"ipakita ang akon koleksyon"}
+};
+
+function t(key){return TR[key]?TR[key][CL]||TR[key].en:key}
+
+// Language detection from input
+function detectLang(input){
+  const l=input.toLowerCase();
+  // Hiligaynon distinctive markers
+  const hW=['kinsa','diin','sang','kag','sugilon','sugilanon','buligi','subong','hambalon','ara','ginahimo','tana','bala','ya','daw','man','himo','pangita','pamangkita','malipayon','maayong','abot','bilang','pila','tiil','bukon','wala','huo','indi'];
+  // Filipino distinctive markers
+  const fW=['sino','saan','nang','ikwento','tulungan','dahil','mayroon','meron','ito','iyan','iyon','nung','kapag','gusto','ngunit','pati','rin','din','kung','pagka','maging','narito','naroon'];
+  let hC=0,fC=0;
+  hW.forEach(w=>{if(new RegExp('\\b'+w).test(l))hC++});
+  fW.forEach(w=>{if(new RegExp('\\b'+w).test(l))fC++});
+  if(hC>fC&&hC>=1)return'hil';
+  if(fC>=1)return'fil';
+  return'en';
+}
+
+function setLang(lang){
+  CL=lang;
+  document.querySelectorAll('#lang_btns .lb').forEach(b=>{b.classList.toggle('act',b.dataset.lang===lang)});
+  document.getElementById('ci').placeholder=t('placeholder');
+  document.getElementById('status_txt').textContent=t('status');
+  document.querySelector('[data-t="col_label"]').textContent=t('collection');
+  document.querySelector('[data-t="his_label"]').textContent=t('history');
+  document.querySelector('[data-t="clear_all"]').textContent=t('clear_all');
+  showChips();
+}
+
+// ============================================================
+// KNOWLEDGE BASE — includes Philippine mythology
+// ============================================================
+const KB = [
+  // === GREEK ===
+  {n:"Zeus",c:"Greek",d:["Sky","Thunder","Law"],r:{en:"King of the Olympian gods, wielder of the thunderbolt. He rules from Mount Olympus, enforcing oaths and cosmic order.",fil:"Hari ng mga Olympian na diyos, tagapag-imbento ng kidlat. Namumuno siya mula sa Bundok Olympus, nagpapanatili ng panata at kosmikong orden.",hil:"Hari sang mga Olympian nga diyos, nagakaptan sang kilat. Siya ang nagadumala sa Bundok Olympus, nagapabantod sang panata kag kosmikong orden."},
+    s:["Thunderbolt","Eagle","Oak"],g:"m",rel:["Hera","Poseidon","Athena","Hades"],
+    story:{en:"The tale of Zeus begins in darkness. His father Cronus devoured each of his children at birth — for a prophecy foretold his own son would overthrow him. But Rhea wrapped a stone in swaddling clothes and fed it to Cronus, hiding the infant Zeus in a Cretan cave. When Zeus grew, he gave Cronus a draught that forced him to disgorge his siblings. Thus began the Titanomachy: ten years of war. With the Cyclopes as allies, Zeus cast Cronus into Tartarus and claimed the sky as his domain forever.",
+      fil:"Nagsimula ang kuwento ni Zeus sa kadiliman. Nilamon ng kanyang amang si Cronus ang bawat anak niya sa kapanganakan — dahil may hula na ang kanyang sariling anak ang magpapabagsak sa kanya. Ngunit binalot ni Rhea ng tela ang isang bato at ipinakain kay Cronus, itinago ang sanggol na si Zeus sa isang yungib sa Crete. Nang lumaki si Zeus, binigyan niya si Cronus ng inumin na nagpabusalsal sa kanyang mga kapatid. Nagsimula ang Titanomachy: sampung taon ng digmaan. Kasama ang mga Cyclopes, itinapon ni Zeus si Cronus sa Tartarus at inangkin ang langit.",
+      hil:"Nagsugod ang isturya ni Zeus sa kadulom. Ang iya ama nga si Cronus nagakaon sa tagsa ka anak niya pagkatawo — kay may hula nga ang iya kaugalingon nga anak ang magapatumba sa iya. Pero ginputos ni Rhea ang isa ka bato sang tela kag ginpakaon kay Cronus, gintago ang bata nga si Zeus sa isa ka lungib sa Crete. Sang nagdako si Zeus, ginpainom niya si Cronus sang ilimnon nga nagpapabula sang iya mga utod. Nagsugod ang Titanomachy: napulo ka tuig nga gera. Kaubra sang mga Cyclopes, ginpugsan ni Zeus si Cronus sa Tartarus kag ginkuha ang kalangitan."}},
+
+  {n:"Hera",c:"Greek",d:["Marriage","Women","Sovereignty"],r:{en:"Queen of the Olympian gods, protector of marriage and women. Known for her fierce defense of the marital bond.",fil:"Reyna ng mga Olympian na diyos, tagapangalaga ng kasal at mga babae. Kilala sa kanyang matinding pagtatanggol sa bonding marital.",hil:"Reyna sang mga Olympian nga diyos, tagapangalaga sang kasal kag mga babayi. Kilala sa iya matig-aon nga pagdepensa sa bonding marital."},
+    s:["Peacock","Cow","Pomegranate"],g:"f",rel:["Zeus","Hephaestus","Ares"],
+    story:{en:"Hera's devotion to marriage is both her strength and her torment. When Zeus first pursued her, she refused — until he transformed into a shivering cuckoo. Taking pity on the bird, she held it close, and Zeus revealed his true form. This marriage became her eternal trial. When Zeus loved Io, Hera turned the girl into a cow and set Argus to guard her. When Zeus loved Leto, Hera forbade any land to give her shelter. But Hera's wrath was the fury of a goddess who understood that the sanctity of marriage was the foundation of civilization.",
+      fil:"Ang debosyon ni Hera sa kasal ay parehong lakas at pighati niya. Nang unang ligawan siya ni Zeus, tumanggi siya — hanggang nag-anyong cuckoo na nanginginig si Zeus. Naaawa sa ibon, niyakap niya ito, at nagpakita si Zeus ng tunay niyang anyo. Ang kasal na ito naging walang-hangang pagsubok niya. Nang mahalin ni Zeus si Io, ginawa ni Hera ang dalaga bilang baka at inilagay si Argus na bantay. Ngunit ang galit ni Hera ay ang poot ng isang diyos na naintindihan na ang kabanalan ng kasal ay ang pundasyon ng sibilisasyon.",
+      hil:"Ang debosyon ni Hera sa kasal amo ang iya kusog kag man ginadugangan. Sang una nga ginpangasawa siya ni Zeus, nagpangkot siya — hasta nagbalhin si Zeus nga cuckoo nga nangakurog. Naluoy siya sa pispis, ginkaptan niya, kag nagpakita si Zeus sang iya matuod nga porma. Ang kasal nga ini naging walay katapusan nga pagsulit niya. Sang ginhigugma ni Zeus si Io, ginhimo ni Hera ang dalaga nga baka kag ginpabantay ni Argus. Pero ang kasuko ni Hera amo ang kaakig sang isa ka diyos nga nakaintindi nga ang kasantusahan sang kasal amo ang pundasyon sang sibilisasyon."}},
+
+  {n:"Poseidon",c:"Greek",d:["Sea","Earthquakes","Horses"],r:{en:"God of the sea and earthquakes, creator of the first horse. His moods govern the fate of every sailor.",fil:"Diyos ng dagat at lindol, lumikha ng unang kabayo. Ang kanyang mga emosyon ang nagdidikta sa kapalaran ng bawat mandaragat.",hil:"Diyos sang dagat kag linog, naghimu sang una nga kabayo. Ang iya mga emosyon ang nagadikta sa kapalaran sang tagsa ka mandaragat."},
+    s:["Trident","Horse","Dolphin"],g:"m",rel:["Zeus","Hades","Amphitrite"],story:{en:"When the three brothers drew lots for the cosmos, Poseidon won the sea. He contested Athens with Athena, striking the Acropolis to produce a salt spring. Athena offered the olive tree, and the people chose her gift. He built the walls of Troy alongside Apollo, and when King Laomedon refused payment, Poseidon sent a sea monster. He cursed Odysseus for blinding his son Polyphemus — the sea gives and the sea takes, and neither gift comes cheap.",
+      fil:"Nang magbunot ng lots ang tatlong kapatid para sa cosmos, nakuha ni Poseidon ang dagat. Naglaban siya kay Athena para sa Athens. Inalok ni Athena ang puno ng olibo, at pinili ng tao ang kanyang regalo. Itinayo niya ang mga pader ng Troy kasama ni Apollo. Nang tumanggi si Haring Laomedon magbayad, nagpadala si Poseidon ng sea monster. Sinalanta niya si Odysseus dahil binulag niya ang anak niyang si Polyphemus — ang dagat ay nagbibigay at nag-aalis, at walang libre.",
+      hil:"Sang nagbunot sang lots ang tatlo ka utod para sa kalibutan, nakuha ni Poseidon ang dagat. Nag-away siya kay Athena para sa Athens. Gintanyag ni Athena ang kahoy nga olibo, kag napilian sang mga tao ang iya regalo. Ginhimo niya ang mga pader sang Troy kaubra ni Apollo. Sang nagpangkot si Haring Laomedon magbayad, nagpadala si Poseidon sang sea monster. Gintunggan niya si Odysseus kay ginbuta niya ang iya anak nga si Polyphemus — ang dagat nagahatag kag nagakwa, kag wala gid libre."}},
+
+  {n:"Athena",c:"Greek",d:["Wisdom","Strategic War","Crafts"],r:{en:"Goddess of wisdom and strategic warfare, born from Zeus's head fully armed. Patron of Athens, protector of heroes.",fil:"Diyosa ng karunungan at estratehikong digmaan, ipinanganak mula sa ulo ni Zeus na nakabuo. Patron ng Athens, tagapangalaga ng mga bayani.",hil:"Diyosa sang kaalam kag estratehikong gera, natawo halin sa ulo ni Zeus nga armado. Patron sang Athens, tagapangalaga sang mga bayani."},
+    s:["Owl","Olive Tree","Aegis"],g:"f",rel:["Zeus","Ares","Odysseus"],story:{en:"Athena's birth shook Olympus. Zeus had swallowed her mother Metis after a prophecy. But wisdom grew inside him until a headache drove him to command Hephaestus to split his skull. From the cleft leaped Athena — fully grown, clad in golden armor. She guided Perseus to slay Medusa, taught Odysseus cunning, and wove the tapestry of the gods' triumph. When the mortal Arachne challenged her to a weaving contest, Athena destroyed the girl's blasphemous tapestry and transformed her into the first spider.",
+      fil:"Yuminig ang Olympus sa kapanganakan ni Athena. Nilamon ni Zeus ang kanyang inang si Metis. Ngunit lumaki ang karunungan sa loob niya hanggang sa sumakit ang kanyang ulo at ipinag-utos niya kay Hephaestus na hiwain ang kanyang bungo. Mula sa hiwa ay lumundag si Athena — ganap na adulto, suot ang gintong baluti. Ginabayan niya si Perseus para patayin si Medusa, itinuro kay Odysseus ang katalinuhan. Nang hamunin siya ni Arachne sa paghabi, winasak ni Athena ang tapestry at ginawa siya sa unang gagamba.",
+      hil:"Nanginog ang Olympus sa pagkatawo ni Athena. Ginkaon ni Zeus ang iya ina nga si Metis. Pero nagdako ang kaalam sulod sa iya hasta nasakit ang iya ulo kag ginpagutos niya kay Hephaestus nga bukon ang iya bungo. Halin sa bini lumundag si Athena — todo dako, nakasul-ot sang bulawan nga baluti. Gingiya niya si Perseus para pamatay si Medusa, gintudluan si Odysseus sang katalinuhan. Sang hinabalos siya ni Arachne sa paghaboe, ginpanas ni Athena ang tapestry kag ginhimo siya nga una nga lawa."}},
+
+  {n:"Apollo",c:"Greek",d:["Sun","Music","Prophecy","Healing"],r:{en:"God of the sun, music, poetry, and prophecy. Patron of the Oracle at Delphi.",fil:"Diyos ng araw, musika, tula, at propesiya. Patron ng Oracle sa Delphi.",hil:"Diyos sang adlaw, musika, balak, kag propesiya. Patron sang Oracle sa Delphi."},
+    s:["Lyre","Bow","Laurel Wreath"],g:"m",rel:["Artemis","Zeus","Dionysus"],story:{en:"Apollo was born on Delos beneath a palm tree. Only four days old, he demanded a bow and set out to find a place for his oracle. He chose Delphi, but a great serpent, the Python, guarded the spring. Young Apollo slew it with his first arrows. He loved the nymph Daphne, and when she fled, he chased her until she transformed into a laurel tree — ever after his sacred plant, a crown of leaves that cannot love back.",
+      fil:"Ipinanganak si Apollo sa Delos sa ilalim ng palmera. Apat na araw pa lang, humingi siya ng pana at naghanap ng lugar para sa kanyang oracle. Pumili siya ng Delphi, ngunit binabantayan ng Python. Binaril ni Apollo ito. Minahal niya ang nymph na si Daphne, at nang tumakas siya, hinabol niya hanggang sa maging palmera siya — mula noon ay naging sagradong halamanan ito niya.",
+      hil:"Natawo si Apollo sa Delos sa idalom sang palmera. Apat ka adlaw pa lang, nagpangayo siya sang pana kag nagpangita sang lugar para sa iya oracle. Napilian niya ang Delphi, pero ginabantayan sang Python. Ginpusil ni Apollo ini. Ginhigugma niya ang nymph nga si Daphne, kag sang nagpalagyo siya, ginalagyo niya hasta nagbalhin siya nga laurel nga kahoy — halin sadto naging sagradong tanom niya."}},
+
+  {n:"Artemis",c:"Greek",d:["Hunt","Moon","Wilderness","Chastity"],r:{en:"Goddess of the hunt and the moon. Protector of wild things and young women.",fil:"Diyosa ng pangangaso at buwan. Tagapangalaga ng mga ligaw na bagay at mga batang babae.",hil:"Diyosa sang pangangaso kag bulan. Tagapangalaga sang mga layas nga butang kag mga bata nga babayi."},
+    s:["Bow","Deer","Crescent Moon"],g:"f",rel:["Apollo","Zeus","Leto"],story:{en:"Artemis was born first and helped deliver her twin Apollo. She asked Zeus for six wishes: a bow, a chorus of nymphs, a short tunic for running, all the mountains, a single city, and eternal chastity. She roams wild places where no man rules. Actaeon, who accidentally saw her bathing, she transformed into a stag — and his own hounds tore him apart.",
+      fil:"Ipinanganak muna si Artemis at tinulungan niyang ipanganak ang kanyang kambal na si Apollo. Humingi siya kay Zeus ng anim na kahilingan: pana, koro ng mga nymph, maikling damit, lahat ng bundok, isang lungsod, at walang-hangang kalinisang-puri. Siya ay gumagala sa mga ligaw na lugar. Si Actaeon, na aksidenteng nakita siyang naliligo, ay ginawa niyang usa — at pinatay siya ng sarili niyang aso.",
+      hil:"Natawo anay si Artemis kag ginbuligan niya ang pagkatawo sang iya kambal nga si Apollo. Nagpangayo siya kay Zeus sang anom ka pangayo: pana, koro sang mga nymph, mubu nga bado para magdalagan, tanan nga bundok, isa ka syudad, kag walay katapusan nga kalinisngan. Siya nagalibot sa mga layas nga lugar. Si Actaeon, nga di-palagyo nakita siya nagabaligo, ginhimo niya nga usa — kag ginpatay siya sang iya kaugalingon nga aso."}},
+
+  {n:"Aphrodite",c:"Greek",d:["Love","Beauty","Desire"],r:{en:"Goddess of love and beauty, born from sea foam. Her power over desire affects gods and mortals alike.",fil:"Diyosa ng pag-ibig at kagandahan, ipinanganak mula sa sea foam. Ang kapangyarihan niya sa pagnanasa ay nakakaapekto sa mga diyos at tao.",hil:"Diyosa sang gugma kag katahom, natawo halin sa sea foam. Ang iya gahom sa pangita nakakaapekto sa mga diyos kag mga tao."},
+    s:["Dove","Rose","Myrtle"],g:"f",rel:["Hephaestus","Ares","Eros"],story:{en:"When Cronus cast Uranus's remains into the ocean, the water churned white, and from this foam Aphrodite rose — the most beautiful being. The gods married her to Hephaestus, but she loved Ares. Their affair was exposed when Hephaestus crafted an invisible net that trapped them in bed together. Love, she teaches, is the most dangerous force in the universe.",
+      fil:"Nang itapon ni Cronus ang labi ni Uranus sa karagatan, ang tubig ay umapaw, at mula sa foam na ito ay lumitaw si Aphrodite — ang pinakamagandang nilalang. Inasawa siya kay Hephaestus, ngunit minahal niya si Ares. Nalantad ang kanilang relasyon nang gumawa si Hephaestus ng di-nakikitang net. Itinuturo niya na ang pag-ibig ang pinakamapanganib na puwersa sa sansinukob.",
+      hil:"Sang ginpugsan ni Cronus ang labi ni Uranus sa dagat, ang tubig nagapulo, kag halin sa foam nga ini naglitaw si Aphrodite — ang pinakamatahom nga nilalang. Ginkasal siya kay Hephaestus, pero ginhigugma niya si Ares. Naglawig ang ila relasyon sang naghimu si Hephaestus sang di-makita nga net. Gintudluan niya nga ang gugma amo ang pinakamakatalang gahom sa kalibutan."}},
+
+  {n:"Hades",c:"Greek",d:["Underworld","Death","Wealth"],r:{en:"God of the underworld, ruler of the dead. Not evil — he ensures cosmic boundaries are respected.",fil:"Diyos ng underworld, pinuno ng mga patay. Hindi masama — tiyakin niya na nirerespeto ang mga kosmikong hangganan.",hil:"Diyos sang underworld, manunudlo sang mga minatay. Indi malain — siguraduhon niya nga ginatipon ang mga kosmikong limitasyon."},
+    s:["Cerberus","Helm of Darkness","Scepter"],g:"m",rel:["Zeus","Poseidon","Persephone"],story:{en:"Hades drew the worst lot — the underworld. He sits beside Persephone and judges the dead. The dead must cross the Styx, paying Charon with a coin. Cerberus guards the gate. When Orpheus came to reclaim Eurydice, Hades was moved to tears — the only time the lord of death showed mercy. But Orpheus looked back, and the condition was broken.",
+      fil:"Nakuha ni Hades ang pinakamalang lot — ang underworld. Nakasalaming siya kay Persephone at naghuhat sa mga patay. Ang mga patay ay kailangang tumawid sa Styx, nagbabayad kay Charon ng barya. Si Cerberus ang bantay. Nang pumunta si Orpheus para bawiin si Eurydice, naiyak si Hades — ang tanging pagkakataon na nagpakita ng awa ang panginoon ng kamatayan. Ngunit lumingon si Orpheus, at nasira ang kondisyon.",
+      hil:"Nakuha ni Hades ang pinakamalain nga lot — ang underworld. Nagaupod siya kay Persephone kag nagahukom sang mga minatay. Ang mga minatay kinahanglan magtabok sa Styx, nagabayaran si Charon sang kwarta. Si Cerberus ang bantay. Sang nagkadto si Orpheus para ibalik si Eurydice, naghueak si Hades — ang isa lang ka beses nga nagpakita sang kaluoy ang agalon sang kamatayan. Pero nagliso si Orpheus, kag nabungkag ang kasuguan."}},
+
+  // === NORSE ===
+  {n:"Odin",c:"Norse",d:["Wisdom","War","Poetry","Death"],r:{en:"All-Father, chief of the Aesir. Sacrificed his eye for wisdom and hung himself on Yggdrasil for nine nights to learn the runes.",fil:"All-Father, pinuno ng Aesir. Inihandog niya ang kanyang mata para sa karunungan at nagbigti siya sa Yggdrasil sa siyam na gabi para matuto ng mga rune.",hil:"All-Father, manunudlo sang Aesir. Ginhalad niya ang iya mata para sa kaalam kag nagbigti siya sa Yggdrasil sang siyam ka gab-i para makatunod sang mga rune."},
+    s:["Gungnir","Ravens","Sleipnir"],g:"m",rel:["Thor","Loki","Frigg","Baldur"],story:{en:"Odin gave his right eye to Mimir to drink from the well of wisdom. He hung himself from Yggdrasil for nine nights with a spear in his side, sacrificing himself to himself, until the runes revealed themselves. He stole the Mead of Poetry from the giants. His ravens Huginn (Thought) and Muninn (Memory) fly out each dawn. Yet for all his wisdom, he cannot prevent Ragnarok — only delay it.",
+      fil:"Ibinigay ni Odin ang kanyang kanang mata kay Mimir upang uminom mula sa balon ng karunungan. Nagbigti siya sa Yggdrasil nang siyam na gabi na may sibat sa kanyang tagiliran, hanggang sa magpakita ang mga rune. Ninakaw niya ang Mead of Poetry mula sa mga giant. Ang kanyang mga uwak na si Huginn at Muninn ay lumilipad araw-araw. Ngunit sa kabila ng kanyang karunungan, hindi niya mapigilan ang Ragnarok.",
+      hil:"Ginhatag ni Odin ang iya too nga mata kay Mimir agod uminom halin sa bubon sang kaalam. Nagbigti siya sa Yggdrasil sang siyam ka gab-i nga may sibat sa iya kilid, hasta nagpakita ang mga rune. Ginkawat niya ang Mead of Poetry halin sa mga giant. Ang iya mga uwak nga si Huginn kag Muninn nagalupad kada adlaw. Pero bisan pa sang iya kaalam, indi niya mapunggan ang Ragnarok."}},
+
+  {n:"Thor",c:"Norse",d:["Thunder","Storms","Strength","Protection"],r:{en:"God of thunder, protector of Midgard and mankind. Wields Mjolnir, the hammer that always returns.",fil:"Diyos ng kulog, tagapangalaga ng Midgard at sangkatauhan. Hawak niya ang Mjolnir, ang martilyong palaging bumabalik.",hil:"Diyos sang dalugdog, tagapangalaga sang Midgard kag sang katawhan. Gakaptan niya ang Mjolnir, ang martilyo nga permi nagapabalik."},
+    s:["Mjolnir","Goats","Megingjord"],g:"m",rel:["Odin","Loki","Sif","Jormungandr"],story:{en:"When the giant Thrym stole Mjolnir and demanded Freya, Thor disguised himself in a wedding dress, took Loki as bridesmaid, and walked into the giant's hall. When Mjolnir was placed in the bride's hands, Thor threw off the veil and slaughtered every giant. At Ragnarok, Thor and the World Serpent Jormungandr will meet. Thor will kill the serpent, then walk nine steps before falling dead from its venom.",
+      fil:"Nang nakawin ni Thrym si Mjolnir at hiningi si Freya, nag-disguise si Thor sa kasuotang kasal, kinuha si Loki bilang bridesmaid. Nang ilagay si Mjolnir sa kamay ng nobya, tinanggal ni Thor ang belo at pinatay ang lahat ng giant. Sa Ragnarok, magkikita si Thor at ang World Serpent na si Jormungandr. Patayin niya ang ahas, ngunit mamamatay din siya sa lason nito pagkatapos ng siyam na hakbang.",
+      hil:"Sang ginkawat ni Thrym si Mjolnir kag nagpangayo kay Freya, nag-disguise si Thor sa bado sang kasal, ginkuha ni Loki nga bridesmaid. Sang ginputang si Mjolnir sa kamot sang nobya, ginkuha ni Thor ang belo kag ginpatay tanan nga giant. Sa Ragnarok, magakita si Thor kag ang World Serpent nga si Jormungandr. Imapatay niya ang bitin, pero mapatay man siya sa iya hilom pagkatapos sang siyam ka lakang."}},
+
+  {n:"Loki",c:"Norse",d:["Mischief","Trickery","Fire","Chaos"],r:{en:"Trickster god, shapeshifter and chaos-bringer. Father of monsters, blood-brother of Odin.",fil:"Diyos ng kalokohan, shapeshifter at tagadala ng kaguluhan. Ama ng mga halimaw, kapatid sa dugo ni Odin.",hil:"Diyos sang kalibangan, shapeshifter kag tagadala sang kagubot. Amay sang mga halimaw, utod sa duga ni Odin."},
+    s:["Serpent","Knot","Fly"],g:"m",rel:["Odin","Thor","Fenrir","Hel"],story:{en:"Loki makes stories happen — and ends them. He shapeshifts into a fly, a salmon, a mare — he even gave birth to Odin's horse Sleipnir. He cut off Sif's golden hair and replaced it with dwarf-forged gold. He arranged the death of Baldur with a spear of mistletoe. For this, the gods bound him to rocks with his son's entrails, and a serpent drips venom onto his face. At Ragnarok, he will break free and lead the giants against the gods.",
+      fil:"Si Loki ang nagpapagalaw sa mga kuwento — at nagtatapos sa kanila. Nagbabago siya ng anyo — maging langaw, salmon, kabayo — ipinanganak pa niya ang kabayo ni Odin na si Sleipnir. Ginupit niya ang gintong buhok ni Sif at pinalitan ng gawa ng dwarf. Siya ang nag-ayos ng kamatayan ni Baldur sa sibat ng mistletoe. Dahil dito, tinali siya ng mga diyos sa bato at may ahas na nagtutulo ng lason sa kanyang mukha. Sa Ragnarok, makakawala siya at pamumunuan ang mga giant laban sa mga diyos.",
+      hil:"Si Loki ang nagapakilos sang mga isturya — kag nagapatapos sa ila. nagabalhin siya sang porma — bilang langaw, salmon, kabayo — natawo pa niya ang kabayo ni Odin nga si Sleipnir. Ginputol niya ang bulawan nga buhok ni Sif kag ginsingitan sang ginhimo sang dwarf. Siya ang nag-ayos sang kamatayon ni Baldur sa sibat sang mistletoe. Tungod sini, gintali siya sang mga diyos sa bato kag may bitin nga nagatulo sang hilom sa iya nawong. Sa Ragnarok, makalagyo siya kag manunudlo sang mga giant batok sa mga diyos."}},
+
+  {n:"Freya",c:"Norse",d:["Love","Beauty","War","Magic"],r:{en:"Goddess of love, beauty, and war. Leader of the Valkyries, master of seidr magic. Claims half the battle-slain.",fil:"Diyosa ng pag-ibig, kagandahan, at digmaan. Pinuno ng Valkyries, dalubhasa ng seidr magic. Kinukuha ang kalahati ng mga patay sa digmaan.",hil:"Diyosa sang gugma, katahom, kag gera. Manunudlo sang Valkyries, eksperto sang seidr magic. Ginakwa ang katunga sang mga minatay sa gera."},
+    s:["Brisingamen","Falcon Cloak","Cats"],g:"f",rel:["Freyr","Odin","Odr"],story:{en:"Freya's necklace Brisingamen was bought by spending a night with each of the four dwarves who forged it. When Odin ordered Loki to steal it, Freya confronted him, and Odin demanded she stir eternal war between two kings. She rides a chariot pulled by cats and owns a falcon cloak. Half the battle-slain come to her hall Sessrumnir.",
+      fil:"Ang kuwintas ni Freya na Brisingamen ay binili sa pamamagitan ng paggugol ng isang gabi sa bawat isa sa apat na dwarf na gumawa nito. Nang utusan ni Odin si Loki na nakawin ito, humarap si Freya sa kanya, at iniutos ni Odin na magtulak siya ng walang-hanggang digmaan. Sumasakay siya sa karuwaheng hila ng pusa at may falcon cloak. Ang kalahati ng mga patay sa digmaan ay napupunta sa kanyang bulwagan na Sessrumnir.",
+      hil:"Ang kuwintas ni Freya nga Brisingamen ginkalipot paagi sa paggugol sang isa ka gab-i sa tagsa sa apat ka dwarf nga naghimu sini. Sang ginpagutos ni Odin si Loki nga kawaton ini, nag-atubang si Freya sa iya, kag ginpagutos ni Odin nga magtulod siya sang walay katapusan nga gera. Nagasakay siya sa karuwaheng gina-guyod sang pusa kag may falcon cloak. Ang katunga sang mga minatay sa gera nagakadto sa iya bulwagan nga Sessrumnir."}},
+
+  // === EGYPTIAN ===
+  {n:"Ra",c:"Egyptian",d:["Sun","Creation","Kingship"],r:{en:"Sun god, king of the Egyptian pantheon. Sails across the sky by day and battles Apophis by night.",fil:"Diyos ng araw, hari ng Egyptian pantheon. Naglalayag sa kalangitan sa araw at nakikipaglaban kay Apophis sa gabi.",hil:"Diyos sang adlaw, hari sang Egyptian pantheon. Nagalayag sa kalangitan sa adlaw kag nagakigera kay Apophis sa gab-i."},
+    s:["Sun Disk","Falcon","Obelisk"],g:"m",rel:["Osiris","Set","Horus","Thoth"],story:{en:"In the beginning, Ra created himself from Nun — the primordial waters. Each morning he sails across the sky, and each evening descends into the Duat to battle the serpent Apophis. When mortals mocked him, he sent his Eye — Sekhmet — who slaughtered so many that Ra dyed beer red like blood. Sekhmet drank it, fell asleep, and awoke as the gentler Hathor.",
+      fil:"Sa simula, nilikha ni Ra ang kanyang sarili mula sa Nun — ang primal na tubig. Araw-araw siyang naglalayag sa kalangitan, at gabi-gabi bumababa sa Duat para labanan ang ahas na si Apophis. Nang libakin siya ng mga tao, ipinadala niya ang kanyang Mata — si Sekhmet — na pumatay ng marami. Nagpinta si Ra ng serbesa na pula tulad ng dugo. Uminom si Sekhmet, natulog, at nagising bilang mas mahinahong si Hathor.",
+      hil:"Sa una, ginhimo ni Ra ang iya kaugalingon halin sa Nun — ang primal nga tubig. Kada adlaw siya nagalayag sa kalangitan, kag kada gab-i nagapasulod sa Duat para maglaban sang bitin nga si Apophis. Sang ginlibak siya sang mga tao, ginpadala niya ang iya Mata — si Sekhmet — nga nagpatay sang madamo. Nagpinta si Ra sang serbesa nga pula pareho sang duga. Naginom si Sekhmet, natulog, kag nagmata bilang mas malumo nga si Hathor."}},
+
+  {n:"Osiris",c:"Egyptian",d:["Underworld","Resurrection","Fertility"],r:{en:"God of the dead and resurrection. Murdered by Set, reassembled by Isis. He judges the dead in the Hall of Truth.",fil:"Diyos ng mga patay at muling pagkabuhay. Pinatay ni Set, muling pinagsama ni Isis. Naghhukom siya sa mga patay sa Hall of Truth.",hil:"Diyos sang mga minatay kag pagkabuhay liwat. Ginpapatay ni Set, gintipon liwat ni Isis. Nagahukom siya sang mga minatay sa Hall of Truth."},
+    s:["Crook and Flail","Djed Pillar"],g:"m",rel:["Isis","Set","Horus","Nephthys"],story:{en:"Set crafted a magnificent chest fitted perfectly to Osiris. At a banquet, he offered it to whoever it fit. When Osiris lay inside, Set sealed it and threw it into the Nile. Isis found it, but Set dismembered Osiris into fourteen pieces. Isis found every piece except one, reassembled him, and conceived Horus. Osiris descended to the Duat and became its king — the judge before whom every soul must stand.",
+      fil:"Gumawa si Set ng isang magandang kaban na akma kay Osiris. Sa isang bangkete, inalok niya ito sa sinumang akma. Nang mahiga si Osiris, sinarhan ito ni Set at itinapon sa Nile. Nakita ito ni Isis, ngunit pinutol-putol ni Set si Osiris sa labing-apat na piraso. Nakita ni Isis ang bawat piraso maliban sa isa, muling pinagsama siya, at naglihi kay Horus. Bumaba si Osiris sa Duat at naging hari nito — ang hukom na dapat harapin ng bawat kaluluwa.",
+      hil:"Naghimo si Set sang isa ka matahom nga kaban nga angay kay Osiris. Sa isa ka bangkete, gintanyag niya ini sa bisan sino nga angay. Sang nagligto si Osiris, ginsarhan ini ni Set kag ginpugsan sa Nile. Nakita ini ni Isis, pero ginputol-putol ni Set si Osiris sang katorse ka piraso. Nakita ni Isis ang tagsa ka piraso luwas sa isa, gintipon liwat siya, kag nagbuntis kay Horus. Nagpanaog si Osiris sa Duat kag naging hari sini — ang hukom nga angay atubangon sang tagsa ka kalag."}},
+
+  {n:"Isis",c:"Egyptian",d:["Magic","Motherhood","Healing"],r:{en:"Goddess of magic and motherhood, the most powerful magician among the gods.",fil:"Diyosa ng mahika at pagiging ina, ang pinakamakapangyarihang salamangkero sa mga diyos.",hil:"Diyosa sang mahika kag pagiging ina, ang pinakamakusog nga salamangkero sa mga diyos."},
+    s:["Throne","Ankh","Tyet Knot"],g:"f",rel:["Osiris","Horus","Set"],story:{en:"Isis created a serpent that bit Ra, and when the sun god lay dying, she offered to heal him — but the cure required his true secret name. In agony, Ra yielded, and Isis gained mastery over the most powerful being. When Set murdered Osiris, she found every piece and used magic to restore him long enough to conceive Horus. Then she fled to the marshes, raising Horus alone while Set's assassins searched.",
+      fil:"Gumawa si Isis ng ahas na kumagat kay Ra, at nang moribundus na si Ra, inalok niyang pagalingin siya — ngunit kailangan ang tunay niyang lihim na pangalan. Sa kirot, sumuko si Ra, at nakakuha si Isis ng kapangyarihan sa pinakamakapangyarihang nilalang. Nang patayin ni Set si Osiris, nakita niya ang bawat piraso at ginamit ang mahika para ibalik siya nang sapat upang maglihi kay Horus. Pagkatapos ay tumakas siya sa mga latian, pinalaki si Horus nang mag-isa.",
+      hil:"Naghimo si Isis sang bitin nga nagakagat kay Ra, kag sang moribundus na si Ra, gintanyag niya nga pamuligon siya — pero kinahanglan ang iya matuod nga tago nga ngalan. Sa kasakit, nagpangkot si Ra, kag nakakuha si Isis sang gahom sa pinakamakusog nga nilalang. Sang ginpatay ni Set si Osiris, nakita niya ang tagsa ka piraso kag nagamit ang mahika para ibalik siya sing igo agod magbuntis kay Horus. Pagkatapos nagpalagyo siya sa mga latian, ginpadako si Horus nagaisa."}},
+
+  // === JAPANESE ===
+  {n:"Amaterasu",c:"Japanese",d:["Sun","Light","Imperial Line"],r:{en:"Sun goddess, ancestor of the Japanese imperial line. Emerged from a cave to restore light to the world.",fil:"Diyosa ng araw, ninuno ng Japanese imperial line. Lumabas mula sa yungib upang ibalik ang liwanag sa mundo.",hil:"Diyosa sang adlaw, apoyan sang Japanese imperial line. Naglitaw halin sa lungib agod ibalik ang kasanag sa kalibutan."},
+    s:["Sacred Mirror","Magatama","Rooster"],g:"f",rel:["Susanoo","Tsukuyomi","Izanagi"],story:{en:"When Susanoo destroyed her rice fields and defiled her weaving hall, Amaterasu retreated into the Heavenly Rock Cave and sealed it. The world fell into darkness. Eight hundred gods gathered and tried everything. Finally, Ame-no-Uzume performed a bawdy dance that made all the gods roar with laughter. Curious, Amaterasu opened the cave — and saw her reflection in a mirror. When she stepped out, light flooded the world again.",
+      fil:"Nang sirain ni Susanoo ang kanyang mga palayan at lapastanganin ang kanyang weaving hall, umurong si Amaterasu sa Heavenly Rock Cave at isinarado ito. Natigilan ang mundo sa kadiliman. Walong daang diyos ang nagtipon at sumubok ng lahat. Sa huli, nagsayaw si Ame-no-Uzume na nagpatawa sa lahat ng diyos. Naging usyoso si Amaterasu, binuksan ang yungib — at nakita ang kanyang repleksyon sa salamin. Nang lumabas siya, bumaha ang liwanag sa mundo.",
+      hil:"Sang ginpierde ni Susanoo ang iya mga uma kag gindulaan ang iya weaving hall, nag-urong si Amaterasu sa Heavenly Rock Cave kag ginsarhan. Natiglan ang kalibutan sa kadulom. Walo ka gatos nga diyos ang nagtipon kag nagpruba sang tanan. Sa katapusan, nagsayaw si Ame-no-Uzume nga nagpatawa sa tanan nga diyos. Nag-usisa si Amaterasu, ginkabkos ang lungib — kag nakita ang iya repleksyon sa salaming. Sang naglitaw siya, nag-abono ang kasanag sa kalibutan."}},
+
+  {n:"Susanoo",c:"Japanese",d:["Storms","Sea","Heroism"],r:{en:"Storm god, slayer of the eight-headed serpent Yamata no Orochi. Proved his heroism on earth.",fil:"Diyos ng bagyo, pumatay ng walong-ulong ahas na Yamata no Orochi. Pinatunayan niya ang kanyang kagitingan sa lupa.",hil:"Diyos sang bagyo, nagpatay sang walo-ulo nga bitin nga Yamata no Orochi. Ginpakita niya ang iya kaisog sa kalibutan."},
+    s:["Sword (Kusanagi)","Storm Clouds"],g:"m",rel:["Amaterasu","Tsukuyomi"],story:{en:"Banished from heaven, Susanoo descended to Izumo. He found an old couple weeping: each year the eight-headed serpent Yamata no Orochi devoured one of their daughters, and only Kushinada-hime remained. Susanoo set his trap: eight vats of sake. The serpent drank, fell asleep, and Susanoo hacked it to pieces. In its tail, he found Kusanagi-no-Tsurugi — which became one of the three Imperial Regalia of Japan.",
+      fil:"Itinaboy mula sa langit, bumaba si Susanoo sa Izumo. Nakita niya ang isang matandang mag-asawa na umiiyak: taun-taon kinakain ng walong-ulong ahas na Yamata no Orochi ang isa sa kanilang mga anak, at si Kushinada-hime na lang ang natira. Nagtanim si Susanoo: walong banga ng sake. Uminom ang ahas, natulog, at pinutol-putol ni Susanoo. Sa buntot nito, nakita niya ang Kusanagi-no-Tsurugi — naging isa sa tatlong Imperial Regalia ng Japan.",
+      hil:"Gintabog halin sa langit, nagpanaog si Susanoo sa Izumo. Nakita niya ang isa ka tigulang nga mag-asawa nga nagahueak: kada tuig ginkaon sang walo-ulo nga bitin nga Yamata no Orochi ang isa sa ila mga anak, kag si Kushinada-hime na lang ang nabutlan. Nagtanom si Susanoo: walo ka banga sang sake. Naginom ang bitin, natulog, kag ginputol-putol ni Susanoo. Sa iya ikog, nakita niya ang Kusanagi-no-Tsurugi — naging isa sa tatlo ka Imperial Regalia sang Japan."}},
+
+  // === HINDU ===
+  {n:"Vishnu",c:"Hindu",d:["Preservation","Order","Compassion"],r:{en:"Preserver god of the Trimurti. Descends as avatars whenever dharma declines and evil rises.",fil:"Diyos na tagapangalaga ng Trimurti. Nagbababa bilang avatar kapag humina ang dharma at tumaas ang kasamaan.",hil:"Diyos nga tagapangalaga sang Trimurti. Nagapanaug bilang avatar kon magapuya ang dharma kag magataas ang kalainan."},
+    s:["Sudarshana Chakra","Shankha","Gada"],g:"m",rel:["Lakshmi","Shiva","Brahma","Krishna"],story:{en:"When the demon Hiranyakashipu gained immunity from gods, humans, and beasts, Vishnu emerged as Narasimha — neither man nor beast — and destroyed him with his claws. As Rama, he defeated Ravana. As Krishna, he spoke the Bhagavad Gita. Whenever dharma wavers, Vishnu descends — not to judge, but to restore balance.",
+      fil:"Nang makakuha ng kaligtasan ang demon na si Hiranyakashipu mula sa mga diyos, tao, at hayop, lumitaw si Vishnu bilang Narasimha — hindi tao ni hayop — at sinira siya ng kanyang mga kuko. Bilang Rama, tinalo niya si Ravana. Bilang Krishna, binigkas niya ang Bhagavad Gita. Kapag nanghihina ang dharma, bumababa si Vishnu — hindi upang maghatol, kundi upang ibalik ang balanse.",
+      hil:"Sang nakakuha sang kaligtasan ang demon nga si Hiranyakashipu halin sa mga diyos, tao, kag sapat, naglitaw si Vishnu bilang Narasimha — indi tamo ukon sapat — kag ginpanas siya sang iya mga kuko. Bilang Rama, gindaog niya si Ravana. Bilang Krishna, ginhambal niya ang Bhagavad Gita. Kon magapuya ang dharma, nagapanaog si Vishnu — indi agod maghukom, kundi agod ibalik ang balanse."}},
+
+  {n:"Shiva",c:"Hindu",d:["Destruction","Transformation","Meditation","Dance"],r:{en:"Destroyer/Transformer of the Trimurti. Lord of the cosmic dance (Nataraja), patron of ascetics.",fil:"Tagapwas/Tagabago ng Trimurti. Panginoon ng kosmikong sayaw (Nataraja), patron ng mga asetiko.",hil:"Tagapwas/Tagabago sang Trimurti. Agalon sang kosmikong sayaw (Nataraja), patron sang mga asetiko."},
+    s:["Trishula","Damru","Nandi","Third Eye"],g:"m",rel:["Parvati","Ganesha","Vishnu"],story:{en:"Shiva's dance of destruction — the Tandava — creates as much as it destroys. When Kama shot an arrow to wake him from meditation, Shiva's third eye incinerated him. He drank the halahala poison from the churning of the ocean, holding it in his throat until it turned blue — Nilakantha, the Blue-Throated One. Destruction, he teaches, is not the opposite of creation — it is its prerequisite.",
+      fil:"Ang sayaw ng pagwas ni Shiva — ang Tandava — ay lumilikha ng kasing dami ng kanyang winawasak. Nang pana ni Kama para gisingin siya, sinunog siya ng third eye ni Shiva. Uminom siya ng lason na halahala mula sa pagkalat ng karagatan, hinawakan ito sa kanyang lalamunan hanggang sa bumaluktot ito — Nilakantha, ang Bughaw ang Lalamunan. Itinuturo niya na ang pagkawasak ay hindi kabaligtaran ng paglikha — ito ay kinakailangan.",
+      hil:"Ang sayaw sang pagpanas ni Shiva — ang Tandava — nagahimo sing pareho sang iya gnapaas. Sang pana ni Kama para pagmatahon siya, ginsunog siya sang third eye ni Shiva. Naginom siya sang hilom nga halahala halin sa pagkalat sang dagat, ginkaptan ini sa iya li-og hasta nagbaluktot ini — Nilakantha, ang Azul nga Li-og. Gintudluan niya nga ang pagpanas indi kaiban sang paghimo — ini ang iya kinahanglan."}},
+
+  {n:"Ganesha",c:"Hindu",d:["Obstacles","Wisdom","New Beginnings"],r:{en:"Elephant-headed remover of obstacles. Invoked at the start of every endeavor.",fil:"Elephant-ulo na tagapag-alis ng mga balakid. Inaanyayahan sa simula ng bawat pagtatangka.",hil:"Elephant-ulo nga tagapagtanghal sang mga balakid. Ginaanyayahan sa una sang tagsa ka pagtilimo."},
+    s:["Modak","Axe","Mouse"],g:"m",rel:["Shiva","Parvati","Kartikeya"],story:{en:"Parvati created a boy from turmeric paste to guard her door. Shiva, finding a stranger, cut off his head. Parvati's grief threatened the universe. Shiva ordered his ganas to bring the head of the first creature facing north — an elephant. Ganesha lost a tusk writing the Mahabharata as Vyasa dictated it. The mouse he rides represents the ego that must be controlled.",
+      fil:"Gumawa si Parvati ng batang lalaki mula sa turmeric paste para bantayan ang kanyang pinto. Sinundo ni Shiva, putulin ang ulo ng bata. Ang kalungkutan ni Parvati ay nagbanta sa sansinukob. Iniutos ni Shiva na dalhin ang ulo ng unang nilalang na nakaharap sa hilaga — isang elepante. Nawalan ng ngipin si Ganesha habang sumusulat ng Mahabharata. Ang daga na kanyang sinasakayan ay kumakatawan sa ego na dapat kontrolin.",
+      hil:"Naghimo si Parvati sang bata nga lalaki halin sa turmeric paste agod magbantay sang iya pultahan. Nakita ni Shiva ang wala sing kilala, ginputol ang ulo sang bata. Ang kasakit ni Parvati nagpangalas sa kalibutan. Ginpagutos ni Shiva nga dalhon ang ulo sang una nga nilalang nga nakaharap sa amihan — isa ka elepante. Nawalan sang ngipon si Ganesha samtang nagasulat sang Mahabharata. Ang ilag nga iya ginasakyan nagarepresentar sa ego nga angay controlaron."}},
+
+  // === CELTIC ===
+  {n:"Dagda",c:"Celtic",d:["Earth","Plenty","Magic","Life and Death"],r:{en:"The Good God, chief of the Tuatha De Danann. His cauldron never empties, his club kills and revives.",fil:"Ang Mabuting Diyos, pinuno ng Tuatha De Danann. Ang kanyang kaldero ay hindi kailanman nauubos, ang kanyang pamalo ay pumatay at muling binubuhay.",hil:"Ang Maayo nga Diyos, manunudlo sang Tuatha De Danann. Ang iya kaldero indi gid nauubos, ang iya garote nagapatay kag nagapabuhi liwat."},
+    s:["Magic Cauldron","Magic Club","Harp"],g:"m",rel:["Morrigan","Brigid","Lugh"],story:{en:"The Dagda is the father-figure of the Celtic gods. His cauldron, the Undry, feeds all who come — none leave unsatisfied. His club kills with one end and revives with the other. He plays the harp that controls the seasons. Before the Second Battle of Mag Tuired, he single-handedly held off the Fomorians, eating enough porridge from a pit to feed an army, then fighting despite his bloated belly.",
+      fil:"Si Dagda ang ama ng mga Celtic na diyos. Ang kanyang kaldero, ang Undry, nagpapakain sa lahat — walang umuuong gutom. Ang kanyang pamalo ay pumatay sa isang dulo at muling binubuhay sa kabilang dulo. Nagtutugtog siya ng harp na nagkokontrol sa mga panahon. Bago ang Ikalawang Labanan ng Mag Tuired, tinalo niya ang mga Fomorians nang mag-isa.",
+      hil:"Si Dagda ang amay sang mga Celtic nga diyos. Ang iya kaldero, ang Undry, nagapakain sa tanan — wala nga nagapauli nga gutoon. Ang iya garote nagapatay sa isa ka kilid kag nagapabuhi liwat sa iban nga kilid. Nagatukar siya sang harp nga nagakontrol sang mga panahon. Antes sang Ika-duha nga Labanan sang Mag Tuired, gindaog niya ang mga Fomorians nagaisa."}},
+
+  {n:"Morrigan",c:"Celtic",d:["War","Fate","Death","Prophecy"],r:{en:"Phantom queen, goddess of war and fate. Appears as a crow on the battlefield.",fil:"Phantom queen, diyosa ng digmaan at tadhana. Nagpapakita bilang uwak sa digmaan.",hil:"Phantom queen, diyosa sang gera kag tadhana. Nagapakita bilang uwak sa gera."},
+    s:["Crow","Raven","Wolf"],g:"f",rel:["Dagda","Badb","Macha"],story:{en:"The Morrigan appears before battles as a crow, washing the armor of those doomed to die. She is three goddesses in one: Badb (frenzy), Macha (sovereignty), and Nemain (venom). Before the Battle of Mag Tuired, she mated with the Dagda and promised him victory. She is the fate that no warrior escapes.",
+      fil:"Nagpapakita si Morrigan bago ang mga digmaan bilang uwak, naglalaba ng baluti ng mga taong nakatakding mamatay. Siya ay tatlong diyosa sa isa: Badb, Macha, at Nemain. Bago ang Labanan ng Mag Tuired, nagtalik siya kay Dagda at nagpangako sa kanya ng tagumpay. Siya ang tadhana na walang mandirigma ang makatakas.",
+      hil:"Nagapakita si Morrigan antes sang mga gera bilang uwak, nagalaba sang baluti sang mga tao nga nakatakding mapatay. Siya tatlo ka diyosa sa isa: Badb, Macha, kag Nemain. Antes sang Labanan sang Mag Tuired, nagtalik siya kay Dagda kag nagpasugo sa iya sang daog. Siya ang tadhana nga wala sing mandirigma ang makalagyo."}},
+
+  // === AZTEC ===
+  {n:"Quetzalcoatl",c:"Aztec",d:["Wind","Learning","Creation","Civilization"],r:{en:"Feathered serpent, creator god and bringer of knowledge. Opposed human sacrifice.",fil:"Pakpak na ahas, diyos na lumikha at nagdala ng kaalaman. Tumutol sa pag-sacrifice ng tao.",hil:"Pakpak nga bitin, diyos nga naghimu kag nagdala sang kaalaman. Nagapangkot sa pag-sacrifice sang tao."},
+    s:["Feathered Serpent","Wind","Venus"],g:"m",rel:["Tezcatlipoca","Huitzilopochtli"],story:{en:"Quetzalcoatl helped create the Fifth Sun by leaping into a pyre and rising as Venus. He descended into Mictlan to retrieve the bones of previous humanity, bleeding onto them to create the people of this age. He opposed human sacrifice, offering only butterflies and jade. But Tezcatlipoca tricked him into drunkenness and shame. Quetzalcoatl sailed east on a raft of serpents, promising to return.",
+      fil:"Tinulungan ni Quetzalcoatl ang paglikha ng Fifth Sun sa pamamagitan ng paglukso sa apoy at pag-akyat bilang Venus. Bumaba siya sa Mictlan para kunin ang mga buto ng nakaraang sangkatauhan, nagdugo sa kanila para likhain ang mga tao ng panahong ito. Tumutol siya sa pag-sacrifice ng tao. Ngunit inlok siya ni Tezcatlipoca. Naglayag si Quetzalcoatl sa silangan sa raft ng mga ahas, nangakong babalik.",
+      hil:"Ginbuligan ni Quetzalcoatl ang paghimo sang Fifth Sun paagi sang paglukso sa kalayo kag pag-akyat bilang Venus. Nagpanaog siya sa Mictlan para kuhaon ang mga tul-an sang mga-agi nga katawhan, nagapangdugo sa ila agod himuon ang mga tao sang sini nga panahon. Nagapangkot siya sa pag-sacrifice sang tao. Pero ginlimbong siya ni Tezcatlipoca. Naglayag si Quetzalcoatl sa sidlangan sa raft sang mga bitin, nagasuga nga magabalik."}},
+
+  // === AKAN ===
+  {n:"Anansi",c:"Akan",d:["Stories","Wisdom","Trickery","Knowledge"],r:{en:"Spider god of stories and trickery. Bought all the world's stories from the sky god Nyame.",fil:"Diyos ng mga kuwento at kalokohan. Binili niya ang lahat ng kuwento mula sa diyos ng langit na si Nyame.",hil:"Diyos sang mga isturya kag kalibangan. Ginkalipot niya ang tanan nga isturya halin sa diyos sang kalangitan nga si Nyame."},
+    s:["Spider","Web","Stories"],g:"m",rel:["Nyame","Turtle","Leopard"],story:{en:"Anansi climbed to heaven on his silken thread and asked Nyame for the world's stories. Nyame set an impossible price: bring the hornets, the leopard, and the pythons. For the hornets, Anansi offered them a gourd to shelter from 'rain' — then tied it shut. For the leopard, he dug a pit and bound him. For the python, he tied him at both ends. Nyame handed over all the stories. 'From this day, they shall be called Spider Stories.'",
+      fil:"Umaskad si Anansi sa langit sa kanyang hibla at humingi ng mga kuwento ni Nyame. Nagtakda si Nyame ng imposible na presyo: dalhin ang mga hornet, leopard, at python. Para sa hornet, inalok niya sila ng gourd — tapay itinali. Para sa leopard, naghukay siya ng pit at tinali siya. Para sa python, tinali niya sa magkabilang dulo. Ibinigay ni Nyame ang lahat ng kuwento. 'Mula ngayon, tatawaging Spider Stories ang mga ito.'",
+      hil:"Nag-askad si Anansi sa kalangitan sa iya hibla kag nagpangayo sang mga isturya ni Nyame. Nagbutang si Nyame sang imposiblo nga presyo: dalhon ang mga hornet, leopard, kag python. Para sa hornet, gintanyag niya sila sang gourd — gani gintali. Para sa leopard, nagkalot siya sang pit kag gintali siya. Para sa python, gintali niya sa duha ka kilid. Ginhatag ni Nyame ang tanan nga isturya. 'Halin subong, tawagon ini Spider Stories.'"}},
+
+  // =======================================
+  // === PHILIPPINE MYTHOLOGY (NEW!) ===
+  // =======================================
+  {n:"Bathala",c:"Tagalog",d:["Creation","Sky","Supreme Rule"],r:{en:"Supreme god and creator of the universe in Tagalog mythology. Dwells in Kaluwalhatian, the highest heaven.",fil:"Pinakamataas na diyos at lumikha ng sansinukob sa mitolohiyang Tagalog. Nakatira sa Kaluwalhatian, ang pinakamataas na langit.",hil:"Pinakamaestra nga diyos kag manlalang sang kalibutan sa mitolohiyang Tagalog. Ara sa Kaluwalhatian, ang pinakamataas nga langit."},
+    s:["Kaluwalhatian","Tigmamanukan Bird","Bamboo"],g:"m",rel:["Mayari","Tala","Apolaki","Amihan"],
+    story:{en:"In the beginning, Bathala dwelt in Kaluwalhatian, the highest realm of the heavens, gazing down upon a formless world. He sent the Tigmamanukan bird as a sign — when it flew to the right, the journey was blessed; to the left, disaster awaited. One day, a bamboo floated ashore and cracked open. From it emerged Malakas (Strength) and Maganda (Beauty), the first humans. Bathala breathed life into them and taught them to farm, to fish, and to honor the spirits of nature — the anitos. He established the laws of the land and the rites of passage. To this day, before every important decision, the elders whisper: 'Sundin ang tanda ng Tigmamanukan' — Follow the sign of the omen bird.",
+      fil:"Sa simula, nakatira si Bathala sa Kaluwalhatian, ang pinakamataas na kaharian ng langit, nakatingin sa walang hugis na mundo. Ipinadala niya ang ibong Tigmamanukan bilang tanda — kung lumipad ito sa kanan, pinagpapala ang paglalakbay; sa kaliwa, naghihintay ang sakuna. Isang araw, isang kawayan ang natapak sa pampang at nabiyak. Mula rito ay lumabas sina Malakas at Maganda, ang unang tao. Hiningahan sila ni Bathala ng buhay at tinuruan silang magtanim, mangisda, at igalang ang mga espiritu ng kalikasan — ang mga anito. Itinatag niya ang mga batas ng lupa at ang mga rito ng paglipas. Hanggang ngayon, bago ang bawat mahalagang desisyon, ang mga matatanda ay bumubulong: 'Sundin ang tanda ng Tigmamanukan.'",
+      hil:"Sa una, ara si Bathala sa Kaluwalhatian, ang pinakamataas nga paghari-an sang kalangitan, nagatan-aw sa wala sing porma nga kalibutan. Ipinadala niya ang pispis nga Tigmamanukan bilang tanda — kon maglupad ini sa too, ginapala ang paglakat; sa wala, nagahulat ang kasakit. Isa ka adlaw, isa ka kawayan nagtapak sa baybayon kag nagbuka. Halin sini naglitaw sila Malakas kag Maganda, ang una nga mga tao. Ginhanginan ni Bathala sang kinabuhi kag gintudluan sila magtanom, mangisda, kag respetuhon ang mga espiritu sang kalikasan — ang mga anito. Gintindog niya ang mga kasuguan sang duta kag ang mga rito sang pagtabok. Hasta subong, antes sang tagsa ka importante nga desisyon, ang mga tigulaga nagahambal: 'Sundon ang tanda sang Tigmamanukan.'"}},
+
+  {n:"Kan-Laon",c:"Visayan",d:["Creation","Time","Supreme Rule","Agriculture"],r:{en:"Supreme deity of Visayan mythology, dwelling in Mount Kanlaon. The ancient one who governs creation, time, and harvests.",fil:"Pinakamataas na diyos sa mitolohiyang Bisaya, nakatira sa Bundok Kanlaon. Ang sinauna na namamahala sa paglikha, oras, at ani.",hil:"Pinakamaestra nga diyos sa mitolohiyang Bisaya, ara sa Bundok Kanlaon. Ang daan nga nagadumala sang paghimo, tiempo, kag ani."},
+    s:["Mount Kanlaon","Volcano","Rice","Sun"],g:"f",rel:["Sidapa","Lalahon","Maguayan"],
+    story:{en:"Kan-Laon is the ancient supreme deity of the Visayan peoples, dwelling in the great volcano that bears her name — Mount Kanlaon on the island of Negros. She is both creator and destroyer: she gives the rice that feeds the people and the fire that can consume them. The Visayans say that when Kan-Laon is pleased, the harvests are abundant and the rivers run clear. When she is angered, the mountain smokes and trembles, and ash falls like black rain. The babaylans (shamans) would climb her slopes carrying offerings of rice, chicken, and palm wine, chanting ancient prayers in a language older than memory. Even after the Spanish came and renamed her mountain, the people whispered her true name at night. Kan-Laon means 'She Who Is Ancient' — and she is older than any religion that has tried to replace her.",
+      fil:"Si Kan-Laon ang sinaunang pinakamataas na diyos ng mga Visayan, nakatira sa dakilang bulkan na nagngangalang Bundok Kanlaon sa isla ng Negros. Siya ay parehong lumilikha at tagapagwas: nagbibigay siya ng bigas na nagpapakain sa tao at ng apoy na pwedeng kainin sila. Sinasabi ng mga Visayan na kapag nasiyahan si Kan-Laon, sagana ang ani at malinaw ang mga ilog. Kapag nagalit siya, nagsusiga ang bundok at umuulan ng abo. Ang mga babaylan ay umaakyat sa kanyang mga dalisdis na may dalang handog ng bigas, manok, at tuba, umaawit ng sinaunang dasal. Kahit pagkatapos dumating ang mga Kastila, binubulung ng mga tao ang kanyang tunay na pangalan sa gabi. Ang Kan-Laon ay nangangahulugang 'Siya na Sinauna' — at siya ay mas matanda kaysa sa anumang relihiyong sumubok na palitan siya.",
+      hil:"Si Kan-Laon ang daan nga pinakamaestra nga diyos sang mga Visayan, ara sa daku nga bulkan nga nagasing sang iya ngalan — Bundok Kanlaon sa isla sang Negros. Siya pareho sang manlalang kag tagapagwas: nagahatag siya sang humay nga nagapakain sang mga tawo kag sang kalayo nga makakaon sa ila. Ginahambal sang mga Visayan nga kon malipayon si Kan-Laon, sagana ang ani kag malinaw ang mga suba. Kon kasuko siya, nagasiga ang bundok kag nagaulan sang abo. Ang mga babaylan nagasakay sa iya mga dalisdis nga may dala sang halad sang humay, manok, kag tuba, nagakanta sang daan nga mga pangamuyo. Bisan pagkatapos sang mga Katsila, ginabulung sang mga tawo ang iya matuod nga ngalan sa gab-i. Ang Kan-Laon bukot sidlon 'Siya nga Sinauna' — kag siya mas tigulang sang bisan ano nga relihiyon nga nagprubar singlipon siya."}},
+
+  {n:"Sidapa",c:"Visayan",d:["Death","Fate","Lifespans"],r:{en:"God of death who measures the lifespans of mortals with a sacred tree on Mount Madia-as.",fil:"Diyos ng kamatayan na sumusukat ng buhay ng mga tao gamit ang sagradong puno sa Bundok Madia-as.",hil:"Diyos sang kamatayon nga nagasukol sang kinabuhi sang mga tawo gamit ang sagradong kahoy sa Bundok Madia-as."},
+    s:["Sacred Tree","Mount Madia-as","Scales","Stars"],g:"m",rel:["Kan-Laon","Maguayan","Lalahon"],
+    story:{en:"Sidapa stands atop Mount Madia-as in the province of Antique, where he tends a great tree whose leaves each bear the name of a mortal. When a leaf falls, a life ends. When a bud opens, a child is born. But Sidapa is not cruel — he simply reads the measure that fate has written. The Visayans say that he consults the stars before claiming a soul, for the stars were placed in the sky by the ancient ones to mark the appointed hours. When a person dies peacefully in old age, Sidapa has gently loosened the leaf. When a person dies young, a strong wind has shaken the tree. The babaylans pray to Sidapa not to extend life — for that is impossible — but to grant a good death, surrounded by family, with enough breath left for final words. This is the greatest gift the god of death can give.",
+      fil:"Nakatayo si Sidapa sa itaas ng Bundok Madia-as sa Antique, kung saan nag-aalaga siya ng isang dakilang puno na ang bawat dahon ay may pangalan ng isang tao. Kapag bumagsak ang dahon, natapos ang isang buhay. Kapag bumukas ang usbong, isang bata ay ipinanganak. Ngunit hindi malupit si Sidapa — binabasa lang niya ang sukat na isinulat ng tadhana. Sinasabi ng mga Visayan na sumasangguni siya sa mga bituin bago kunin ang isang kaluluwa. Kapag namatay nang mapayapa sa katandaan, marahang tinanggal ni Sidapa ang dahon. Kapag namatay nang maaga, isang malakas na hangin ang yumayugyog sa puno. Nagdarasal ang mga babaylan kay Sidapa hindi para pahabain ang buhay — kundi para bigyan ng mabuting kamatayan.",
+      hil:"Nagatindog si Sidapa sa ibabaw sang Bundok Madia-as sa Antique, diin siya nagabantay sang daku nga kahoy nga ang tagsa ka dahon may ngalan sang isa ka tawo. Kon magpatir ang dahon, natapos ang isa ka kinabuhi. Kon magbukas ang usbong, isa ka bata natawo. Pero indi malain si Sidapa — gibasa lang niya ang sukot nga ginsulat sang tadhana. Ginahambal sang mga Visayan nga nagapangotana siya sa mga bitoon antes kuhaon ang isa ka kalag. Kon mapatay sing mabati sa katigulangan, mahinayhon nga ginkuha ni Sidapa ang dahon. Kon mapatay sing mayo, isa ka kusog nga hangin ang nagapalog sang kahoy. Nagapangamuyo ang mga babaylan kay Sidapa indi para padugayon ang kinabuhi — kundi para maghatag sing maayo nga kamatayon."}},
+
+  {n:"Lalahon",c:"Visayan",d:["Fire","Volcanoes","Harvest"],r:{en:"Goddess of fire and volcanoes who dwells in the fiery mouth of Mount Kanlaon. She brings both destruction and fertile harvests.",fil:"Diyosa ng apoy at bulkan na nakatira sa nagliliyab na bibig ng Bundok Kanlaon. Nagdudala siya ng pagkawasak at masaganang ani.",hil:"Diyosa sang kalayo kag bulkan nga ara sa nagasiga sang baba sang Bundok Kanlaon. Nagadala siya sang pagpanas kag sagana nga ani."},
+    s:["Volcano","Fire","Rice Fields","Ash"],g:"f",rel:["Kan-Laon","Sidapa","Maguayan"],
+    story:{en:"Lalahon is the fire goddess who makes her home in the crater of Mount Kanlaon. When she walks, the earth trembles. When she breathes, smoke rises. But Lalahon is not merely destruction — she is the volcanic fire that makes the soil fertile. The Visayan farmers know that the lands near the volcano produce the sweetest rice and the tallest sugarcane, for Lalahon's ash feeds the earth. She teaches that creation and destruction are one fire: the same flame that burns the forest also returns its nutrients to the soil. When Lalahon is honored with proper ritual, she holds her fire. When she is neglected, she reminds the people of her power — not out of malice, but because the contract between gods and mortals must be renewed with every generation.",
+      fil:"Si Lalahon ang diyosa ng apoy na nakatira sa kater ng Bundok Kanlaon. Kapag siya ay naglalakad, nanginginig ang lupa. Kapag siya ay humihinga, umuusok. Ngunit hindi lamang pagkawasak si Lalahon — siya ang bulkanikong apoy na nagpapabunga sa lupa. Alam ng mga magsasakang Visayan na ang mga lupain malapit sa bulkan ay lumilikha ng pinakamatamis na bigas at pinakamatangkad na tubo, dahil ang abo ni Lalahon ay nagpapakain sa lupa. Itinuturo niya na ang paglikha at pagkawasak ay iisang apoy: ang parehong liyab na sumusunog sa gubat ay nagbabalik ng sustansya sa lupa. Kapag iginagalang si Lalahon ng tamang rito, pinipigilan niya ang kanyang apoy.",
+      hil:"Si Lalahon ang diyosa sang kalayo nga nagaestar sa kater sang Bundok Kanlaon. Kon siya nagalakat, nagakurog ang duta. Kon siya nagahangin, nagasiga. Pero indi lang pagpanas si Lalahon — siya ang bulkanikong kalayo nga nagapabunga sang duta. Kabalo ang mga uma nga bisaya nga ang mga duta malapit sa bulkan nagahimo sang pinakatam-is nga humay kag pinakamataas nga tubo, kay ang abo ni Lalahon nagapakain sang duta. Gintudluan niya nga ang paghimo kag pagpanas isa lang ka kalayo: ang pareho nga lapa nga nagasunog sa kagubatan nagabalik sang sustansya sa duta. Kon ginatahod si Lalahon sang tama nga rito, ginapunggan niya ang iya kalayo."}},
+
+  {n:"Maguayan",c:"Visayan",d:["Sea","Water","Navigation","Afterlife"],r:{en:"God of the sea and ruler of the waters. He ferries the dead to the underworld and commands all ocean spirits.",fil:"Diyos ng dagat at pinuno ng tubig. Iginigiya niya ang mga patay sa underworld at nag-uutos sa lahat ng espiritu ng karagatan.",hil:"Diyos sang dagat kag manunudlo sang tubig. Igiya niya ang mga minatay sa underworld kag nagagutos sa tanan nga espiritu sang karagatan."},
+    s:["Sea","Boat","Fish","Tidal Waves"],g:"m",rel:["Kan-Laon","Sidapa","Lalahon"],
+    story:{en:"Maguayan rules the waters that surround the Visayan islands — and the waters that divide the world of the living from the world of the dead. When Sidapa claims a soul, it is Maguayan who ferries it across the dark sea to the underworld. His boat appears at the shore when the moon is dark, and no living person may board it. Fishermen honor Maguayan before every voyage, spilling palm wine into the waves and whispering: 'Maguayan, itaas mo ang laot' — Maguayan, calm the sea. For he can summon storms that swallow fleets, or grant safe passage through the deepest waters. The Visayans say that when the tide is unusually low, Maguayan has drawn the water aside to let the dead pass. When it rises suddenly, his boat has returned empty, and the sea reclaims what was borrowed.",
+      fil:"Namumuno si Maguayan sa tubig na nakapaligid sa mga isla ng Visayas — at sa tubig na naghihiwalay sa mundo ng buhay at mundo ng mga patay. Kapag kinuha ni Sidapa ang isang kaluluwa, si Maguayan ang naglalakbay nito sa madilim na dagat papunta sa underworld. Ang kanyang bangka ay lumilitaw sa baybayin kapag madilim ang buwan, at walang buhay na tao ang pwedeng sumakay. Iginagalang siya ng mga mangingisda bago ang bawat paglalakbay, nagbubuhos ng tuba sa alon at bumubulong: 'Maguayan, itaas mo ang laot.' Siya ang pwedeng mag-imbok ng bagyo o magbigay ng ligtas na paglalakbay.",
+      hil:"Nagadumala si Maguayan sa tubig nga nagapalibot sa mga isla sang Visayas — kag sa tubig nga nagabulag sa kalibutan sang buhi kag kalibutan sang mga minatay. Kon kuhaon ni Sidapa ang isa ka kalag, si Maguayan ang nagalakat sini sa madulom nga dagat pakadto sa underworld. Ang iya bangka nagapakita sa baybayon kon madulom ang bulan, kag wala sing buhi nga tawo ang makasakay. Ginatahod siya sang mga mangingisda antes sang tagsa ka paglakat, nagabulos sang tuba sa balud kag nagabulung: 'Maguayan, itaas mo ang laot.' Siya ang pwede magpanukob sang bagyo ukon maghatag sing ligtas nga paglakat."}},
+
+  {n:"Mayari",c:"Tagalog",d:["Moon","Beauty","Night"],r:{en:"Goddess of the moon and beauty in Tagalog mythology. Daughter of Bathala who lost one eye in battle with her brother Apolaki.",fil:"Diyosa ng buwan at kagandahan sa mitolohiyang Tagalog. Anak ni Bathala na nawalan ng isang mata sa laban sa kanyang kapatid na si Apolaki.",hil:"Diyosa sang bulan kag katahom sa mitolohiyang Tagalog. Anak ni Bathala nga nawad-an sang isa ka mata sa-away sa iya utod nga si Apolaki."},
+    s:["Moon","Silver Light","Blind Eye"],g:"f",rel:["Bathala","Apolaki","Tala","Amihan"],
+    story:{en:"Mayari and her brother Apolaki, children of Bathala, once ruled the world together in harmony — she the night, he the day. But Apolaki grew dissatisfied and demanded sole rulership. Mayari refused, and they fought a terrible battle. In the struggle, Apolaki struck Mayari's face, blinding her in one eye. Horrified by what he had done, Apolaki relented and agreed to shared rule. But because Mayari's light was now diminished, the moon would shine less brightly than the sun. The Tagalog people say this is why moonlight is softer than sunlight — it is the light of a goddess who sacrificed half her brightness for peace. And on clear nights, you can see the shadow on the moon's face — the mark of Apolaki's blow, and the price of shared power.",
+      fil:"Sina Mayari at Apolaki, mga anak ni Bathala, ay minsang namuno sa mundo nang magkasama — siya ang gabi, siya ang araw. Ngunit hindi nasiyahan si Apolaki at humingi ng tanging pamumuno. Tumanggi si Mayari, at sila ay naglaban. Sa pakikipaglaban, sinaktan ni Apolaki ang mukha ni Mayari at siya'y nabulag sa isang mata. Natakot si Apolaki sa kanyang ginawa at sumang-ayon sa pamumunong magkasama. Ngunit dahil nawala ang kalahati ng liwanag ni Mayari, ang buwan ay hindi na kasing liwanag ng araw. Ito ang dahilan kung bakit ang liwanag ng buwan ay mas mahinahon — ito ang liwanag ng isang diyosang nagpakasakripisyo para sa kapayapaan.",
+      hil:"Sila Mayari kag Apolaki, mga anak ni Bathala, sang una nagadumala sa kalibutan magkaduha — siya ang gab-i, siya ang adlaw. Pero indi naging kontento si Apolaki kag nagpangayo sang solo nga pagdumala. Nagpangkot si Mayari, kag sila nag-away. Sa away, gintigo ni Apolaki ang nawong ni Mayari kag nabuta siya sa isa ka mata. Nagkahadlok si Apolaki sa iya ginhimo kag nagpasugot sa magkahos nga pagdumala. Pero tungod kay nagkawa sang katunga ang kasanag ni Mayari, ang bulan indi na kasanag sang adlaw. Ini ang rason kon ngaa ang kasanag sang bulan mas lumo — ini ang kasanag sang isa ka diyosa nga nagpasakripisyo para sa kappayapaan."}},
+
+  {n:"Apolaki",c:"Tagalog",d:["War","Sun","Courage"],r:{en:"God of war and the sun in Tagalog mythology. Son of Bathala, who fought his sister Mayari for sole rulership of the world.",fil:"Diyos ng digmaan at araw sa mitolohiyang Tagalog. Anak ni Bathala, na lumaban sa kanyang kapatid na si Mayari para sa tanging pamumuno.",hil:"Diyos sang gera kag adlaw sa mitolohiyang Tagalog. Anak ni Bathala, nga nag-away sa iya utod nga si Mayari para sa solo nga pagdumala."},
+    s:["Sun","Sword","Fire"],g:"m",rel:["Bathala","Mayari","Tala"],
+    story:{en:"Apolaki is the warrior god of the Tagalogs, son of Bathala, whose very name means 'Big Lord' or 'Lord of War.' He and his sister Mayari once shared rulership of the world — he commanded the day, she the night. But Apolaki, fierce and proud, believed that the sun should rule alone. The battle between them shook the heavens, and in his fury, Apolaki struck Mayari and blinded one eye. The sight of his sister's wound broke his rage. He agreed to share power, but the damage was done — the moon would forever shine less brightly than the sun. Apolaki teaches that strength without wisdom wounds those we love. The bravest warriors are not those who never yield, but those who know when to stop.",
+      fil:"Si Apolaki ang diyos ng digmaan ng mga Tagalog, anak ni Bathala, na ang pangalan ay nangangahulugang 'Dakilang Panginoon.' Siya at ang kanyang kapatid na si Mayari ay minsang naghati sa pamumuno — siya ang araw, siya ang gabi. Ngunit si Apolaki, na matapang at mayabang, ay naniwala na ang araw dapat mag-isa. Ang labanan sa kanila ay yuminig sa langit, at sa kanyang galit, sinaktan niya si Mayari at nabulag ang isang mata niya. Ang pagkakita sa sugat ng kanyang kapatid ay sumira sa kanyang galit. Pumayag siyang maghati, ngunit ang pinsala ay ginawa na — ang buwan ay palaging mas madilim kaysa araw. Itinuturo ni Apolaki na ang lakas nang walang karunungan ay nasasaktan ang mga minamahal.",
+      hil:"Si Apolaki ang diyos sang gera sang mga Tagalog, anak ni Bathala, nga ang ngalan bukot sidlon 'Daku nga Agalon.' Siya kag ang iya utod nga si Mayari sang una nagbahin sa pagdumala — siya ang adlaw, siya ang gab-i. Pero si Apolaki, nga maisog kag palalo, nagpati nga ang adlaw dapat mag-isa. Ang away sa ila nagpaninog sa kalangitan, kag sa iya kasuko, gintigo niya si Mayari kag nabuta ang isa ka mata niya. Ang pagkakita sa balat sang iya utod nagpanas sang iya kasuko. Nagpasugot siya magbahin, pero ang kadaot ginhimo na — ang bulan permi mas madulom sa adlaw. Gintudluan ni Apolaki nga ang kusog nga wala sing kaalam nagasakitan sang mga ginalikop."}},
+
+  {n:"Amihan",c:"Tagalog",d:["Wind","Storm","Freedom"],r:{en:"Goddess of the northeast wind who freed the first humans from the bamboo and carries the spirits of the departed.",fil:"Diyosa ng hilagang-silangang hangin na nagpalaya sa mga unang tao mula sa kawayan at nagdadala ng mga kaluluwa ng yumao.",hil:"Diyosa sang amihan nga hangin nga naghaw-as sang mga una nga tawo halin sa kawayan kag nagadala sang mga kalag sang nanghaye."},
+    s:["Northeast Wind","Bamboo","Feathers"],g:"f",rel:["Bathala","Mayari","Tala","Malakas","Maganda"],
+    story:{en:"When the bamboo cracked open on the shore and Malakas and Maganda emerged, they were trapped inside — unable to free themselves. It was Amihan, the northeast wind, who split the bamboo apart and set the first humans free. She blew across the waters and stirred the first breath into their lungs. Ever since, Amihan has been the wind of new beginnings — the breeze that arrives with the cool season, clearing the skies and bringing relief from the heat. The Tagalogs say that when Amihan blows, the old year is ending and a new one is coming. She is also the wind that carries the souls of the dead across the sea to the afterlife, for the one who freed humanity from its first prison also guides it through its last passage.",
+      fil:"Nang bumuka ang kawayan sa baybayin at lumabas sina Malakas at Maganda, hindi sila makalabas — hindi makapalaya. Si Amihan, ang hilagang-silangang hangin, ang bumuka sa kawayan at nagpalaya sa mga unang tao. Humangin siya sa tubig at nagbigay ng unang hinga sa kanilang baga. Mula noon, si Amihan ay naging hangin ng mga bagong simula — ang hangin na dumarating sa malamig na panahon. Sinasabi ng mga Tagalog na kapag humihip ang Amihan, ang lumang taon ay nagtatapos at ang bago ay dumarating. Siya rin ang hangin na nagdadala ng mga kaluluwa ng patay sa kabilang buhay.",
+      hil:"Sang nagbuka ang kawayan sa baybayon kag naglitaw sila Malakas kag Maganda, indi sila makagwa — indi makahaw-as. Si Amihan, ang amihan nga hangin, ang nagbuka sa kawayan kag nagpahaw-as sang mga una nga tawo. Naghangin siya sa tubig kag naghatag sang una nga hanga sa ila baga. Halin sadto, si Amihan naging hangin sang mga bag-o nga umpisa — ang hangin nga nagaka-abot sa malami nga panahon. Ginahambal sang mga Tagalog nga kon magahangin si Amihan, ang daan nga tuig nagatapos kag ang bag-o nagaka-abot. Siya man ang hangin nga nagadala sang mga kalag sang minatay sa kabilang bahin sang kinabuhi."}}
 ];
 
+// Culture descriptions (multilingual)
 const CUL = {
-  Greek:{desc:"The mythology of ancient Greece — home of the Olympian gods, the Trojan War, the Labors of Hercules, and stories that shaped Western civilization for over 3,000 years.",kf:["Zeus","Hera","Poseidon","Athena","Apollo","Artemis","Aphrodite","Ares","Hades","Hermes"]},
-  Norse:{desc:"The myths of the Norse peoples — tales of the Aesir and Vanir, nine worlds connected by Yggdrasil the World Tree, and the inevitable doom of Ragnarok where gods and giants clash one final time.",kf:["Odin","Thor","Loki","Freya","Frigg","Baldur"]},
-  Egyptian:{desc:"Ancient Egypt's mythology spans over 3,000 years — gods with animal heads, the weighing of the heart in the afterlife, and the eternal struggle between Maat (order) and Isfet (chaos).",kf:["Ra","Osiris","Isis","Horus","Anubis","Thoth"]},
-  Japanese:{desc:"Shinto and Japanese mythology — the creation of Japan by Izanagi and Izanami, the sun goddess Amaterasu, and the kami spirits that inhabit every mountain, river, and tree.",kf:["Amaterasu","Susanoo","Tsukuyomi","Inari"]},
-  Hindu:{desc:"One of the world's oldest traditions — the Trimurti of Brahma, Vishnu, and Shiva governing creation, preservation, and destruction. The Ramayana, the Mahabharata, and the Bhagavad Gita.",kf:["Brahma","Vishnu","Shiva","Ganesha","Lakshmi"]},
-  Celtic:{desc:"The myths of the Celtic peoples — the Tuatha De Danann, sacred groves, shape-shifting, and the Otherworld that exists alongside our own, separated by only a thin veil.",kf:["Dagda","Morrigan","Lugh","Brigid"]},
-  Aztec:{desc:"Aztec mythology — a world of five suns, cosmic sacrifice, and the eternal rivalry between Quetzalcoatl and Tezcatlipoca that shapes the fate of empires.",kf:["Quetzalcoatl","Huitzilopochtli","Tezcatlipoca"]},
-  Akan:{desc:"The rich oral traditions of the Akan people of West Africa — Anansi the spider trickster who bought the world's stories from Nyame the sky god.",kf:["Anansi","Nyame"]}
+  Greek:{desc:{en:"The mythology of ancient Greece — Olympian gods, the Trojan War, and stories that shaped Western civilization for millennia.",
+    fil:"Ang mitolohiya ng sinaunang Greece — mga Olympian na diyos, ang Digmaang Trojan, at mga kuwentong humubog sa Western civilization sa libu-libong taon.",
+    hil:"Ang mitolohiya sang sinauna nga Greece — mga Olympian nga diyos, ang Gera sang Troy, kag mga isturya nga nagporma sang Western civilization sa libu-libo nga tuig."},
+    kf:["Zeus","Hera","Poseidon","Athena","Apollo","Artemis","Aphrodite","Hades"]},
+  Norse:{desc:{en:"Myths of the Norse peoples — the Aesir, Yggdrasil the World Tree, and Ragnarok where gods and giants clash one final time.",
+    fil:"Mga mito ng mga Norse — ang Aesir, Yggdrasil ang Puno ng Mundo, at Ragnarok kung saan maglalaban ang mga diyos at giant sa huling beses.",
+    hil:"Mga mito sang mga Norse — ang Aesir, Yggdrasil ang Kahoy sang Kalibutan, kag Ragnarok diin magakigera ang mga diyos kag giant sa katapusan nga beses."},
+    kf:["Odin","Thor","Loki","Freya"]},
+  Egyptian:{desc:{en:"Ancient Egypt's mythology — gods with animal heads, the weighing of the heart, and the eternal struggle of order and chaos.",
+    fil:"Mitolohiya ng sinaunang Egypt — mga diyos na may ulo ng hayop, pagtimbang ng puso, at walang-hangang pakikipaglaban ng orden at kaguluhan.",
+    hil:"Mitolohiya sang sinauna nga Egypt — mga diyos nga may ulo sang sapat, pagtimbang sang dughan, kag walay katapusan nga pakigera sang orden kag kagubot."},
+    kf:["Ra","Osiris","Isis","Horus","Anubis","Thoth"]},
+  Japanese:{desc:{en:"Shinto and Japanese mythology — kami spirits, the sun goddess Amaterasu, and the creation of Japan.",
+    fil:"Shinto at mitolohiyang Hapon — mga espiritu na kami, ang diyosa ng araw na si Amaterasu, at ang paglikha ng Japan.",
+    hil:"Shinto kag mitolohiyang Hapon — mga espiritu nga kami, ang diyosa sang adlaw nga si Amaterasu, kag ang paghimo sang Japan."},
+    kf:["Amaterasu","Susanoo"]},
+  Hindu:{desc:{en:"One of the world's oldest traditions — the Trimurti, the Ramayana, and the Bhagavad Gita.",
+    fil:"Isa sa pinakalumang tradisyon sa mundo — ang Trimurti, ang Ramayana, at ang Bhagavad Gita.",
+    hil:"Isa sa pinakadaan nga tradisyon sa kalibutan — ang Trimurti, ang Ramayana, kag ang Bhagavad Gita."},
+    kf:["Vishnu","Shiva","Ganesha"]},
+  Celtic:{desc:{en:"The myths of the Celtic peoples — the Tuatha De Danann, sacred groves, and the Otherworld.",
+    fil:"Ang mga mito ng mga Celtic — ang Tuatha De Danann, sagradong gubat, at ang Otherworld.",
+    hil:"Ang mga mito sang mga Celtic — ang Tuatha De Danann, sagradong kagubatan, kag ang Otherworld."},
+    kf:["Dagda","Morrigan","Lugh","Brigid"]},
+  Aztec:{desc:{en:"Aztec mythology — five suns, the feathered serpent, and cosmic sacrifice.",
+    fil:"Mitolohiyang Aztec — limang araw, ang pakpak na ahas, at kosmikong sakripisyo.",
+    hil:"Mitolohiyang Aztec — lima ka adlaw, ang pakpak nga bitin, kag kosmikong sakripisyo."},
+    kf:["Quetzalcoatl"]},
+  Akan:{desc:{en:"The oral traditions of the Akan people — Anansi the spider who bought the world's stories.",
+    fil:"Ang pasalitang tradisyon ng mga Akan — si Anansi ang gagamba na bumili ng mga kuwento ng mundo.",
+    hil:"Ang oral nga tradisyon sang mga Akan — si Anansi ang lawa nga nagkalipot sang mga isturya sang kalibutan."},
+    kf:["Anansi"]},
+  Tagalog:{desc:{en:"Philippine mythology from the Tagalog tradition — Bathala the supreme god, Mayari the moon goddess, and the first humans Malakas and Maganda born from bamboo.",
+    fil:"Mitolohiyang Pilipino mula sa tradisyong Tagalog — si Bathala ang pinakamataas na diyos, si Mayari ang diyosa ng buwan, at ang mga unang tao na sina Malakas at Maganda na ipinanganak mula sa kawayan.",
+    hil:"Mitolohiyang Pilipino halin sa tradisyon sang Tagalog — si Bathala ang pinakamaestra nga diyos, si Mayari ang diyosa sang bulan, kag ang mga una nga tawo nga sila Malakas kag Maganda nga natawo halin sa kawayan."},
+    kf:["Bathala","Mayari","Apolaki","Tala","Amihan"]},
+  Visayan:{desc:{en:"Visayan mythology from the central Philippines — Kan-Laon the supreme deity of Mount Kanlaon, Sidapa god of death, and Lalahon goddess of fire and volcanoes.",
+    fil:"Mitolohiyang Bisaya mula sa gitnang Pilipinas — si Kan-Laon ang pinakamataas na diyos ng Bundok Kanlaon, si Sidapa na diyos ng kamatayan, at si Lalahon na diyosa ng apoy at bulkan.",
+    hil:"Mitolohiyang Bisaya halin sa tunga sang Pilipinas — si Kan-Laon ang pinakamaestra nga diyos sang Bundok Kanlaon, si Sidapa nga diyos sang kamatayon, kag si Lalahon nga diyosa sang kalayo kag bulkan."},
+    kf:["Kan-Laon","Sidapa","Lalahon","Maguayan"]}
 };
 
 // ============================================================
-// NLP ENGINE (built-in, zero dependencies)
+// NLP ENGINE (multilingual)
 // ============================================================
 class NLP {
   constructor(){
     this.fm={};
-    DB.forEach(f=>{this.fm[f.n.toLowerCase()]=f});
+    KB.forEach(f=>{this.fm[f.n.toLowerCase()]=f});
     this.ck=Object.keys(CUL).map(c=>c.toLowerCase());
+    // Also add common alternate names
+    this.aliases={"kanlaon":"kan-laon","kan-laon":"kan-laon"};
   }
   process(input){
     try{
       const l=(input||"").toLowerCase().trim();
       const tk=l.split(/\s+/).filter(t=>t.length>0);
-      return{intent:this.ci(l,tk),entities:this.ee(l,tk),tokens:tk,original:input};
-    }catch(e){return{intent:"general",entities:{figures:[],cultures:[],pronouns:[]},tokens:[],original:input}}
+      const lang=detectLang(input);
+      return{intent:this.ci(l,tk,lang),entities:this.ee(l,tk),tokens:tk,original:input,lang};
+    }catch(e){return{intent:"general",entities:{figures:[],cultures:[],pronouns:[]},tokens:[],original:input,lang:'en'}}
   }
-  ci(l,tk){
+  ci(l,tk,lang){
     const s={};
-    if(tk.some(t=>['hello','hi','hey','greetings','howdy','yo','hola'].includes(t)))s.greeting=3;
-    if(['who is','who are','tell me about','what is','describe','explain','info on','more about','know about','tell me more'].some(p=>l.includes(p)))s.ask=3;
-    if(['compare','difference between',' vs ',' versus ','similarities','how are they different','how are they similar'].some(p=>l.includes(p)))s.compare=3;
-    if(['list','show me','names of','gods of','deities of','who are the','figures in','pantheon','all the'].some(p=>l.includes(p)))s.list=2;
-    if(['tell me a story','narrate','myth about','legend of','tale of','tell the story','saga','epic','story of'].some(p=>l.includes(p)))s.story=3;
-    if(['save','bookmark','add to collection','remember this','store this'].some(p=>l.includes(p)))s.save=2;
-    if(['my collection','show collection','saved items','favorites','bookmarks','what have i saved'].some(p=>l.includes(p)))s.view=2;
-    if(['help','what can you do','how to use','instructions','guide','what do you know'].some(p=>l.includes(p)))s.help=3;
-    if(['thanks','thank you','appreciated','awesome','great answer','cool','nice','wonderful','fascinating','interesting'].some(p=>l.includes(p)))s.thanks=2;
-    if(['bye','goodbye','see you','farewell'].some(p=>l.includes(p)))s.bye=3;
+    // Greeting
+    const gEn=['hello','hi','hey','greetings','howdy'];
+    const gFil=['kumusta','magandang araw','magandang gabi','kamusta','mabuhay'];
+    const gHil=['kumusta','maayong adlaw','maayong gab-i','maayo'];
+    if(tk.some(t=>[...gEn,...gFil,...gHil].includes(t)))s.greeting=3;
+    // Ask about
+    const aEn=['who is','who are','tell me about','what is','describe','explain','more about','know about','tell me more'];
+    const aFil=['sino si','sino sina','magkwento tungkol','anu-ano','ipaliwanag','sabihin mo tungkol','kwento about','sino ba si'];
+    const aHil=['kinsa si','kinsa sina','sugilon about','hambalon about','ano si','sugilon mo si','hambalon mo si','kinsa bala si'];
+    if([...aEn,...aFil,...aHil].some(p=>l.includes(p)))s.ask=3;
+    // Compare
+    const cEn=['compare','difference between',' vs ',' versus ','similarities'];
+    const cFil=['ihambing','pagkakaiba ng','ihambing mo'];
+    const cHil=['ihambing','pagkakaiba sang','ihambing mo'];
+    if([...cEn,...cFil,...cHil].some(p=>l.includes(p)))s.compare=3;
+    // List
+    const lEn=['list','show me','names of','gods of','deities of','who are the','pantheon','all the'];
+    const lFil=['ilista','ipakita ang','mga diyos ng','sino-sino ang','lahat ng'];
+    const lHil=['ilista','ipakita ang','mga diyos sang','kinsa-kinsa ang','tanan nga'];
+    if([...lEn,...lFil,...lHil].some(p=>l.includes(p)))s.list=2;
+    // Story
+    const sEn=['tell me a story','narrate','myth about','legend of','tale of','story of','story about'];
+    const sFil=['magkwento','ikwento mo','kwento tungkol','kwento ni','istorya ni','alamat ni','mito ni'];
+    const sHil=['sugilon mo','sugilanon','hambalon mo ang','istorya ni','alamat ni','mito ni'];
+    if([...sEn,...sFil,...sHil].some(p=>l.includes(p)))s.story=3;
+    // Save
+    const svEn=['save','bookmark','add to collection','remember this'];
+    const svFil=['i-save','itago','irekord','tandaan ito'];
+    const svHil=['i-save','itago','irekord','tandai ini'];
+    if([...svEn,...svFil,...svHil].some(p=>l.includes(p)))s.save=2;
+    // View collection
+    const vEn=['my collection','show collection','saved items','favorites'];
+    const vFil=['koleksyon ko','ipakita ang koleksyon','mga na-save'];
+    const vHil=['koleksyon ko','ipakita ang koleksyon','mga na-save'];
+    if([...vEn,...vFil,...vHil].some(p=>l.includes(p)))s.view=2;
+    // Help
+    const hEn=['help','what can you do','how to use','instructions','guide','what do you know'];
+    const hFil=['tulungan mo','tulong','paano gamitin','gabay','ano ang kaya mo','anong alam mo'];
+    const hHil=['buligi ako','bulig','paano gamiton','giya','ano ang kaya mo','ano ang kabalo mo'];
+    if([...hEn,...hFil,...hHil].some(p=>l.includes(p)))s.help=3;
+    // Thanks
+    const tEn=['thanks','thank you','appreciated','awesome','great'];
+    const tFil=['salamat','maraming salamat','salamat po','pasalamat'];
+    const tHil=['salamat','salamat gid','madamo nga salamat'];
+    if([...tEn,...tFil,...tHil].some(p=>l.includes(p)))s.thanks=2;
+    // Goodbye
+    const bEn=['bye','goodbye','see you','farewell'];
+    const bFil=['paalam','sige','hanggang sa muli'];
+    const bHil=['paalam','sige','hasta sa liwat','panghimaton'];
+    if([...bEn,...bFil,...bHil].some(p=>l.includes(p)))s.bye=3;
+
     if(this.ff(l).length>0&&!s.ask&&!s.compare)s.ask=1;
     if(this.fc(l).length>0&&!s.list&&!s.ask)s.list=1;
     const sorted=Object.entries(s).sort((a,b)=>b[1]-a[1]);
     return sorted.length>0?sorted[0][0]:'general';
   }
   ee(l,tk){return{figures:this.ff(l),cultures:this.fc(l),pronouns:this.fp(tk)}}
-  ff(l){const f=[];for(const n of Object.keys(this.fm)){const rx=new RegExp('\\b'+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b');if(rx.test(l))f.push(this.fm[n])}return f}
+  ff(l){
+    const f=[];
+    for(const n of Object.keys(this.fm)){
+      const rx=new RegExp('\\b'+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b');
+      if(rx.test(l))f.push(this.fm[n]);
+    }
+    // Check aliases
+    for(const[alias,target]of Object.entries(this.aliases)){
+      if(l.includes(alias)&&!f.find(x=>x.n.toLowerCase()===target))f.push(this.fm[target]);
+    }
+    return f;
+  }
   fc(l){return this.ck.filter(c=>l.includes(c)).map(c=>c.charAt(0).toUpperCase()+c.slice(1))}
-  fp(tk){const p=[];if(tk.some(t=>['he','him','his'].includes(t)))p.push('m');if(tk.some(t=>['she','her','hers'].includes(t)))p.push('f');return p}
+  fp(tk){const p=[];if(tk.some(t=>['he','him','his','siya','niya'].includes(t)))p.push('m');if(tk.some(t=>['she','her','hers','siya','niya'].includes(t)))p.push('f');return p}
 }
 
 // ============================================================
 // CONTEXT MANAGER
 // ============================================================
-class CTX {
-  constructor(){this.reset()}
-  reset(){this.cf=null;this.cc=null;this.mf=[];this.flow='idle';this.li=null}
-  update(nr){
-    try{
-      const{intent:i,entities:e}=nr;this.li=i;
-      if(e.pronouns.length>0&&this.cf&&e.figures.length===0)nr.entities.figures=[this.cf];
-      if(e.figures.length>0){
-        if(e.figures.length>=2)this.flow='comparing';
-        else{this.cf=e.figures[0];this.flow='exploring';if(!this.mf.find(f=>f.n===this.cf.n))this.mf.push(this.cf)}
-      }
-      if(e.cultures.length>0)this.cc=e.cultures[0];
-      else if(this.cf)this.cc=this.cf.c;
-      if(i==='story')this.flow='storytelling';
-      if(i==='greeting'||i==='bye')this.flow='idle';
-      if(['ask','story'].includes(i)&&e.figures.length===0&&this.cf)nr.entities.figures=[this.cf];
-    }catch(e){console.error("CTX error:",e)}
-  }
-  gs(){
-    let c='';
-    if(this.cf)c+=`Discussing: ${this.cf.n} (${this.cf.c}). `;
-    if(this.cc)c+=`Culture: ${this.cc}. `;
-    if(this.mf.length>0)c+=`Mentioned: ${this.mf.map(f=>f.n).join(', ')}. `;
-    return c;
-  }
-}
+class CTX{constructor(){this.reset()}reset(){this.cf=null;this.cc=null;this.mf=[];this.flow='idle';this.li=null;this.cl='en'}
+  update(nr){try{const{i,e}=nr;this.li=i;this.cl=nr.lang||'en';if(e.pronouns.length>0&&this.cf&&e.figures.length===0)nr.entities.figures=[this.cf];if(e.figures.length>0){if(e.figures.length>=2)this.flow='comparing';else{this.cf=e.figures[0];this.flow='exploring';if(!this.mf.find(f=>f.n===this.cf.n))this.mf.push(this.cf)}}if(e.cultures.length>0)this.cc=e.cultures[0];else if(this.cf)this.cc=this.cf.c;if(i==='story')this.flow='storytelling';if(i==='greeting'||i==='bye')this.flow='idle';if(['ask','story'].includes(i)&&e.figures.length===0&&this.cf)nr.entities.figures=[this.cf]}catch(e){}}
+  gs(){let c='';if(this.cf)c+=`Discussing: ${this.cf.n} (${this.cf.c}). `;if(this.cc)c+=`Culture: ${this.cc}. `;return c}}
 
 // ============================================================
-// DATABASE (IndexedDB)
+// DATABASE
 // ============================================================
-class DB_ {
-  constructor(){this.db=null}
-  async init(){
-    return new Promise((res,rej)=>{
-      const r=indexedDB.open('LoreKeeperDB',1);
-      r.onupgradeneeded=e=>{
-        const d=e.target.result;
-        if(!d.objectStoreNames.contains('msg'))d.createObjectStore('msg',{keyPath:'id',autoIncrement:true});
-        if(!d.objectStoreNames.contains('col')){const s=d.createObjectStore('col',{keyPath:'id',autoIncrement:true});s.createIndex('name','name',{unique:false})}
-      };
-      r.onsuccess=e=>{this.db=e.target.result;res()};r.onerror=e=>rej(e.target.error);
-    });
-  }
-  async sm(role,content,meta={}){
-    try{const tx=this.db.transaction('msg','readwrite');tx.objectStore('msg').add({role,content,meta,ts:Date.now()});return new Promise(r=>{tx.oncomplete=()=>r()})}catch(e){}
-  }
-  async gm(lim=50){
-    try{const tx=this.db.transaction('msg','readonly');const rq=tx.objectStore('msg').getAll();return new Promise(r=>{rq.onsuccess=()=>r(rq.result.slice(-lim));rq.onerror=()=>r([])})}catch(e){return[]}
-  }
+class DB_{constructor(){this.db=null}async init(){return new Promise((r,j)=>{const rq=indexedDB.open('LoreKeeperDB',2);rq.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('msg'))d.createObjectStore('msg',{keyPath:'id',autoIncrement:true});if(!d.objectStoreNames.contains('col')){const s=d.createObjectStore('col',{keyPath:'id',autoIncrement:true});s.createIndex('name','name',{unique:false})}};rq.onsuccess=e=>{this.db=e.target.result;r()};rq.onerror=e=>j(e.target.error)})}
+  async sm(role,content,meta={}){try{const tx=this.db.transaction('msg','readwrite');tx.objectStore('msg').add({role,content,meta,ts:Date.now()});return new Promise(r=>{tx.oncomplete=()=>r()})}catch(e){}}
+  async gm(lim=50){try{const tx=this.db.transaction('msg','readonly');const rq=tx.objectStore('msg').getAll();return new Promise(r=>{rq.onsuccess=()=>r(rq.result.slice(-lim));rq.onerror=()=>r([])})}catch(e){return[]}}
   async cm(){try{const tx=this.db.transaction('msg','readwrite');tx.objectStore('msg').clear();return new Promise(r=>{tx.oncomplete=()=>r()})}catch(e){}}
-  async sc(fig){
-    try{const ex=await this.gc();if(ex.find(f=>f.name===fig.n))return false;const tx=this.db.transaction('col','readwrite');tx.objectStore('col').add({name:fig.n,culture:fig.c,domain:fig.d,role:fig.r,savedAt:Date.now()});return new Promise(r=>{tx.oncomplete=()=>r(true);tx.onerror=()=>r(false)})}catch(e){return false}
-  }
-  async gc(){
-    try{const tx=this.db.transaction('col','readonly');const rq=tx.objectStore('col').getAll();return new Promise(r=>{rq.onsuccess=()=>r(rq.result||[]);rq.onerror=()=>r([])})}catch(e){return[]}
-  }
-  async rc(id){try{const tx=this.db.transaction('col','readwrite');tx.objectStore('col').delete(id);return new Promise(r=>{tx.oncomplete=()=>r()})}catch(e){}}
-  async ca(){try{const t1=this.db.transaction('msg','readwrite');t1.objectStore('msg').clear();const t2=this.db.transaction('col','readwrite');t2.objectStore('col').clear();await Promise.all([new Promise(r=>{t1.oncomplete=r}),new Promise(r=>{t2.oncomplete=r})])}catch(e){}}
-}
-
-// ============================================================
-// WIKIPEDIA API (Free, optional enrichment)
-// ============================================================
-async function getWiki(query){
-  try{
-    const su=`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query+' mythology')}&utf8=&format=json&origin=*&srlimit=1`;
-    const sr=await fetch(su,{signal:AbortSignal.timeout(6000)});
-    const sd=await sr.json();
-    if(!sd.query||!sd.query.search||!sd.query.search.length)return null;
-    const t=sd.query.search[0].title;
-    const mu=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t)}`;
-    const mr=await fetch(mu,{signal:AbortSignal.timeout(6000)});
-    if(!mr.ok)return null;
-    const md=await mr.json();
-    return{title:md.title,extract:md.extract,thumbnail:md.thumbnail?md.thumbnail.source:null,url:md.content_urls?md.content_urls.desktop.page:null};
-  }catch(e){return null}
-}
-
-// ============================================================
-// RESPONSE GENERATOR — 100% local, always works
-// ============================================================
-class RG {
-  constructor(nlp,ctx,db){this.nlp=nlp;this.ctx=ctx;this.db=db}
-
-  async gen(input){
-    try{
-      const nr=this.nlp.process(input);
-      this.ctx.update(nr);
-      const{intent:i,entities:e}=nr;
-
-      // Handle save/view locally
-      if(i==='save'&&this.ctx.cf)return await this.hSave();
-      if(i==='view')return await this.hView();
-
-      const fig=e.figures.length>0?e.figures[0]:this.ctx.cf;
-      const cul=e.cultures.length>0?e.cultures[0]:this.ctx.cc;
-
-      // Try Wikipedia in background (non-blocking)
-      let wiki=null;
-      try{
-        if(fig)wiki=await getWiki(fig.n);
-        else if(cul)wiki=await getWiki(cul+' mythology');
-      }catch(e){}
-
-      // Generate primary response from local KB
-      const text=this.gLocal(i,e,fig,cul);
-
-      // Append Wikipedia enrichment if available and relevant
-      let finalText=text;
-      if(wiki&&wiki.extract&&i!=='greeting'&&i!=='thanks'&&i!=='bye'){
-        const snippet=wiki.extract.length>400?wiki.extract.substring(0,400)+'...':wiki.extract;
-        finalText+=`\n\n---\n\nFrom the ancient scrolls (Wikipedia):\n${snippet}`;
-        if(wiki.url)finalText+=`\n\nRead more on Wikipedia`;
-      }
-
-      return{text:finalText,figure:fig,culture:cul,wiki,intent:i,source:wiki?'local+wiki':'local'};
-    }catch(e){
-      console.error("Gen error:",e);
-      return{text:this.fallback(input),figure:this.ctx.cf,culture:this.ctx.cc,wiki:null,intent:'fallback',source:'local'};
-    }
-  }
-
-  gLocal(i,e,fig,cul){
-    switch(i){
-      case 'greeting':
-        return 'Welcome, seeker of ancient wisdom. I am **LoreKeeper**, guardian of myths and legends from across the ages. Ask me about any deity, hero, creature, or legend — or say **"guide me"** and I shall illuminate the paths that await you.\n\nI hold tales from **Greek**, **Norse**, **Egyptian**, **Japanese**, **Hindu**, **Celtic**, **Aztec**, and **Akan** traditions.';
-
-      case 'ask':
-        if(fig){
-          const p=fig.g==='f'?'she':'he';
-          const ps=fig.g==='f'?'her':'his';
-          let resp=`**${fig.n}** — ${fig.r}\n\nIn ${fig.c} mythology, ${p} holds dominion over ${fig.d.join(', ')}. The sacred symbols of ${fig.n} include ${fig.s.join(', ')}. ${fig.n} is closely connected to ${fig.rel.slice(0,4).join(', ')}, ${ps} story woven into the very fabric of ${fig.c} belief.`;
-          if(fig.story)resp+=`\n\nWould you like me to **tell the story** of ${fig.n}, or learn about ${fig.rel.slice(0,2).join(' or ')}?`;
-          else resp+=`\n\nWould you like to learn about ${fig.rel.slice(0,2).join(' or ')}?`;
-          return resp;
-        }
-        return 'The scrolls do not reveal that name clearly, seeker. Could you rephrase your question? I guard tales from **Greek**, **Norse**, **Egyptian**, **Japanese**, **Hindu**, **Celtic**, **Aztec**, and **Akan** traditions.';
-
-      case 'list':
-        if(cul&&CUL[cul]){
-          const c=CUL[cul];
-          return `**${cul} Mythology**\n\n${c.desc}\n\nKey figures: ${c.kf.map(f=>`**${f}**`).join(', ')}\n\nWhich one calls to you, seeker?`;
-        }
-        return 'I guard tales from many traditions:\n\n• **Greek** — Olympian gods, the Trojan War, the Labors of Hercules\n• **Norse** — Aesir and Vanir, Yggdrasil, Ragnarok\n• **Egyptian** — The sun, the afterlife, the weighing of the heart\n• **Japanese** — Kami spirits, the sun goddess, the storm god\n• **Hindu** — The Trimurti, the Ramayana, the Mahabharata\n• **Celtic** — The Tuatha De Danann, sacred groves, the Otherworld\n• **Aztec** — Five suns, the feathered serpent, cosmic sacrifice\n• **Akan** — Anansi the spider, the sky god Nyame\n\nWhich mythology calls to you?';
-
-      case 'compare':
-        if(e.figures.length>=2){
-          const[f1,f2]=e.figures;
-          const cd=f1.d.filter(d=>f2.d.includes(d));
-          let resp=`**${f1.n}** (${f1.c}) vs **${f2.name||f2.n}** (${f2.c})\n\n`;
-          resp+=`**${f1.n}** governs ${f1.d.join(', ')}, while **${f2.name||f2.n}** presides over ${f2.d.join(', ')}.`;
-          if(cd.length>0)resp+=` They share dominion over **${cd.join(', ')}** — a fascinating parallel across cultures.`;
-          resp+=`\n\n**${f1.n}** is symbolized by ${f1.s.join(', ')}, while **${f2.name||f2.n}** is associated with ${f2.s.join(', ')}.`;
-          if(f1.g===f2.g)resp+=` Both are ${f1.g==='f'?'female':'male'} deities.`;
-          resp+=`\n\nDespite arising from different cultures, both figures reveal how humanity grapples with the same fundamental forces. The sky-father, the trickster, the mother-goddess — these archetypes echo across every tradition because they answer questions that every civilization asks.`;
-          return resp;
-        }
-        return 'To compare two figures, name them both — for example: **"Compare Thor and Zeus"** or **"Difference between Athena and Freya"**. Which two shall I place side by side?';
-
-      case 'story':
-        if(fig&&fig.story){
-          return `**The Legend of ${fig.n}**\n\n${fig.story}`;
-        }
-        if(fig){
-          const p=fig.g==='f'?'she':'he';
-          return `The tale of **${fig.n}** is one of the great legends of ${fig.c} mythology. ${p} is ${fig.r.toLowerCase()}, wielding power over ${fig.d.join(', ')} with ${fig.s[0]} as ${fig.g==='f'?'her':'his'} sacred symbol. Connected to ${fig.rel.slice(0,3).join(', ')}, ${fig.n}'s story echoes through the ages.\n\nAsk me about a related figure for more detailed tales!`;
-        }
-        if(cul&&CUL[cul])return `Let me weave a tale from ${cul} mythology...\n\n${CUL[cul].desc}\n\nName a specific figure and I shall recount their legend in full.`;
-        return 'Name a figure or mythology, and I shall weave their tale. Try: **"Tell me a story about Zeus"** or **"Story of Norse mythology"**';
-
-      case 'help':
-        return `I am **LoreKeeper**, guardian of the world's mythologies. Here is what you can ask:\n\n• **"Tell me about Zeus"** — Learn about any deity\n• **"Compare Thor and Zeus"** — Find parallels\n• **"Tell me a story about Loki"** — Hear a full myth\n• **"List the Greek gods"** — Browse a pantheon\n• **"Save this to my collection"** — Bookmark figures\n• **"Show my collection"** — View saved figures\n\nI draw from **Greek**, **Norse**, **Egyptian**, **Japanese**, **Hindu**, **Celtic**, **Aztec**, and **Akan** traditions.\n\nPowered by local knowledge base + Wikipedia API.`;
-
-      case 'thanks':
-        return 'It is my purpose and pleasure, seeker. The ancient stories live on through those who seek them. Is there another tale that calls to you?';
-
-      case 'bye':
-        return 'Farewell, seeker. May the wisdom of the ancients light your path until we meet again. The stories will be here, waiting for your return.';
-
-      default:
-        if(fig){
-          const p=fig.g==='f'?'she':'he';
-          return `You speak of **${fig.n}** — ${fig.r}\n\nIn ${fig.c} mythology, ${p} rules over ${fig.d.join(', ')}. Sacred symbols include ${fig.s.join(', ')}. What would you like to know about ${fig.n}?`;
-        }
-        if(cul)return `Ah, **${cul} mythology** — a rich and ancient tradition. ${CUL[cul]?CUL[cul].desc:''}\n\nWould you like me to list the key figures?`;
-        return 'The ancient scrolls do not reveal a clear answer, seeker. Could you rephrase, or ask about a specific deity, culture, or myth? Type **"help"** to see what I can guide you through.';
-    }
-  }
-
-  fallback(input){
-    if(this.ctx.cf){
-      const f=this.ctx.cf;
-      return `**${f.n}** — ${f.r}\n\nDomain: ${f.d.join(', ')}\nSymbols: ${f.s.join(', ')}\nCulture: ${f.c}\nRelated: ${f.rel.join(', ')}\n\nThe deeper scrolls are temporarily beyond reach, but this knowledge I can share.`;
-    }
-    return 'The scrolls are restless, seeker, but I still guard their wisdom. Ask me about a specific deity or mythology — try **"Tell me about Zeus"** or **"List the Norse gods"**.';
-  }
-
-  async hSave(){
-    const fig=this.ctx.cf;
-    if(!fig)return{text:'I am not sure what you would like me to save. Discuss a figure first, then say "save this".',intent:'save',figure:null,source:'local'};
-    const saved=await this.db.sc(fig);
-    if(saved){sToast(`${fig.n} saved to collection`,'success');return{text:`**${fig.n}** has been inscribed in your collection. View saved figures in the sidebar.`,intent:'save',figure:fig,source:'local'}}
-    sToast(`${fig.n} already in collection`,'info');return{text:`**${fig.n}** is already in your collection. Perhaps another figure calls to you?`,intent:'save',figure:fig,source:'local'}
-  }
-
-  async hView(){
-    const col=await this.db.gc();
-    if(!col.length)return{text:'Your collection is empty. Discuss a figure and say "save this" to bookmark them.',intent:'view',figure:null,source:'local'};
-    const list=col.map(f=>`• **${f.name}** (${f.culture}) — ${f.domain?f.domain.join(', '):''}`).join('\n');
-    return{text:`Your collection, seeker:\n\n${list}\n\nClick any figure in the sidebar to revisit their tales.`,intent:'view',figure:null,source:'local'};
-  }
-}
-
-// ============================================================
-// PARTICLES
-// ============================================================
-class PS {
-  constructor(c){this.c=c;this.x=c.getContext('2d');this.p=[];this.rs();window.addEventListener('resize',()=>this.rs());this.in();this.an()}
-  rs(){this.c.width=window.innerWidth;this.c.height=window.innerHeight}
-  in(){this.p=[];const n=Math.min(45,Math.floor(window.innerWidth/30));for(let i=0;i<n;i++)this.p.push({x:Math.random()*this.c.width,y:Math.random()*this.c.height,sz:Math.random()*2+.5,sy:-(Math.random()*.3+.1),sx:(Math.random()-.5)*.2,o:Math.random()*.5+.1,ph:Math.random()*Math.PI*2,ps:Math.random()*.02+.005})}
-  an(){this.x.clearRect(0,0,this.c.width,this.c.height);for(const p of this.p){p.x+=p.sx;p.y+=p.sy;p.ph+=p.ps;const co=p.o*(.5+.5*Math.sin(p.ph));if(p.y<-10)p.y=this.c.height+10;if(p.x<-10)p.x=this.c.width+10;if(p.x>this.c.width+10)p.x=-10;const g=this.x.createRadialGradient(p.x,p.y,0,p.x,p.y,Math.max(.1,p.sz*3));g.addColorStop(0,`rgba(196,149,48,${co})`);g.addColorStop(.5,`rgba(196,149,48,${co*.3})`);g.addColorStop(1,`rgba(196,149,48,0)`);this.x.beginPath();this.x.arc(p.x,p.y,Math.max(.1,p.sz*3),0,Math.PI*2);this.x.fillStyle=g;this.x.fill()}requestAnimationFrame(()=>this.an())}
-}
-
-// ============================================================
-// GLOBAL APP
-// ============================================================
-let _db,_nlp,_ctx,_rg;
-let _proc=false;
-
-async function initApp(){
-  try{
-    _db=new DB_();await _db.init();
-    _nlp=new NLP();_ctx=new CTX();_rg=new RG(_nlp,_ctx,_db);
-    new PS(document.getElementById('pc'));
-    showWelcome();rCol();rHis();
-    const pm=await _db.gm(20);
-    if(pm.length>0){for(const m of pm)amUI(m.role,m.content,m.meta||{},false);sToast('Previous conversation restored','info')}
-    showChips();
-  }catch(e){console.error("Init error:",e);sToast('Init failed: '+e.message,'error')}
-}
-
-function showWelcome(){
-  document.getElementById('cm').innerHTML=`
-  <div class="mi max-w-2xl mx-auto"><div class="flex gap-3">
-    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--acc)] to-amber-700 flex items-center justify-center flex-shrink-0 mt-1"><i class="fas fa-book-open text-[var(--bg)] text-sm"></i></div>
-    <div class="space-y-3"><div class="bg-[var(--bot)] border border-[var(--bdr)] rounded-2xl rounded-tl-sm px-5 py-4 text-sm leading-relaxed">
-      <p class="fd text-[var(--acc)] text-base mb-2">Welcome, Seeker</p>
-      <p class="text-[var(--fg)]">I am <strong class="text-[var(--acc)]">LoreKeeper</strong>, the ancient guardian of myths, legends, and folklore from cultures across the world. Ask me about any deity, hero, creature, or legend — or say <em>"guide me"</em> and I shall illuminate the paths that await you.</p>
-      <div class="mt-3 pt-3 border-t border-[var(--bdr)] flex flex-wrap gap-3 text-[var(--fg2)] text-xs">
-        <span class="inline-flex items-center gap-1"><i class="fas fa-brain"></i> NLP Engine</span>
-        <span class="inline-flex items-center gap-1"><i class="fas fa-database"></i> IndexedDB</span>
-        <span class="inline-flex items-center gap-1"><i class="fas fa-globe"></i> Wikipedia API</span>
-        <span class="inline-flex items-center gap-1"><i class="fas fa-scroll"></i> Local Knowledge</span>
-      </div>
-    </div></div>
-  </div></div>`;
-}
-
-function showChips(){
-  const ch=[
-    {t:'Tell me about Norse gods',i:'fa-hammer'},
-    {t:'Who is Amaterasu?',i:'fa-sun'},
-    {t:'Compare Zeus and Odin',i:'fa-arrows-left-right'},
-    {t:'Story of Loki',i:'fa-scroll'},
-    {t:'List Hindu deities',i:'fa-om'},
-    {t:'Who is Anansi?',i:'fa-spider'}
-  ];
-  document.getElementById('qc').innerHTML=ch.map(c=>`<button class="ch inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--bdr)] text-xs text-[var(--fg2)] bg-[var(--card)]" onclick="sqc('${c.t.replace(/'/g,"\\'")}')"><i class="fas ${c.i}" style="font-size:10px"></i> ${c.t}</button>`).join('');
-}
-
-function sqc(t){document.getElementById('ci').value=t;sm()}
-
-async function sm(){
-  if(_proc)return;
-  const input=document.getElementById('ci').value.trim();
-  if(!input)return;
-  _proc=true;
-  const el=document.getElementById('ci');el.value='';ars(el);
-  amUI('user',input);await _db.sm('user',input);
-  sTyp();
-  try{
-    const r=await _rg.gen(input);
-    rTyp();
-    amUI('assistant',r.text,{figure:r.figure?r.figure.n:null,culture:r.culture,wiki:r.wiki,intent:r.intent,source:r.source});
-    await _db.sm('assistant',r.text,{figure:r.figure?r.figure.n:null,culture:r.culture,intent:r.intent,source:r.source});
-    if(r.intent==='save'||r.intent==='view')rCol();
-    uChips(r);
-  }catch(e){
-    rTyp();amUI('assistant','The scrolls flickered for a moment, but I am still here. Please try asking again.');console.error(e);
-  }
-  _proc=false;
-}
-
-function amUI(role,content,meta={},anim=true){
-  const c=document.getElementById('cm');const w=document.createElement('div');w.className=`max-w-2xl mx-auto ${anim?'mi':''}`;
-  if(role==='user'){
-    w.innerHTML=`<div class="flex gap-3 justify-end"><div class="bg-[var(--usr)] border border-[var(--bdr)] rounded-2xl rounded-tr-sm px-5 py-3 text-sm leading-relaxed max-w-[80%]">${esc(content)}</div><div class="w-9 h-9 rounded-lg bg-[var(--card)] border border-[var(--bdr)] flex items-center justify-center flex-shrink-0 mt-1"><i class="fas fa-user text-[var(--fg2)] text-sm"></i></div></div>`;
-  }else{
-    let fc='';
-    if(meta.figure){const fig=DB.find(f=>f.n===meta.figure);if(fig){
-      fc=`<div class="fc mt-3 p-4"><div class="flex items-start justify-between mb-2"><div><h4 class="fd text-[var(--acc)] text-sm">${fig.n}</h4><span class="text-xs text-[var(--fg2)] bg-[var(--bg)] px-2 py-0.5 rounded-full inline-block mt-1">${fig.c}</span></div><button class="ch text-[var(--fg2)] hover:text-[var(--acc)] text-xs" onclick="sfc('${fig.n}')" title="Save"><i class="far fa-bookmark"></i></button></div><p class="text-xs text-[var(--fg2)] mb-2">${fig.r}</p><div class="flex flex-wrap gap-1">${fig.d.map(d=>`<span class="text-[10px] px-2 py-0.5 rounded-full border border-[var(--bdr)] text-[var(--fg2)]">${d}</span>`).join('')}</div><div class="mt-2 text-[10px] text-[var(--fg2)]"><i class="fas fa-shapes mr-1"></i>${fig.s.join(', ')}</div>${fig.rel.length?`<div class="mt-1 text-[10px] text-[var(--fg2)]"><i class="fas fa-link mr-1"></i>${fig.rel.slice(0,4).join(', ')}</div>`:''}${meta.wiki&&meta.wiki.url?`<a href="${meta.wiki.url}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 mt-2 text-[10px] text-[var(--acc)] hover:underline"><i class="fas fa-external-link-alt"></i> Wikipedia</a>`:''}</div>`;
-    }}
-    let sb='';
-    if(meta.source==='local+wiki')sb='<span class="sb bg-blue-900/50 text-blue-300 border border-blue-700 mt-2"><i class="fas fa-globe"></i> Local + Wikipedia</span>';
-    else sb='<span class="sb bg-amber-900/50 text-amber-300 border border-amber-700 mt-2"><i class="fas fa-scroll"></i> Local Knowledge</span>';
-
-    w.innerHTML=`<div class="flex gap-3"><div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--acc)] to-amber-700 flex items-center justify-center flex-shrink-0 mt-1"><i class="fas fa-book-open text-[var(--bg)] text-sm"></i></div><div class="min-w-0"><div class="bg-[var(--bot)] border border-[var(--bdr)] rounded-2xl rounded-tl-sm px-5 py-3 text-sm leading-relaxed">${fmt(content)}</div>${fc}<div class="mt-1">${sb}</div></div></div>`;
-  }
-  c.appendChild(w);c.scrollTop=c.scrollHeight;
-}
-
-function fmt(t){let h=esc(t);h=h.replace(/\*\*(.*?)\*\*/g,'<strong class="text-[var(--acc)]">$1</strong>');h=h.replace(/\*(.*?)\*/g,'<em>$1</em>');h=h.replace(/^---$/gm,'<hr class="border-[var(--bdr)] my-2">');h=h.replace(/^[•\-]\s+(.+)$/gm,'<div class="flex gap-2 ml-2"><span class="text-[var(--acc)]">•</span><span>$1</span></div>');h=h.replace(/\n\n/g,'</p><p class="mt-2">');h=h.replace(/\n/g,'<br>');return h}
-function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
-function sTyp(){const c=document.getElementById('cm');const d=document.createElement('div');d.id='tyi';d.className='max-w-2xl mx-auto mi';d.innerHTML=`<div class="flex gap-3"><div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--acc)] to-amber-700 flex items-center justify-center flex-shrink-0"><i class="fas fa-book-open text-[var(--bg)] text-sm"></i></div><div class="bg-[var(--bot)] border border-[var(--bdr)] rounded-2xl rounded-tl-sm px-5 py-4"><div class="flex gap-1.5"><div class="td"></div><div class="td"></div><div class="td"></div></div></div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight}
-function rTyp(){const d=document.getElementById('tyi');if(d)d.remove()}
-function uChips(r){
-  const s=[];
-  if(r.figure&&r.figure.rel)s.push(...r.figure.rel.slice(0,2).map(f=>({t:`Tell me about ${f}`,i:'fa-user'})));
-  if(r.culture)s.push({t:`More about ${r.culture} mythology`,i:'fa-globe'});
-  if(r.figure){s.push({t:`Tell me a story about ${r.figure.n}`,i:'fa-scroll'});s.push({t:`Save ${r.figure.n} to collection`,i:'fa-bookmark'})}
-  document.getElementById('qc').innerHTML=s.slice(0,4).map(c=>`<button class="ch inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--bdr)] text-xs text-[var(--fg2)] bg-[var(--card)]" onclick="sqc('${c.t.replace(/'/g,"\\'")}')"><i class="fas ${c.i}" style="font-size:10px"></i> ${c.t}</button>`).join('');
-}
-function tsb(o){document.getElementById('sb').classList.toggle('op',o);document.getElementById('sov').classList.toggle('op',o)}
-function st(t){document.querySelectorAll('.tb').forEach(b=>{b.classList.toggle('ac',b.dataset.t===t);b.classList.toggle('text-[var(--fg2)]',b.dataset.t!==t)});document.getElementById('tcol').classList.toggle('hidden',t!=='col');document.getElementById('this').classList.toggle('hidden',t!=='his')}
-async function rCol(){
-  const col=await _db.gc();const c=document.getElementById('cl');
-  if(!col.length){c.innerHTML='<div class="text-center py-8 text-[var(--fg2)] text-sm"><i class="far fa-bookmark text-2xl mb-2 block opacity-40"></i><p>No saved figures yet</p><p class="text-xs mt-1">Discuss a figure and say "save this"</p></div>';return}
-  c.innerHTML=col.map(i=>`<div class="ci p-3 rounded-lg border border-[var(--bdr)] mb-2 cursor-pointer" onclick="aaf('${i.name}')"><div class="flex items-start justify-between"><div><h4 class="fd text-sm text-[var(--acc)]">${i.name}</h4><span class="text-[10px] text-[var(--fg2)] bg-[var(--bg)] px-1.5 py-0.5 rounded-full">${i.culture}</span></div><button onclick="event.stopPropagation();rfc(${i.id})" class="text-[var(--fg2)] hover:text-[var(--err)] text-xs"><i class="fas fa-xmark"></i></button></div><p class="text-xs text-[var(--fg2)] mt-1 line-clamp-1">${i.domain?i.domain.join(', '):''}</p></div>`).join('');
-}
-async function rHis(){
-  const ms=await _db.gm(30);const c=document.getElementById('hl');const um=ms.filter(m=>m.role==='user');
-  if(!um.length){c.innerHTML='<div class="text-center py-8 text-[var(--fg2)] text-sm"><i class="fas fa-clock-rotate-left text-2xl mb-2 block opacity-40"></i><p>No history yet</p></div>';return}
-  c.innerHTML=um.reverse().slice(0,15).map(m=>`<div class="ci p-3 rounded-lg border border-[var(--bdr)] mb-2 cursor-pointer" onclick="aaf('${esc(m.content).replace(/'/g,"\\'")}')"><p class="text-xs text-[var(--fg)] line-clamp-2">${esc(m.content)}</p><span class="text-[10px] text-[var(--fg2)] mt-1 block">${new Date(m.ts).toLocaleString()}</span></div>`).join('');
-}
-function aaf(n){document.getElementById('ci').value=`Tell me about ${n}`;tsb(false);sm()}
-async function sfc(n){const fig=DB.find(f=>f.n===n);if(fig){const s=await _db.sc(fig);sToast(s?`${n} saved to collection`:`${n} already in collection`,s?'success':'info');if(s)rCol()}}
-async function rfc(id){await _db.rc(id);rCol();sToast('Removed from collection','info')}
-async function cc(){await _db.cm();_ctx.reset();showWelcome();showChips();sToast('Chat cleared','info')}
-async function cad(){await _db.ca();_ctx.reset();showWelcome();showChips();rCol();rHis();sToast('All data cleared','info')}
-function ec(){
-  const ms=document.querySelectorAll('#cm > div');let t='LoreKeeper Conversation Export\n'+'='.repeat(40)+'\n\n';
-  ms.forEach(m=>{const ct=m.querySelector('[class*="rounded-2xl"]')?.textContent||'';const u=m.querySelector('.fa-user');if(ct.trim())t+=`${u?'You':'LoreKeeper'}: ${ct.trim()}\n\n`});
-  const b=new Blob([t],{type:'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=`lorekeeper-${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(u);sToast('Chat exported','success')
-}
-function hik(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sm()}}
-function ars(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
-function sToast(msg,type='info'){
-  const c=document.getElementById('tc');const t=document.createElement('div');
-  const cl={success:'border-emerald-500 bg-emerald-900/80',info:'border-amber-500 bg-amber-900/80',error:'border-red-500 bg-red-900/80'};
-  const ic={success:'fa-check-circle text-emerald-400',info:'fa-info-circle text-amber-400',error:'fa-exclamation-circle text-red-400'};
-  t.className=`to flex items-center gap-2 px-4 py-2.5 rounded-lg border ${cl[type]} text-sm text-white backdrop-blur-sm`;
-  t.innerHTML=`<i class="fas ${ic[type]}"></i> ${msg}`;c.appendChild(t);setTimeout(()=>t.remove(),3200)
-}
-document.addEventListener('DOMContentLoaded',initApp);
-</script>
-</body>
-</html>
+  async sc(fig){try{const ex=await this.gc();if(ex.find(f=>f.name===fig.n))return false;const tx=this.db.transaction('col','readwrite');tx.objectStore('col').add({name:fig.n,culture:fig.c,domain:fig.d,role:fig.r.en,savedAt:Date.now()});return new Promise(r=>{tx.oncomplete=()=>r(true);tx.onerror=()=>r(false)})}catch(e){return false}}
+  async gc(){try{const tx=this.db.transaction('col','readonly');const rq=tx.objectStore('col').getAll();return new Promise(r=>{rq.onsuccess=()=>r(rq.result||[]);rq.onerror=()=>r([])})}catch(e){return[]}}
+  async rc(id){try{const tx=this.db.transaction('col','readwrite');tx.objectStore('col').delete(id);return new Promise(r=>{
