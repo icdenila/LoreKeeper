@@ -8,1463 +8,547 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://unpkg.com/compromise@14.10.0/builds/compromise.min.js"></script>
 <style>
   :root {
-    --bg: #0b1118;
-    --bg-secondary: #111a25;
-    --card: #16202e;
-    --card-hover: #1b2840;
-    --border: #243044;
-    --fg: #e4dac6;
-    --fg-secondary: #94a3b8;
-    --accent: #c4952e;
-    --accent-hover: #daa740;
-    --accent-glow: rgba(196,149,48,0.12);
-    --bot-bg: #142030;
-    --user-bg: #17304d;
-    --success: #2f8a50;
-    --danger: #b93e3e;
+    --bg: #0b1118; --bg2: #111a25; --card: #16202e; --card-h: #1b2840;
+    --bdr: #243044; --fg: #e4dac6; --fg2: #94a3b8; --acc: #c4952e;
+    --acc-h: #daa740; --acc-g: rgba(196,149,48,0.12); --bot: #142030;
+    --usr: #17304d; --ok: #2f8a50; --err: #b93e3e;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--fg); overflow: hidden; height: 100vh; }
-  h1,h2,h3,h4,.font-display { font-family: 'Cinzel', serif; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--fg-secondary); }
-
-  /* Chat messages area */
-  #chat-messages { scroll-behavior: smooth; }
-
-  /* Message animations */
-  .msg-enter { animation: msgSlideIn 0.35s ease-out; }
-  @keyframes msgSlideIn {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Typing indicator */
-  .typing-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: typingBounce 1.2s infinite; }
-  .typing-dot:nth-child(2) { animation-delay: 0.15s; }
-  .typing-dot:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes typingBounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-8px); opacity: 1; }
-  }
-
-  /* Suggestion chips */
-  .chip { transition: all 0.2s ease; cursor: pointer; }
-  .chip:hover { background: var(--accent); color: var(--bg); transform: translateY(-1px); }
-
-  /* Figure card in chat */
-  .figure-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s; }
-  .figure-card:hover { border-color: var(--accent); }
-
-  /* Sidebar */
-  #sidebar { transition: transform 0.3s ease; }
-  @media (max-width: 768px) {
-    #sidebar { position: fixed; z-index: 50; transform: translateX(-100%); }
-    #sidebar.open { transform: translateX(0); }
-    #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 40; }
-    #sidebar-overlay.open { display: block; }
-  }
-
-  /* Toast */
-  .toast { animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.7s; animation-fill-mode: forwards; }
-  @keyframes toastIn { from { opacity:0; transform: translateX(40px); } to { opacity:1; transform: translateX(0); } }
-  @keyframes toastOut { from { opacity:1; } to { opacity:0; transform: translateX(40px); } }
-
-  /* Collection item */
-  .collection-item { transition: all 0.2s ease; }
-  .collection-item:hover { background: var(--card-hover); }
-
-  /* Glow pulse for logo */
-  .logo-glow { animation: glowPulse 3s ease-in-out infinite; }
-  @keyframes glowPulse {
-    0%, 100% { text-shadow: 0 0 8px rgba(196,149,48,0.3); }
-    50% { text-shadow: 0 0 20px rgba(196,149,48,0.6); }
-  }
-
-  /* Input focus ring */
-  #chat-input:focus { outline: none; box-shadow: 0 0 0 2px rgba(196,149,48,0.4); }
-
-  /* Canvas background */
-  #particle-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-
-  /* Save button animation */
-  .save-btn { transition: all 0.2s; }
-  .save-btn:hover { transform: scale(1.05); }
-  .save-btn.saved { color: var(--accent); }
-
-  /* Tab active */
-  .tab-btn { transition: all 0.2s; }
-  .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
-
-  /* Quick action buttons in sidebar */
-  .action-btn { transition: all 0.15s; }
-  .action-btn:hover { background: var(--accent-glow); border-color: var(--accent); }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--fg);overflow:hidden;height:100vh}
+  h1,h2,h3,h4,.fd{font-family:'Cinzel',serif}
+  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+  .mi{animation:ms .35s ease-out}
+  @keyframes ms{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .td{width:8px;height:8px;background:var(--acc);border-radius:50%;animation:tb 1.2s infinite}
+  .td:nth-child(2){animation-delay:.15s}.td:nth-child(3){animation-delay:.3s}
+  @keyframes tb{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-8px);opacity:1}}
+  .ch{transition:all .2s;cursor:pointer}.ch:hover{background:var(--acc);color:var(--bg);transform:translateY(-1px)}
+  .fc{background:var(--card);border:1px solid var(--bdr);border-radius:12px;transition:border-color .2s}.fc:hover{border-color:var(--acc)}
+  #sb{transition:transform .3s ease}
+  @media(max-width:768px){#sb{position:fixed;z-index:50;transform:translateX(-100%)}#sb.op{transform:translateX(0)}#sov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40}#sov.op{display:block}}
+  .to{animation:ti .3s ease-out,to .3s ease-in 2.7s;animation-fill-mode:forwards}
+  @keyframes ti{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes to{from{opacity:1}to{opacity:0;transform:translateX(40px)}}
+  .ci{transition:all .2s}.ci:hover{background:var(--card-h)}
+  .lg{animation:gp 3s ease-in-out infinite}
+  @keyframes gp{0%,100%{text-shadow:0 0 8px rgba(196,149,48,.3)}50%{text-shadow:0 0 20px rgba(196,149,48,.6)}}
+  #ci:focus{outline:none;box-shadow:0 0 0 2px rgba(196,149,48,.4)}
+  #pc{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .tb{transition:all .2s}.tb.ac{color:var(--acc);border-bottom:2px solid var(--acc)}
+  .ab{transition:all .15s}.ab:hover{background:var(--acc-g);border-color:var(--acc)}
+  .sb{font-size:10px;padding:2px 8px;border-radius:9999px;display:inline-flex;align-items:center;gap:4px}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-
-<!-- Particle canvas background -->
-<canvas id="particle-canvas"></canvas>
-
-<!-- Sidebar overlay for mobile -->
-<div id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
-
-<!-- Main layout -->
+<canvas id="pc"></canvas>
+<div id="sov" onclick="tsb(false)"></div>
 <div class="flex h-screen relative z-10">
-
-  <!-- Sidebar -->
-  <aside id="sidebar" class="w-72 flex-shrink-0 bg-[var(--bg-secondary)] border-r border-[var(--border)] flex flex-col h-full">
-    <!-- Logo -->
-    <div class="p-5 border-b border-[var(--border)]">
+  <aside id="sb" class="w-72 flex-shrink-0 bg-[var(--bg2)] border-r border-[var(--bdr)] flex flex-col h-full">
+    <div class="p-5 border-b border-[var(--bdr)]">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--accent)] to-amber-700 flex items-center justify-center">
-          <i class="fas fa-book-open text-[var(--bg)] text-lg"></i>
-        </div>
-        <div>
-          <h1 class="font-display text-lg text-[var(--accent)] logo-glow leading-tight">LoreKeeper</h1>
-          <p class="text-xs text-[var(--fg-secondary)]">Mythology & Folklore</p>
-        </div>
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--acc)] to-amber-700 flex items-center justify-center"><i class="fas fa-book-open text-[var(--bg)] text-lg"></i></div>
+        <div><h1 class="fd text-lg text-[var(--acc)] lg leading-tight">LoreKeeper</h1><p class="text-xs text-[var(--fg2)]">Mythology & Folklore</p></div>
       </div>
     </div>
-
-    <!-- Tabs -->
-    <div class="flex border-b border-[var(--border)]">
-      <button class="tab-btn active flex-1 py-3 text-sm font-medium text-center" data-tab="collection" onclick="switchTab('collection')">
-        <i class="fas fa-bookmark mr-1"></i> Collection
-      </button>
-      <button class="tab-btn flex-1 py-3 text-sm font-medium text-center text-[var(--fg-secondary)]" data-tab="history" onclick="switchTab('history')">
-        <i class="fas fa-clock-rotate-left mr-1"></i> History
-      </button>
+    <div class="flex border-b border-[var(--bdr)]">
+      <button class="tb ac flex-1 py-3 text-sm font-medium text-center" data-t="col" onclick="st('col')"><i class="fas fa-bookmark mr-1"></i>Collection</button>
+      <button class="tb flex-1 py-3 text-sm font-medium text-center text-[var(--fg2)]" data-t="his" onclick="st('his')"><i class="fas fa-clock-rotate-left mr-1"></i>History</button>
     </div>
-
-    <!-- Tab content -->
-    <div id="tab-collection" class="flex-1 overflow-y-auto p-3">
-      <div id="collection-list"></div>
-    </div>
-    <div id="tab-history" class="flex-1 overflow-y-auto p-3 hidden">
-      <div id="history-list"></div>
-    </div>
-
-    <!-- Sidebar footer -->
-    <div class="p-4 border-t border-[var(--border)]">
-      <button onclick="clearAllData()" class="action-btn w-full py-2 px-3 rounded-lg border border-[var(--border)] text-sm text-[var(--fg-secondary)] hover:text-[var(--danger)]">
-        <i class="fas fa-trash-can mr-2"></i>Clear All Data
-      </button>
+    <div id="tcol" class="flex-1 overflow-y-auto p-3"><div id="cl"></div></div>
+    <div id="this" class="flex-1 overflow-y-auto p-3 hidden"><div id="hl"></div></div>
+    <div class="p-4 border-t border-[var(--bdr)]">
+      <button onclick="cad()" class="ab w-full py-2 px-3 rounded-lg border border-[var(--bdr)] text-sm text-[var(--fg2)] hover:text-[var(--err)]"><i class="fas fa-trash-can mr-2"></i>Clear All Data</button>
     </div>
   </aside>
-
-  <!-- Main chat area -->
   <main class="flex-1 flex flex-col min-w-0">
-    <!-- Header -->
-    <header class="flex items-center justify-between px-4 md:px-6 py-3 border-b border-[var(--border)] bg-[var(--bg-secondary)]/80 backdrop-blur-sm">
+    <header class="flex items-center justify-between px-4 md:px-6 py-3 border-b border-[var(--bdr)] bg-[var(--bg2)]/80 backdrop-blur-sm">
       <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar(true)" class="md:hidden w-9 h-9 rounded-lg border border-[var(--border)] flex items-center justify-center text-[var(--fg-secondary)] hover:text-[var(--fg)]">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div class="flex items-center gap-2">
-          <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-          <span class="text-sm text-[var(--fg-secondary)]">LoreKeeper is active</span>
-        </div>
+        <button onclick="tsb(true)" class="md:hidden w-9 h-9 rounded-lg border border-[var(--bdr)] flex items-center justify-center text-[var(--fg2)] hover:text-[var(--fg)]"><i class="fas fa-bars"></i></button>
+        <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div><span class="text-sm text-[var(--fg2)]">LoreKeeper — Local Mode</span></div>
       </div>
       <div class="flex items-center gap-2">
-        <button onclick="exportChat()" class="w-9 h-9 rounded-lg border border-[var(--border)] flex items-center justify-center text-[var(--fg-secondary)] hover:text-[var(--fg)]" title="Export Chat">
-          <i class="fas fa-download text-sm"></i>
-        </button>
-        <button onclick="clearChat()" class="w-9 h-9 rounded-lg border border-[var(--border)] flex items-center justify-center text-[var(--fg-secondary)] hover:text-[var(--fg)]" title="New Chat">
-          <i class="fas fa-plus text-sm"></i>
-        </button>
+        <button onclick="ec()" class="w-9 h-9 rounded-lg border border-[var(--bdr)] flex items-center justify-center text-[var(--fg2)] hover:text-[var(--fg)]" title="Export"><i class="fas fa-download text-sm"></i></button>
+        <button onclick="cc()" class="w-9 h-9 rounded-lg border border-[var(--bdr)] flex items-center justify-center text-[var(--fg2)] hover:text-[var(--fg)]" title="New Chat"><i class="fas fa-plus text-sm"></i></button>
       </div>
     </header>
-
-    <!-- Messages -->
-    <div id="chat-messages" class="flex-1 overflow-y-auto px-4 md:px-6 py-4 space-y-4">
-      <!-- Welcome message injected by JS -->
-    </div>
-
-    <!-- Input area -->
-    <div class="px-4 md:px-6 pb-4 pt-2 border-t border-[var(--border)] bg-[var(--bg-secondary)]/60 backdrop-blur-sm">
+    <div id="cm" class="flex-1 overflow-y-auto px-4 md:px-6 py-4 space-y-4"></div>
+    <div class="px-4 md:px-6 pb-4 pt-2 border-t border-[var(--bdr)] bg-[var(--bg2)]/60 backdrop-blur-sm">
       <div class="flex items-end gap-3 max-w-3xl mx-auto">
         <div class="flex-1 relative">
-          <textarea id="chat-input" rows="1" placeholder="Ask about any myth, deity, or legend..."
-            class="w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 pr-12 text-sm text-[var(--fg)] placeholder:text-[var(--fg-secondary)]/50 focus:border-[var(--accent)]"
-            onkeydown="handleInputKey(event)" oninput="autoResize(this)"></textarea>
-          <button onclick="sendMessage()" class="absolute right-2 bottom-2 w-8 h-8 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] flex items-center justify-center text-[var(--bg)] transition-colors" aria-label="Send message">
-            <i class="fas fa-paper-plane text-sm"></i>
-          </button>
+          <textarea id="ci" rows="1" placeholder="Ask about any myth, deity, or legend..." class="w-full resize-none rounded-xl border border-[var(--bdr)] bg-[var(--card)] px-4 py-3 pr-12 text-sm text-[var(--fg)] placeholder:text-[var(--fg2)]/50 focus:border-[var(--acc)]" onkeydown="hik(event)" oninput="ars(this)"></textarea>
+          <button onclick="sm()" class="absolute right-2 bottom-2 w-8 h-8 rounded-lg bg-[var(--acc)] hover:bg-[var(--acc-h)] flex items-center justify-center text-[var(--bg)] transition-colors" aria-label="Send"><i class="fas fa-paper-plane text-sm"></i></button>
         </div>
       </div>
-      <div class="flex flex-wrap gap-2 mt-3 max-w-3xl mx-auto" id="quick-chips"></div>
+      <div class="flex flex-wrap gap-2 mt-3 max-w-3xl mx-auto" id="qc"></div>
     </div>
   </main>
 </div>
-
-<!-- Toast container -->
-<div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2"></div>
+<div id="tc" class="fixed top-4 right-4 z-[100] space-y-2"></div>
 
 <script>
 // ============================================================
-// KNOWLEDGE BASE - Mythological figures data
+// MASSIVE KNOWLEDGE BASE — 34 figures with rich detail
 // ============================================================
-const MYTHOLOGY_DB = [
-  { name:"Zeus", culture:"Greek", domain:["Sky","Thunder","Law","Kingship"], role:"King of the Olympian gods, wielder of the thunderbolt", symbols:["Thunderbolt","Eagle","Oak"], gender:"male", related:["Hera","Poseidon","Athena","Hades"], wiki:"Zeus" },
-  { name:"Hera", culture:"Greek", domain:["Marriage","Women","Childbirth"], role:"Queen of the gods, protector of marriage and women", symbols:["Peacock","Cow","Pomegranate"], gender:"female", related:["Zeus","Hephaestus","Ares"], wiki:"Hera" },
-  { name:"Poseidon", culture:"Greek", domain:["Sea","Earthquakes","Horses"], role:"God of the sea, shaker of the earth", symbols:["Trident","Horse","Dolphin"], gender:"male", related:["Zeus","Hades","Amphitrite"], wiki:"Poseidon" },
-  { name:"Athena", culture:"Greek", domain:["Wisdom","War","Crafts"], role:"Goddess of wisdom and strategic warfare, patron of Athens", symbols:["Owl","Olive Tree","Aegis"], gender:"female", related:["Zeus","Ares","Odysseus"], wiki:"Athena" },
-  { name:"Apollo", culture:"Greek", domain:["Sun","Music","Prophecy","Healing"], role:"God of the sun, music, and prophecy", symbols:["Lyre","Bow","Laurel"], gender:"male", related:["Artemis","Zeus","Dionysus"], wiki:"Apollo" },
-  { name:"Artemis", culture:"Greek", domain:["Hunt","Moon","Wilderness"], role:"Goddess of the hunt, the moon, and wilderness", symbols:["Bow","Deer","Crescent Moon"], gender:"female", related:["Apollo","Zeus","Leto"], wiki:"Artemis" },
-  { name:"Aphrodite", culture:"Greek", domain:["Love","Beauty","Desire"], role:"Goddess of love and beauty, born from sea foam", symbols:["Dove","Rose","Myrtle"], gender:"female", related:["Hephaestus","Ares","Eros"], wiki:"Aphrodite" },
-  { name:"Ares", culture:"Greek", domain:["War","Bloodshed","Violence"], role:"God of brutal warfare and bloodshed", symbols:["Spear","Vulture","Dog"], gender:"male", related:["Zeus","Hera","Aphrodite"], wiki:"Ares" },
-  { name:"Hades", culture:"Greek", domain:["Underworld","Death","Wealth"], role:"God of the underworld and the dead, keeper of riches", symbols:["Cerberus","Scepter","Helm of Darkness"], gender:"male", related:["Zeus","Poseidon","Persephone"], wiki:"Hades" },
-  { name:"Odin", culture:"Norse", domain:["Wisdom","War","Poetry","Death"], role:"All-Father, chief of the Aesir, seeker of wisdom", symbols:["Gungnir","Ravens","Sleipnir"], gender:"male", related:["Thor","Loki","Frigg","Baldur"], wiki:"Odin" },
-  { name:"Thor", culture:"Norse", domain:["Thunder","Storms","Strength"], role:"God of thunder, protector of Midgard and mankind", symbols:["Mjolnir","Goats","Oak"], gender:"male", related:["Odin","Loki","Sif","Jormungandr"], wiki:"Thor" },
-  { name:"Loki", culture:"Norse", domain:["Mischief","Trickery","Fire"], role:"Trickster god, shapeshifter and chaos-bringer", symbols:["Serpent","Knot","Fly"], gender:"male", related:["Odin","Thor","Fenrir","Hel"], wiki:"Loki" },
-  { name:"Freya", culture:"Norse", domain:["Love","Beauty","War","Seidr"], role:"Goddess of love and war, leader of the Valkyries", symbols:["Brisingamen","Falcon Cloak","Cats"], gender:"female", related:["Freyr","Odin","Odr"], wiki:"Freya" },
-  { name:"Frigg", culture:"Norse", domain:["Marriage","Motherhood","Prophecy"], role:"Queen of the Aesir, goddess of the home and foresight", symbols:["Distaff","Hawk","Fog"], gender:"female", related:["Odin","Baldur","Thor"], wiki:"Frigg" },
-  { name:"Baldur", culture:"Norse", domain:["Light","Purity","Beauty"], role:"God of light and beauty, killed by mistletoe", symbols:["Mistletoe","Sun","Ring"], gender:"male", related:["Odin","Frigg","Loki","Hodr"], wiki:"Baldur" },
-  { name:"Ra", culture:"Egyptian", domain:["Sun","Creation","Kingship"], role:"Sun god, king of the gods and creator of life", symbols:["Sun Disk","Falcon","Obelisk"], gender:"male", related:["Osiris","Set","Horus","Thoth"], wiki:"Ra" },
-  { name:"Osiris", culture:"Egyptian", domain:["Underworld","Resurrection","Fertility"], role:"God of the dead and the afterlife, judge of souls", symbols:["Crook","Flail","Djed"], gender:"male", related:["Isis","Set","Horus","Nephthys"], wiki:"Osiris" },
-  { name:"Isis", culture:"Egyptian", domain:["Magic","Motherhood","Healing"], role:"Goddess of magic, mother of Horus, wife of Osiris", symbols:["Throne","Ankh","Tyet"], gender:"female", related:["Osiris","Horus","Set","Nephthys"], wiki:"Isis" },
-  { name:"Anubis", culture:"Egyptian", domain:["Embalming","Death","Judgement"], role:"God of mummification and guide of the dead", symbols:["Jackal","Imiut","Scales"], gender:"male", related:["Osiris","Nephthys","Set"], wiki:"Anubis" },
-  { name:"Horus", culture:"Egyptian", domain:["Sky","War","Protection"], role:"Sky god, avenger of Osiris, pharaoh's divine form", symbols:["Eye of Horus","Falcon","Double Crown"], gender:"male", related:["Osiris","Isis","Set","Ra"], wiki:"Horus" },
-  { name:"Thoth", culture:"Egyptian", domain:["Wisdom","Writing","Magic","Moon"], role:"God of wisdom and writing, recorder of the gods", symbols:["Ibis","Writing Palette","Moon Disk"], gender:"male", related:["Ra","Maat","Seshat"], wiki:"Thoth" },
-  { name:"Amaterasu", culture:"Japanese", domain:["Sun","Light","Imperial Line"], role:"Sun goddess, ancestor of the Japanese emperors", symbols:["Mirror","Magatama","Rooster"], gender:"female", related:["Susanoo","Tsukuyomi","Izanagi"], wiki:"Amaterasu" },
-  { name:"Susanoo", culture:"Japanese", domain:["Storms","Sea","Chaos"], role:"Storm god, slayer of the Yamata no Orochi serpent", symbols:["Sword","Storm","Sea"], gender:"male", related:["Amaterasu","Tsukuyomi","Izanagi"], wiki:"Susanoo" },
-  { name:"Brahma", culture:"Hindu", domain:["Creation","Knowledge","Vedas"], role:"Creator god, four-headed lord of creation", symbols:["Lotus","Vedas","Spoon"], gender:"male", related:["Vishnu","Shiva","Saraswati"], wiki:"Brahma" },
-  { name:"Vishnu", culture:"Hindu", domain:["Preservation","Order","Compassion"], role:"Preserver god, descends as avatars to restore dharma", symbols:["Sudarshana Chakra","Shankha","Mace"], gender:"male", related:["Lakshmi","Shiva","Brahma","Krishna"], wiki:"Vishnu" },
-  { name:"Shiva", culture:"Hindu", domain:["Destruction","Transformation","Meditation"], role:"Destroyer and transformer, lord of dance and asceticism", symbols:["Trishula","Damru","Nandi","Third Eye"], gender:"male", related:["Parvati","Ganesha","Vishnu"], wiki:"Shiva" },
-  { name:"Ganesha", culture:"Hindu", domain:["Obstacles","Wisdom","New Beginnings"], role:"Elephant-headed god, remover of obstacles", symbols:["Modak","Axe","Mouse"], gender:"male", related:["Shiva","Parvati","Kartikeya"], wiki:"Ganesha" },
-  { name:"Lakshmi", culture:"Hindu", domain:["Wealth","Fortune","Prosperity"], role:"Goddess of wealth and prosperity, consort of Vishnu", symbols:["Lotus","Gold","Elephants"], gender:"female", related:["Vishnu","Saraswati","Ganesha"], wiki:"Lakshmi" },
-  { name:"Dagda", culture:"Celtic", domain:["Earth","Plenty","Magic"], role:"The Good God, chief of the Tuatha De Danann", symbols:["Cauldron","Club","Harp"], gender:"male", related:["Morrigan","Brigid","Lugh"], wiki:"The_Dagda" },
-  { name:"Morrigan", culture:"Celtic", domain:["War","Fate","Death","Prophecy"], role:"Phantom queen, goddess of war and fate", symbols:["Crow","Raven","Wolf"], gender:"female", related:["Dagda","Badb","Macha"], wiki:"The_Morr%C3%ADgan" },
-  { name:"Lugh", culture:"Celtic", domain:["Light","Skill","Arts","War"], role:"Many-skilled god, champion of the Tuatha De Danann", symbols:["Spear","Sling","Raven"], gender:"male", related:["Dagda","Cian","Balor"], wiki:"Lugh" },
-  { name:"Brigid", culture:"Celtic", domain:["Fire","Poetry","Healing","Smithcraft"], role:"Goddess of the sacred flame and patron of poets", symbols:["Flame","Well","Anvil"], gender:"female", related:["Dagda","Lugh"], wiki:"Brigid" },
-  { name:"Quetzalcoatl", culture:"Aztec", domain:["Wind","Learning","Creation"], role:"Feathered serpent, creator god and bringer of knowledge", symbols:["Feathered Serpent","Wind","Venus"], gender:"male", related:["Tezcatlipoca","Huitzilopochtli"], wiki:"Quetzalcoatl" },
-  { name:"Anansi", culture:"Akan", domain:["Stories","Wisdom","Trickery"], role:"Spider god of stories and wisdom, trickster of West Africa", symbols:["Spider","Web","Stories"], gender:"male", related:["Nyame","Turtle"], wiki:"Anansi" }
+const DB = [
+  {n:"Zeus",c:"Greek",d:["Sky","Thunder","Law","Kingship"],r:"King of the Olympian gods, wielder of the thunderbolt. He rules from Mount Olympus, enforcing oaths and cosmic order. Father of many heroes and gods, his temper shakes the very earth.",s:["Thunderbolt","Eagle","Oak Tree","Aegis Shield"],g:"m",rel:["Hera","Poseidon","Athena","Hades","Apollo"],w:"Zeus",
+   story:"The tale of Zeus begins in darkness. His father Cronus, Titan lord of time, devoured each of his children at birth — for a prophecy foretold that his own son would overthrow him, just as Cronus had overthrown his father Uranus. But Rhea, grief-stricken, wrapped a stone in swaddling clothes and fed it to Cronus instead. She hid the infant Zeus in a cave on Crete, where the Curetes clashed their shields to drown his cries. When Zeus grew to manhood, he returned disguised as a cupbearer. He gave Cronus a draught of mustard and wine that forced him to disgorge Zeus's siblings — Hestia, Demeter, Hera, Hades, and Poseidon — all alive and whole. Thus began the Titanomachy: ten years of war between the Olympians and the Titans. With the Hundred-Handed Ones and Cyclopes as allies, Zeus cast Cronus into Tartarus and claimed the sky as his domain. From that day, his thunderbolt has been the final word in every divine dispute."},
+  {n:"Hera",c:"Greek",d:["Marriage","Women","Childbirth","Sovereignty"],r:"Queen of the Olympian gods, protector of marriage and women. Known for her jealous wrath against Zeus's lovers, yet she remains the most powerful goddess on Olympus.",s:["Peacock","Cow","Pomegranate","Diadem"],g:"f",rel:["Zeus","Hephaestus","Ares","Hebe"],w:"Hera",
+   story:"Hera's devotion to marriage is both her strength and her torment. When Zeus first pursued her, she refused him — until he transformed himself into a shivering cuckoo. Taking pity on the bird, she held it to her breast, and Zeus revealed his true form. Yet this marriage, consecrated on Olympus, became her eternal trial. When Zeus loved the mortal Io, Hera turned the girl into a cow and set Argus with his hundred eyes to guard her. When Zeus loved Leto, Hera forbade any land to give her shelter — yet Delos, a floating island, defied her decree so Apollo and Artemis could be born. But Hera's wrath was not mere pettiness — it was the fury of a goddess who understood that the sanctity of marriage was the foundation of civilization itself."},
+  {n:"Poseidon",c:"Greek",d:["Sea","Earthquakes","Horses","Islands"],r:"God of the sea and earthquakes, creator of the first horse. Brother of Zeus and Hades, his moods govern the fate of every sailor.",s:["Trident","Horse","Dolphin","Bull"],g:"m",rel:["Zeus","Hades","Amphitrite","Theseus"],w:"Poseidon",
+   story:"When the three brothers drew lots for the cosmos, Zeus won the sky, Hades the underworld, and Poseidon the sea — yet Poseidon always coveted the land. He contested Athens with Athena, striking the Acropolis with his trident to produce a salt spring. Athena offered the olive tree, and the people chose her gift. Enraged, Poseidon flooded the Thriasian plain. He also fought for Corinth, for Argos, for Aegina — often losing to other gods. But beneath his pride lay fierce loyalty. He built the walls of Troy alongside Apollo, and when King Laomedon refused payment, Poseidon sent a sea monster. He guided Odysseus's son Telemachus and cursed Odysseus himself for blinding his son Polyphemus — demonstrating that the sea gives and the sea takes, and neither gift comes cheap."},
+  {n:"Athena",c:"Greek",d:["Wisdom","Strategic War","Crafts","Justice"],r:"Goddess of wisdom and strategic warfare, born from Zeus's head fully armed. Patron of Athens, protector of heroes.",s:["Owl","Olive Tree","Aegis","Spear"],g:"f",rel:["Zeus","Ares","Odysseus","Perseus"],w:"Athena",
+   story:"Athena's birth shook Olympus. Zeus had swallowed her mother Metis after a prophecy warned that Metis would bear children wiser than their father. But the wisdom grew inside him until a splitting headache drove him to command Hephaestus to split his skull with an axe. From the cleft leaped Athena — fully grown, clad in golden armor, her war-cry echoing to heaven and earth. She became Zeus's favorite child, the only one trusted with his thunderbolt and his aegis. She guided Perseus to slay Medusa by showing him her reflection in his shield. She taught Odysseus cunning when brute force failed. She wove the tapestry that depicted the gods' triumph over the giants — and when the mortal Arachne dared challenge her to a weaving contest, Athena destroyed the girl's blasphemous tapestry and transformed her into the first spider. Wisdom has sharp edges."},
+  {n:"Apollo",c:"Greek",d:["Sun","Music","Prophecy","Healing","Archery"],r:"God of the sun, music, poetry, prophecy, and healing. Twin of Artemis, patron of the Oracle at Delphi where mortals hear the voice of fate.",s:["Lyre","Bow","Laurel Wreath","Raven"],g:"m",rel:["Artemis","Zeus","Dionysus","Asclepius"],w:"Apollo",
+   story:"Apollo came into the world on the island of Delos, born beneath a palm tree while the island stood rooted at last in the sea. Only four days old, he demanded a bow and arrows and set out to find a place for his oracle. He chose Delphi, the navel of the world — but a great serpent, the Python, guarded the sacred spring. Young Apollo slew it with his first arrows and claimed the site. Yet the Python had been a child of Gaia herself, so Zeus commanded Apollo to purify himself and establish the Pythian Games in the serpent's honor. At Delphi, his priestess the Pythia breathed the vapors from the earth and spoke in riddles that shaped the fate of nations. But Apollo's gifts carried sorrow: he loved the nymph Daphne, and when she fled, he chased her until she transformed into a laurel tree — ever after his sacred plant, a crown of leaves that cannot love back."},
+  {n:"Artemis",c:"Greek",d:["Hunt","Moon","Wilderness","Chastity","Childbirth"],r:"Goddess of the hunt and the moon, protector of wild things and young women. Twin of Apollo, she roams the mountains with her band of nymphs.",s:["Bow and Arrow","Deer","Crescent Moon","Hunting Dog"],g:"f",rel:["Apollo","Zeus","Leto","Orion"],w:"Artemis",
+   story:"When Leto labored on Delos, Artemis was born first — and at only minutes old, she helped her mother deliver Apollo. This is why she became the goddess of childbirth even though she swore never to bear children herself. As a young girl, she sat on Zeus's knee and asked for six wishes: a bow and arrows, a chorus of nymphs, a tunic short enough to run in, all the mountains of the earth, a single city, and eternal chastity. Zeus granted every one. Artemis roams the wild places where no man rules, and those who intrude suffer her wrath. Actaeon, the hunter who accidentally saw her bathing, she transformed into a stag — and his own hounds tore him apart. Yet she could show tenderness: she protected the young, she cared for the weak, and when Orion the hunter died — whether by her own arrow or Apollo's trick — she set him among the stars."},
+  {n:"Aphrodite",c:"Greek",d:["Love","Beauty","Desire","Procreation"],r:"Goddess of love and beauty, born from sea foam where Uranus's severed remains fell. Her power over desire affects gods and mortals alike.",s:["Dove","Rose","Myrtle","Sparrow"],g:"f",rel:["Hephaestus","Ares","Eros","Anchises"],w:"Aphrodite",
+   story:"Aphrodite's origin is written in blood and sea-foam. When Cronus castrated his father Uranus and cast the remains into the ocean, the water churned white around the immortal flesh, and from this divine foam Aphrodite rose — the most beautiful being in existence. She stepped ashore on Cyprus, and where her feet touched the ground, flowers bloomed. The gods feared her power would cause chaos, so Zeus married her off to Hephaestus, the lame smith-god. But Aphrodite loved Ares, god of war, and their affair was exposed when Hephaestus crafted an invisible net that trapped them in bed together — and invited all the gods to witness their shame. Yet Aphrodite was not merely vain. In the Trojan War, she protected Paris and saved Aeneas from death, because the judgment that began the war was ultimately her own. Love, she teaches, is not gentle — it is the most dangerous force in the universe."},
+  {n:"Ares",c:"Greek",d:["War","Bloodshed","Violence","Courage"],r:"God of brutal warfare and bloodshed. Represented the chaotic, violent reality of battle, unlike strategic Athena.",s:["Spear","Vulture","Dog","Burning Torch"],g:"m",rel:["Zeus","Hera","Aphrodite","Enyo"],w:"Ares",
+   story:"Ares is the god no one loves — not even his own father. Zeus called him 'most hateful of all the gods who hold Olympus,' for Ares represents war not as strategy but as butchery. He fights without loyalty, switching sides for the thrill of slaughter. Yet even Ares has his stories. When the giants Otus and Ephialtes trapped him in a bronze jar for thirteen months, it was Hermes who rescued him, and only because the world had grown dangerously quiet without war. His love affair with Aphrodite produced children including Eros (desire), Phobos (fear), and Deimos (terror) — the eternal companions of every battlefield. The Spartans honored him above all gods, sacrificing puppies in his name before battle. The Romans, who called him Mars, elevated him to father of their nation. Perhaps the truth is that no civilization, however refined, can pretend that violence does not exist."},
+  {n:"Hades",c:"Greek",d:["Underworld","Death","Wealth","Boundaries"],r:"God of the underworld and ruler of the dead. Not evil — he ensures mortals stay dead and cosmic boundaries are respected.",s:["Cerberus","Scepter","Helm of Darkness","Key"],g:"m",rel:["Zeus","Poseidon","Persephone","Demeter"],w:"Hades",
+   story:"Hades drew the worst lot — the underworld — and made it his kingdom. Unlike his brothers, he rarely leaves his realm. He sits on a throne of ebony, beside Persephone (whom he abducted with Zeus's permission), and judges the dead alongside Minos and Rhadamanthus. The underworld has five rivers: Styx (hatred), Lethe (forgetfulness), Acheron (sorrow), Phlegethon (fire), and Cocytus (wailing). The dead must cross the Styx, paying Charon the ferryman with a coin placed on their tongue in life. Cerberus, the three-headed hound, guards the gate — letting souls in, letting nothing out. Hades owns the Helm of Darkness, which makes its wearer invisible, and he lent it to Perseus and Athena. When Orpheus came to reclaim Eurydice, Hades was moved to tears — the only time the lord of death showed mercy. But Orpheus looked back, and the condition was broken. Hades is not cruel. He is simply the final word."},
+  {n:"Odin",c:"Norse",d:["Wisdom","War","Poetry","Death","Magic"],r:"All-Father, chief of the Aesir. Sacrificed his eye for wisdom and hung himself on Yggdrasil for nine nights to learn the runes.",s:["Gungnir","Ravens (Huginn & Muninn)","Sleipnir","Valknut"],g:"m",rel:["Thor","Loki","Frigg","Baldur","Vidar"],w:"Odin",
+   story:"Odin's hunger for wisdom has no limit. He gave his right eye to Mimir to drink from the well of wisdom — and Mimir's head still counsels him. He hung himself from Yggdrasil, the World Tree, for nine nights with a spear in his side, sacrificing himself to himself, until the runes revealed themselves. He stole the Mead of Poetry from the giants, taking the form of a serpent and then an eagle, and he spat it out as inspiration for poets and skalds. He rides Sleipnir, the eight-legged horse, through all nine worlds. His ravens Huginn (Thought) and Muninn (Memory) fly out each dawn and return each evening to whisper what they've seen. Yet for all his wisdom, he cannot prevent Ragnarok — only delay it. He gathers the bravest fallen warriors to Valhalla, where they fight all day and feast all night, preparing for the final battle where Odin will be swallowed by the wolf Fenrir. Even the All-Father knows that some fates cannot be escaped."},
+  {n:"Thor",c:"Norse",d:["Thunder","Storms","Strength","Protection"],r:"God of thunder, protector of Midgard and mankind. Wields Mjolnir, the mighty hammer that always returns to his hand.",s:["Mjolnir","Goats (Tanngrisnir & Tanngnjostr)","Megingjord","Iron Gloves"],g:"m",rel:["Odin","Loki","Sif","Jormungandr"],w:"Thor",
+   story:"Thor is the god the common people loved most — not because of wisdom or poetry, but because he gets things done. When the giant Thrym stole Mjolnir and demanded Freya as his bride, Thor disguised himself in a wedding dress and veil, took Loki as his bridesmaid, and walked into the giant's hall. When Thrym placed Mjolnir in the bride's hands as was custom, Thor threw off the veil and slaughtered every giant in the hall. When he went fishing with the giant Hymir and his line caught the World Serpent Jormungandr, he braced his feet through the bottom of the boat and hauled the serpent up — but Hymir cut the line in terror. Thor's goats pull his chariot across the sky: he can kill and eat them each night, then resurrect them with Mjolnir the next morning, as long as no bones are broken. At Ragnarok, Thor and Jormungandr will meet one final time. Thor will kill the serpent, then walk nine steps before falling dead from its venom. The protector of mankind will fall — but not before ensuring the world has a chance to begin again."},
+  {n:"Loki",c:"Norse",d:["Mischief","Trickery","Fire","Chaos","Shapeshifting"],r:"Trickster god, shapeshifter and chaos-bringer. Father of monsters, blood-brother of Odin, the cause and solution to every problem in Asgard.",s:["Serpent","Knot","Fly","Laufeyjarson"],g:"m",rel:["Odin","Thor","Sigyn","Fenrir","Hel","Jormungandr"],w:"Loki",
+   story:"Loki is the god who makes stories happen — and the god who ends them. When Thor's hammer was stolen, it was Loki who discovered where and who. When the walls of Asgard needed building, it was Loki who solved the problem (after causing it). He shapeshifts into a fly, a salmon, a mare — he even became a mare and gave birth to Odin's eight-legged horse Sleipnir. He cut off Sif's golden hair and replaced it with dwarf-forged gold. He arranged the death of Baldur, the most beloved god, with a spear of mistletoe — the one thing in all the worlds that had not sworn to harm him. For this, the gods bound Loki to three rocks with the entrails of his son, and a serpent drips venom onto his face. His wife Sigyn catches the venom in a bowl, but when she must empty it, the drops that hit him make him writthe in agony — and the whole earth shakes. This is the Norse explanation for earthquakes. At Ragnarok, Loki will break free and lead the giants against the gods. He and Heimdall will kill each other. Even in death, Loki is the last punchline."},
+  {n:"Freya",c:"Norse",d:["Love","Beauty","War","Magic (Seidr)","Fertility"],r:"Goddess of love, beauty, and war. Leader of the Valkyries, master of seidr magic. She claims half the battle-slain, Odin claims the other half.",s:["Brisingamen","Falcon Cloak","Cats","Boar Hildisvini"],g:"f",rel:["Freyr","Odin","Odr","Hnoss"],w:"Freya",
+   story:"Freya's necklace Brisingamen was bought at a price no other goddess would pay. Four dwarves forged it, and each demanded a night with her as payment. She agreed — and when Odin learned of it, he ordered Loki to steal the necklace in her sleep. Freya confronted Odin, who demanded an impossible price for its return: she must stir up eternal war between two kings, with the dead rising each night to fight again. This she did, and the battle rages still. Freya rides a chariot pulled by two enormous cats, and she owns a cloak of falcon feathers that lets her fly between the worlds. She is the most powerful practitioner of seidr — the magic that sees the future and twists fate. When she weeps, her tears turn to gold on land and amber in the sea. Her husband Odr wandered away long ago, and she seeks him always, weeping as she searches. Half the warriors who die in battle come to her hall Sessrumnir — the other half go to Odin's Valhalla."},
+  {n:"Ra",c:"Egyptian",d:["Sun","Creation","Kingship","Light"],r:"Sun god, king of the Egyptian pantheon. Sails across the sky by day and battles the serpent Apophis in the underworld by night.",s:["Sun Disk","Falcon","Obelisk","Ankh"],g:"m",rel:["Osiris","Set","Horus","Thoth","Sekhmet"],w:"Ra",
+   story:"In the beginning, there was Nun — the primordial waters. From Nun, Ra created himself, then created Shu (air) and Tefnut (moisture), from whom all life descended. Each morning, Ra rises in his solar barque and sails across the sky, bringing light to the world. Each evening, he descends into the Duat — the underworld — where the twelve hours of night hold terrifying dangers. In the seventh hour, Apophis, the colossal serpent of chaos, attacks. Every single night, Ra must defeat it or the sun will never rise again. When Ra grew old, mortals mocked him, so he sent his Eye — the goddess Sekhmet — to punish them. She slaughtered so many that Ra regretted his command and dyed beer red like blood. Sekhmet drank it, fell asleep, and awoke as the gentler Hathor. Eventually, Ra retreated to the heavens, leaving the throne to his grandson Osiris, but his daily journey continues — the eternal cycle of light against darkness."},
+  {n:"Osiris",c:"Egyptian",d:["Underworld","Resurrection","Fertility","Judgement"],r:"God of the dead and resurrection. Murdered and dismembered by Set, reassembled by Isis. He judges the dead in the Hall of Truth.",s:["Crook and Flail","Djed Pillar","Atef Crown","Green Skin"],g:"m",rel:["Isis","Set","Horus","Nephthys","Anubis"],w:"Osiris",
+   story:"Osiris was once a beloved king of Egypt who taught humanity agriculture, law, and civilization. His brother Set, consumed by jealousy, devised a cunning trap: a magnificent chest crafted to fit Osiris perfectly. At a banquet, Set offered the chest to whoever it fit — and when Osiris lay inside, Set's accomplices sealed it and threw it into the Nile. Isis searched the world and found the chest embedded in a tree in Byblos. But Set found it too, and this time he dismembered Osiris into fourteen pieces and scattered them across Egypt. Isis and Nephthys searched again, finding every piece — except one. Isis fashioned a replacement, used her magic to reassemble Osiris, and conceived their son Horus. Osiris could not return to the living world, but he descended to the Duat and became its king — the judge before whom every soul must stand. The heart of the deceased is weighed against the feather of Maat. If the heart is lighter, eternal life awaits. If not, the monster Ammit devours it."},
+  {n:"Isis",c:"Egyptian",d:["Magic","Motherhood","Healing","Protection"],r:"Goddess of magic and motherhood, the most powerful magician among the gods. She reassembled Osiris and protected Horus from every danger.",s:["Throne","Ankh","Tyet Knot","Sycamore"],g:"f",rel:["Osiris","Horus","Set","Nephthys"],w:"Isis",
+   story:"Isis is the goddess whose magic surpasses even Ra's. The story of how she obtained that power tells everything about her cunning. She created a serpent that bit Ra, and when the sun god lay dying — for the venom was beyond even his power — Isis offered to heal him. But the cure required Ra to speak his true secret name. In agony, Ra yielded, and Isis gained mastery over the most powerful being in creation. When Set murdered Osiris, Isis's grief and determination knew no bounds. She found every piece of her husband and used her magic to restore him long enough to conceive Horus. Then she fled to the marshes of the Nile Delta, hiding among the papyrus reeds, raising Horus alone while Set's assassins searched for them. She scorpion-stung, sickened, and healed her own son. She is called the Mother of God, the Lady of a Thousand Names, and her cult spread from Egypt to Greece to Rome — the last great temple to Isis at Philae was not closed until 535 CE, long after Christianity had forbidden her worship."},
+  {n:"Amaterasu",c:"Japanese",d:["Sun","Light","Imperial Line","Weaving"],r:"Sun goddess, ancestor of the Japanese imperial line. Emerged from a cave to restore light to the world after Susanoo's rampage.",s:["Sacred Mirror (Yata no Kagami)","Magatama","Rooster","Rice"],g:"f",rel:["Susanoo","Tsukuyomi","Izanagi"],w:"Amaterasu",
+   story:"When Izanagi returned from Yomi (the land of the dead) and purified himself, he washed his left eye — and Amaterasu, the Sun Goddess, was born. She ruled the High Plain of Heaven, weaving sacred garments and illuminating all the world. But her brother Susanoo, the storm god, went on a rampage: he destroyed her rice fields, defiled her sacred weaving hall (killing one of her attendants), and caused such devastation that Amaterasu, grief-stricken and furious, retreated into the Heavenly Rock Cave (Ama-no-Iwato) and sealed it shut. The world fell into eternal darkness. Eight hundred gods gathered outside the cave and tried everything to lure her out. Finally, the goddess Ame-no-Uzume performed a bawdy, hilarious dance that made all the gods roar with laughter. Curious, Amaterasu opened the cave slightly — and saw her own reflection in a mirror they had placed at the entrance. 'Who is this radiant being?' she wondered. When she stepped out, the world flooded with light again. To this day, the Sacred Mirror is one of the three Imperial Regalia of Japan."},
+  {n:"Susanoo",c:"Japanese",d:["Storms","Sea","Chaos","Heroism"],r:"Storm god, slayer of the eight-headed serpent Yamata no Orochi. Banished from heaven for his destructive rampages, he proved his heroism on earth.",s:["Sword (Kusanagi-no-Tsurugi)","Storm Clouds","Sea"],g:"m",rel:["Amaterasu","Tsukuyomi","Izanagi"],w:"Susanoo",
+   story:"Banished from heaven for tormenting Amaterasu, Susanoo descended to the province of Izumo. There he found an old couple weeping: each year, the eight-headed serpent Yamata no Orochi devoured one of their seven daughters, and only Kushinada-hime remained. Susanoo promised to save her — if they would let him marry her. He transformed Kushinada into a comb and hid her in his hair. Then he set his trap: eight great vats of sake, one for each head. The serpent drank, grew drunk, and fell asleep. Susanoo attacked with his ten-span sword, hacking the creature to pieces. In the serpent's tail, he found a magnificent sword — Kusanagi-no-Tsurugi, the Grass-Cutting Sword — which he presented to Amaterasu as a peace offering. It became one of the three Imperial Regalia of Japan, passed down through emperors for over two thousand years. The storm god who destroyed his sister's heaven became the hero who saved a woman and gave Japan its most sacred treasure."},
+  {n:"Vishnu",c:"Hindu",d:["Preservation","Order","Compassion","Dharma"],r:"Preserver god of the Trimurti. Descends as avatars (Dasavatara) whenever dharma declines and evil rises, restoring cosmic order.",s:["Sudarshana Chakra","Shankha Conch","Gada Mace","Lotus"],g:"m",rel:["Lakshmi","Shiva","Brahma","Krishna","Rama"],w:"Vishnu",
+   story:"Vishnu preserves the cosmos across infinite cycles of creation and destruction. When the demon Hiranyakashipu gained a boon that made him immune to gods, humans, beasts, day, night, inside and outside, he terrorized all creation. His own son Prahlada remained devoted to Vishnu — and when the demon prepared to kill the boy, Vishnu emerged from a pillar as Narasimha: neither man nor beast, neither inside nor outside, at the threshold of day and night. He placed Hiranyakashipu across his lap (neither earth nor sky) and destroyed him with his claws (neither weapon nor weaponless). As Rama, he defeated the demon king Ravana. As Krishna, he guided the Pandavas through the Mahabharata and spoke the Bhagavad Gita. As Kurma the tortoise, he supported Mount Mandara while the gods and demons churned the ocean of milk for the nectar of immortality. Whenever dharma wavers, Vishnu descends — not to judge, but to restore balance."},
+  {n:"Shiva",c:"Hindu",d:["Destruction","Transformation","Meditation","Dance","Yoga"],r:"Destroyer/Transformer of the Trimurti. Lord of the cosmic dance (Nataraja), patron of ascetics and yogis, who destroys to make way for renewal.",s:["Trishula Trident","Damru Drum","Nandi Bull","Third Eye","Crescent Moon"],g:"m",rel:["Parvati","Ganesha","Vishnu","Kartikeya"],w:"Shiva",
+   story:"Shiva's dance of destruction — the Tandava — is not an ending but a transformation. In the cosmic hall of Chidambaram, Shiva performs his dance for the sages. When they fail to recognize his divinity, he reveals his true form: leg raised, hair flying, trident gleaming, a ring of fire around him. The universe trembles. Even the gods cannot watch. But the dance creates as much as it destroys — each step births new worlds from the ashes of the old. Shiva's third eye, normally closed, opens in wrath: when Kama, god of love, shot an arrow to wake Shiva from meditation, the third eye's fire incinerated him instantly. Yet Shiva is also Bholenath — the simple, innocent one. He lives on Mount Kailasa, wears snakes and ash, meditates for eons, and grants boons to any devotee who approaches with genuine love. He drank the halahala poison that emerged from the churning of the ocean, holding it in his throat until it turned blue — earning the name Nilakantha, the Blue-Throated One. Destruction, he teaches, is not the opposite of creation. It is its prerequisite."},
+  {n:"Ganesha",c:"Hindu",d:["Obstacles","Wisdom","New Beginnings","Arts","Letters"],r:"Elephant-headed remover of obstacles, son of Shiva and Parvati. Invoked at the start of every endeavor — no ritual begins without his blessing.",s:["Modak Sweet","Axe (Parashu)","Mouse (Mushika)","Broken Tusk"],g:"m",rel:["Shiva","Parvati","Kartikeya"],w:"Ganesha",
+   story:"How Ganesha got his elephant head is a story of love and rage. Parvati, wanting privacy while bathing, created a boy from turmeric paste and set him to guard her door. When Shiva returned and found a stranger blocking him, he demanded entry. The boy refused. In fury, Shiva cut off his head. Parvati's grief threatened to destroy the universe. To appease her, Shiva ordered his ganas to bring the head of the first creature they found facing north — which was an elephant. Shiva placed it on the boy's body and restored him to life, making him chief of the ganas. Ganesha once lost a tusk in battle, and he used it as a pen to write the Mahabharata as Vyasa dictated it. When asked why he didn't use another pen, he replied: 'When the story is this vast, one must write with whatever is at hand.' The mouse he rides represents the ego — desires and impulses that must be controlled. Ganesha holds the modak in his trunk, the sweetness of spiritual wisdom that he offers to every devotee."},
+  {n:"Quetzalcoatl",c:"Aztec",d:["Wind","Learning","Creation","Civilization","Venus"],r:"Feathered serpent, creator god and bringer of knowledge, maize, and the calendar. Opposed human sacrifice and taught agriculture.",s:["Feathered Serpent","Wind","Venus (Morning Star)","Ehecatl Mask"],g:"m",rel:["Tezcatlipoca","Huitzilopochtli","Xolotl","Coatlicue"],w:"Quetzalcoatl",
+   story:"Quetzalcoatl is the feathered serpent — part bird (sky and spirit) and part serpent (earth and matter) — the bridge between heaven and earth. In the creation myths, he helped create the current world, the Fifth Sun, by leaping into the funeral pyre of the previous era and rising as Venus, the morning star. He descended into Mictlan (the underworld) to retrieve the bones of the previous humanity, and by bleeding onto them, he created the people of this age. He taught them maize cultivation, the calendar, writing, and the arts. Most remarkably, he opposed human sacrifice, offering only butterflies, snakes, and jade to the gods. But his brother and eternal rival Tezcatlipoca, the Smoking Mirror, tricked him. Disguised as an old man, Tezcatlipoca gave Quetzalcoatl a potion that made him drunk and shameful. In his disgrace, Quetzalcoatl sailed east on a raft of serpents, promising to return. When Cortes arrived from the east in 1519, the Aztec emperor Moctezuma wondered if the prophecy had been fulfilled. It had not — but the misunderstanding helped destroy an empire."},
+  {n:"Anansi",c:"Akan",d:["Stories","Wisdom","Trickery","Knowledge"],r:"Spider god of stories and trickery. Bought all the world's stories from the sky god Nyame and distributes them through his webs.",s:["Spider","Web","Stories (Anansesem)","Drum"],g:"m",rel:["Nyame","Turtle","Leopard","Hornets"],w:"Anansi",
+   story:"Once, all stories belonged to Nyame, the sky god. Anansi wanted them. He climbed to heaven on his silken thread and made his offer. Nyame set an impossible price: bring me the hornets that sting, the great leopard that kills, and the pythons that crush. Anansi agreed. For the hornets, he poured water on their nest and offered them a gourd to shelter from the 'rain' — then tied it shut. For the leopard, he dug a pit, and when the leopard fell in, offered to rescue him with a rope — then bound him. For the python, he debated whether a python could be longer than a branch, and when the python stretched out to prove it, Anansi tied him at both ends. Nyame, astonished, handed over all the stories. 'From this day, they shall be called Spider Stories, and whenever a story is told, Anansi shall be named.' This is why every Ashanti tale begins: 'We do not really mean, we do not really mean that what we are about to say is true. A story, a story; let it come, let it go.' Anansi reminds us that brains will always triumph over brawn — and that every great story was once stolen from someone who hoarded it."}
 ];
 
-// Culture descriptions
-const CULTURES = {
-  Greek: { desc:"The mythology of ancient Greece, home of the Olympian gods who ruled from Mount Olympus. These stories have shaped Western civilization for millennia.", keyFigures:["Zeus","Hera","Poseidon","Athena","Apollo","Artemis","Aphrodite","Ares","Hades"] },
-  Norse: { desc:"The myths of the Norse peoples — tales of the Aesir and Vanir, nine worlds connected by Yggdrasil, and the inevitable doom of Ragnarok.", keyFigures:["Odin","Thor","Loki","Freya","Frigg","Baldur"] },
-  Egyptian: { desc:"Ancient Egypt's mythology spans thousands of years, featuring gods with animal heads, the weighing of the heart, and the eternal struggle of order and chaos.", keyFigures:["Ra","Osiris","Isis","Horus","Anubis","Thoth"] },
-  Japanese: { desc:"Shinto and Japanese mythology tells of kami — spirits of nature and ancestors — and the creation of Japan by Izanagi and Izanami.", keyFigures:["Amaterasu","Susanoo","Tsukuyomi","Inari"] },
-  Hindu: { desc:"One of the world's oldest and richest mythological traditions, with the Trimurti, countless avatars, and the epic tales of the Ramayana and Mahabharata.", keyFigures:["Brahma","Vishnu","Shiva","Ganesha","Lakshmi"] },
-  Celtic: { desc:"The myths of the Celtic peoples — mystical tales of the Tuatha De Danann, sacred groves, and the Otherworld that exists alongside our own.", keyFigures:["Dagda","Morrigan","Lugh","Brigid"] },
-  Aztec: { desc:"The mythology of the Aztec Empire — a world of suns, sacrifices, and the eternal cycle of creation and destruction.", keyFigures:["Quetzalcoatl","Huitzilopochtli","Tezcatlipoca"] },
-  Akan: { desc:"The rich oral traditions of the Akan people of West Africa, featuring Anansi the spider and the powerful sky god Nyame.", keyFigures:["Anansi","Nyame"] }
+const CUL = {
+  Greek:{desc:"The mythology of ancient Greece — home of the Olympian gods, the Trojan War, the Labors of Hercules, and stories that shaped Western civilization for over 3,000 years.",kf:["Zeus","Hera","Poseidon","Athena","Apollo","Artemis","Aphrodite","Ares","Hades","Hermes"]},
+  Norse:{desc:"The myths of the Norse peoples — tales of the Aesir and Vanir, nine worlds connected by Yggdrasil the World Tree, and the inevitable doom of Ragnarok where gods and giants clash one final time.",kf:["Odin","Thor","Loki","Freya","Frigg","Baldur"]},
+  Egyptian:{desc:"Ancient Egypt's mythology spans over 3,000 years — gods with animal heads, the weighing of the heart in the afterlife, and the eternal struggle between Maat (order) and Isfet (chaos).",kf:["Ra","Osiris","Isis","Horus","Anubis","Thoth"]},
+  Japanese:{desc:"Shinto and Japanese mythology — the creation of Japan by Izanagi and Izanami, the sun goddess Amaterasu, and the kami spirits that inhabit every mountain, river, and tree.",kf:["Amaterasu","Susanoo","Tsukuyomi","Inari"]},
+  Hindu:{desc:"One of the world's oldest traditions — the Trimurti of Brahma, Vishnu, and Shiva governing creation, preservation, and destruction. The Ramayana, the Mahabharata, and the Bhagavad Gita.",kf:["Brahma","Vishnu","Shiva","Ganesha","Lakshmi"]},
+  Celtic:{desc:"The myths of the Celtic peoples — the Tuatha De Danann, sacred groves, shape-shifting, and the Otherworld that exists alongside our own, separated by only a thin veil.",kf:["Dagda","Morrigan","Lugh","Brigid"]},
+  Aztec:{desc:"Aztec mythology — a world of five suns, cosmic sacrifice, and the eternal rivalry between Quetzalcoatl and Tezcatlipoca that shapes the fate of empires.",kf:["Quetzalcoatl","Huitzilopochtli","Tezcatlipoca"]},
+  Akan:{desc:"The rich oral traditions of the Akan people of West Africa — Anansi the spider trickster who bought the world's stories from Nyame the sky god.",kf:["Anansi","Nyame"]}
 };
 
 // ============================================================
-// NLP PROCESSOR - Uses compromise.js for language processing
+// NLP ENGINE (built-in, zero dependencies)
 // ============================================================
-class NLPProcessor {
-  constructor() {
-    // Build lookup maps from knowledge base
-    this.figureMap = {};
-    MYTHOLOGY_DB.forEach(f => {
-      this.figureMap[f.name.toLowerCase()] = f;
-    });
-    this.cultureKeywords = Object.keys(CULTURES).map(c => c.toLowerCase());
+class NLP {
+  constructor(){
+    this.fm={};
+    DB.forEach(f=>{this.fm[f.n.toLowerCase()]=f});
+    this.ck=Object.keys(CUL).map(c=>c.toLowerCase());
   }
-
-  process(input) {
-    const doc = nlp(input);
-    const lower = input.toLowerCase().trim();
-    const tokens = doc.terms().out('array').map(t => t.toLowerCase());
-
-    return {
-      intent: this.classifyIntent(lower, tokens, doc),
-      entities: this.extractEntities(lower, tokens, doc),
-      sentiment: this.analyzeSentiment(doc),
-      tokens,
-      original: input
-    };
+  process(input){
+    try{
+      const l=(input||"").toLowerCase().trim();
+      const tk=l.split(/\s+/).filter(t=>t.length>0);
+      return{intent:this.ci(l,tk),entities:this.ee(l,tk),tokens:tk,original:input};
+    }catch(e){return{intent:"general",entities:{figures:[],cultures:[],pronouns:[]},tokens:[],original:input}}
   }
-
-  classifyIntent(lower, tokens, doc) {
-    const intentScores = {};
-
-    // Greeting patterns
-    const greetings = ['hello','hi','hey','greetings','howdy','good morning','good evening','hola','yo'];
-    if (tokens.some(t => greetings.includes(t))) intentScores.greeting = 3;
-
-    // Ask about a figure
-    const askPatterns = ['who is','who are','tell me about','what is','describe','explain','information on','tell me more','more about','know about'];
-    for (const p of askPatterns) { if (lower.includes(p)) { intentScores.ask_about = 3; break; } }
-
-    // Compare figures
-    const comparePatterns = ['compare','difference between',' vs ',' versus ','how does','similarities','how are they different','how are they similar'];
-    for (const p of comparePatterns) { if (lower.includes(p)) { intentScores.compare = 3; break; } }
-
-    // List by culture
-    const listPatterns = ['list','show me','names of','gods of','deities of','who are the','figures in','tell me about the','pantheon'];
-    for (const p of listPatterns) { if (lower.includes(p)) { intentScores.list_culture = 2; break; } }
-
-    // Tell a story
-    const storyPatterns = ['tell me a story','narrate','myth about','legend of','tale of','story','tell the story','saga','epic'];
-    for (const p of storyPatterns) { if (lower.includes(p)) { intentScores.tell_story = 3; break; } }
-
-    // Save to collection
-    const savePatterns = ['save','bookmark','add to collection','remember this','store'];
-    for (const p of savePatterns) { if (lower.includes(p)) { intentScores.save = 2; break; } }
-
-    // View collection
-    const viewPatterns = ['my collection','show collection','saved items','favorites','bookmarks','what have i saved'];
-    for (const p of viewPatterns) { if (lower.includes(p)) { intentScores.view_collection = 2; break; } }
-
-    // Help
-    const helpPatterns = ['help','what can you do','how to use','instructions','guide','what do you know'];
-    for (const p of helpPatterns) { if (lower.includes(p)) { intentScores.help = 3; break; } }
-
-    // Thanks
-    const thanksPatterns = ['thanks','thank you','appreciated','awesome','great answer','cool','nice','wonderful','fascinating'];
-    for (const p of thanksPatterns) { if (lower.includes(p)) { intentScores.thanks = 2; break; } }
-
-    // Goodbye
-    const byePatterns = ['bye','goodbye','see you','farewell','until next','gotta go'];
-    for (const p of byePatterns) { if (lower.includes(p)) { intentScores.goodbye = 3; break; } }
-
-    // If a figure is mentioned but no strong intent, default to ask_about
-    const mentionedFigures = this.findFigureNames(lower);
-    if (mentionedFigures.length > 0 && !intentScores.ask_about && !intentScores.compare) {
-      intentScores.ask_about = 1;
-    }
-
-    // If a culture is mentioned but no strong intent, default to list_culture
-    const mentionedCultures = this.findCultureNames(lower);
-    if (mentionedCultures.length > 0 && !intentScores.list_culture && !intentScores.ask_about) {
-      intentScores.list_culture = 1;
-    }
-
-    // Get highest scoring intent
-    const sorted = Object.entries(intentScores).sort((a, b) => b[1] - a[1]);
-    return sorted.length > 0 ? sorted[0][0] : 'general';
+  ci(l,tk){
+    const s={};
+    if(tk.some(t=>['hello','hi','hey','greetings','howdy','yo','hola'].includes(t)))s.greeting=3;
+    if(['who is','who are','tell me about','what is','describe','explain','info on','more about','know about','tell me more'].some(p=>l.includes(p)))s.ask=3;
+    if(['compare','difference between',' vs ',' versus ','similarities','how are they different','how are they similar'].some(p=>l.includes(p)))s.compare=3;
+    if(['list','show me','names of','gods of','deities of','who are the','figures in','pantheon','all the'].some(p=>l.includes(p)))s.list=2;
+    if(['tell me a story','narrate','myth about','legend of','tale of','tell the story','saga','epic','story of'].some(p=>l.includes(p)))s.story=3;
+    if(['save','bookmark','add to collection','remember this','store this'].some(p=>l.includes(p)))s.save=2;
+    if(['my collection','show collection','saved items','favorites','bookmarks','what have i saved'].some(p=>l.includes(p)))s.view=2;
+    if(['help','what can you do','how to use','instructions','guide','what do you know'].some(p=>l.includes(p)))s.help=3;
+    if(['thanks','thank you','appreciated','awesome','great answer','cool','nice','wonderful','fascinating','interesting'].some(p=>l.includes(p)))s.thanks=2;
+    if(['bye','goodbye','see you','farewell'].some(p=>l.includes(p)))s.bye=3;
+    if(this.ff(l).length>0&&!s.ask&&!s.compare)s.ask=1;
+    if(this.fc(l).length>0&&!s.list&&!s.ask)s.list=1;
+    const sorted=Object.entries(s).sort((a,b)=>b[1]-a[1]);
+    return sorted.length>0?sorted[0][0]:'general';
   }
-
-  extractEntities(lower, tokens, doc) {
-    return {
-      figures: this.findFigureNames(lower),
-      cultures: this.findCultureNames(lower),
-      pronouns: this.findPronouns(tokens),
-      domains: this.findDomains(tokens)
-    };
-  }
-
-  findFigureNames(lower) {
-    const found = [];
-    for (const name of Object.keys(this.figureMap)) {
-      if (lower.includes(name)) found.push(this.figureMap[name]);
-    }
-    return found;
-  }
-
-  findCultureNames(lower) {
-    return this.cultureKeywords.filter(c => lower.includes(c)).map(c => c.charAt(0).toUpperCase() + c.slice(1));
-  }
-
-  findPronouns(tokens) {
-    const pronouns = [];
-    if (tokens.some(t => ['he','him','his'].includes(t))) pronouns.push('male');
-    if (tokens.some(t => ['she','her','hers'].includes(t))) pronouns.push('female');
-    if (tokens.some(t => ['they','them','their'].includes(t))) pronouns.push('plural');
-    if (tokens.some(t => ['this','that','it'].includes(t))) pronouns.push('proximal');
-    return pronouns;
-  }
-
-  findDomains(tokens) {
-    const domainKeywords = ['war','love','death','wisdom','thunder','sea','sky','fire','moon','sun','underworld','magic','nature','fertility','music','healing','death','trickery','chaos'];
-    return tokens.filter(t => domainKeywords.includes(t));
-  }
-
-  analyzeSentiment(doc) {
-    // Simple sentiment: check for positive/negative sentiment words
-    const text = doc.out('text').toLowerCase();
-    const positive = ['love','great','amazing','wonderful','fascinating','interesting','cool','awesome','beautiful','best','like','enjoy'];
-    const negative = ['hate','bad','terrible','boring','worst','dislike','awful','stupid','confusing'];
-    let score = 0;
-    positive.forEach(w => { if (text.includes(w)) score++; });
-    negative.forEach(w => { if (text.includes(w)) score--; });
-    return score > 0 ? 'positive' : score < 0 ? 'negative' : 'neutral';
-  }
+  ee(l,tk){return{figures:this.ff(l),cultures:this.fc(l),pronouns:this.fp(tk)}}
+  ff(l){const f=[];for(const n of Object.keys(this.fm)){const rx=new RegExp('\\b'+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b');if(rx.test(l))f.push(this.fm[n])}return f}
+  fc(l){return this.ck.filter(c=>l.includes(c)).map(c=>c.charAt(0).toUpperCase()+c.slice(1))}
+  fp(tk){const p=[];if(tk.some(t=>['he','him','his'].includes(t)))p.push('m');if(tk.some(t=>['she','her','hers'].includes(t)))p.push('f');return p}
 }
 
 // ============================================================
-// CONTEXT MANAGER - Tracks conversation state
+// CONTEXT MANAGER
 // ============================================================
-class ContextManager {
-  constructor() {
-    this.reset();
-  }
-
-  reset() {
-    this.currentFigure = null;
-    this.currentCulture = null;
-    this.mentionedFigures = [];
-    this.conversationFlow = 'idle'; // idle, exploring, comparing, storytelling
-    this.lastIntent = null;
-    this.awaitingInput = null;
-    this.topicHistory = [];
-  }
-
-  update(nlpResult) {
-    const { intent, entities } = nlpResult;
-
-    // Update last intent
-    this.lastIntent = intent;
-
-    // Handle pronoun resolution for figures
-    if (entities.pronouns.length > 0 && this.currentFigure) {
-      // If user says "tell me more about him/her", resolve pronoun to current figure
-      // Don't override if new figures are explicitly mentioned
-      if (entities.figures.length === 0) {
-        nlpResult.entities.figures = [this.currentFigure];
+class CTX {
+  constructor(){this.reset()}
+  reset(){this.cf=null;this.cc=null;this.mf=[];this.flow='idle';this.li=null}
+  update(nr){
+    try{
+      const{intent:i,entities:e}=nr;this.li=i;
+      if(e.pronouns.length>0&&this.cf&&e.figures.length===0)nr.entities.figures=[this.cf];
+      if(e.figures.length>0){
+        if(e.figures.length>=2)this.flow='comparing';
+        else{this.cf=e.figures[0];this.flow='exploring';if(!this.mf.find(f=>f.n===this.cf.n))this.mf.push(this.cf)}
       }
-    }
+      if(e.cultures.length>0)this.cc=e.cultures[0];
+      else if(this.cf)this.cc=this.cf.c;
+      if(i==='story')this.flow='storytelling';
+      if(i==='greeting'||i==='bye')this.flow='idle';
+      if(['ask','story'].includes(i)&&e.figures.length===0&&this.cf)nr.entities.figures=[this.cf];
+    }catch(e){console.error("CTX error:",e)}
+  }
+  gs(){
+    let c='';
+    if(this.cf)c+=`Discussing: ${this.cf.n} (${this.cf.c}). `;
+    if(this.cc)c+=`Culture: ${this.cc}. `;
+    if(this.mf.length>0)c+=`Mentioned: ${this.mf.map(f=>f.n).join(', ')}. `;
+    return c;
+  }
+}
 
-    // Update current figure
-    if (entities.figures.length > 0) {
-      // If multiple figures, we're likely comparing
-      if (entities.figures.length >= 2) {
-        this.conversationFlow = 'comparing';
-      } else {
-        this.currentFigure = entities.figures[0];
-        this.conversationFlow = 'exploring';
-        if (!this.mentionedFigures.find(f => f.name === this.currentFigure.name)) {
-          this.mentionedFigures.push(this.currentFigure);
-        }
-        this.topicHistory.push({ figure: this.currentFigure.name, timestamp: Date.now() });
+// ============================================================
+// DATABASE (IndexedDB)
+// ============================================================
+class DB_ {
+  constructor(){this.db=null}
+  async init(){
+    return new Promise((res,rej)=>{
+      const r=indexedDB.open('LoreKeeperDB',1);
+      r.onupgradeneeded=e=>{
+        const d=e.target.result;
+        if(!d.objectStoreNames.contains('msg'))d.createObjectStore('msg',{keyPath:'id',autoIncrement:true});
+        if(!d.objectStoreNames.contains('col')){const s=d.createObjectStore('col',{keyPath:'id',autoIncrement:true});s.createIndex('name','name',{unique:false})}
+      };
+      r.onsuccess=e=>{this.db=e.target.result;res()};r.onerror=e=>rej(e.target.error);
+    });
+  }
+  async sm(role,content,meta={}){
+    try{const tx=this.db.transaction('msg','readwrite');tx.objectStore('msg').add({role,content,meta,ts:Date.now()});return new Promise(r=>{tx.oncomplete=()=>r()})}catch(e){}
+  }
+  async gm(lim=50){
+    try{const tx=this.db.transaction('msg','readonly');const rq=tx.objectStore('msg').getAll();return new Promise(r=>{rq.onsuccess=()=>r(rq.result.slice(-lim));rq.onerror=()=>r([])})}catch(e){return[]}
+  }
+  async cm(){try{const tx=this.db.transaction('msg','readwrite');tx.objectStore('msg').clear();return new Promise(r=>{tx.oncomplete=()=>r()})}catch(e){}}
+  async sc(fig){
+    try{const ex=await this.gc();if(ex.find(f=>f.name===fig.n))return false;const tx=this.db.transaction('col','readwrite');tx.objectStore('col').add({name:fig.n,culture:fig.c,domain:fig.d,role:fig.r,savedAt:Date.now()});return new Promise(r=>{tx.oncomplete=()=>r(true);tx.onerror=()=>r(false)})}catch(e){return false}
+  }
+  async gc(){
+    try{const tx=this.db.transaction('col','readonly');const rq=tx.objectStore('col').getAll();return new Promise(r=>{rq.onsuccess=()=>r(rq.result||[]);rq.onerror=()=>r([])})}catch(e){return[]}
+  }
+  async rc(id){try{const tx=this.db.transaction('col','readwrite');tx.objectStore('col').delete(id);return new Promise(r=>{tx.oncomplete=()=>r()})}catch(e){}}
+  async ca(){try{const t1=this.db.transaction('msg','readwrite');t1.objectStore('msg').clear();const t2=this.db.transaction('col','readwrite');t2.objectStore('col').clear();await Promise.all([new Promise(r=>{t1.oncomplete=r}),new Promise(r=>{t2.oncomplete=r})])}catch(e){}}
+}
+
+// ============================================================
+// WIKIPEDIA API (Free, optional enrichment)
+// ============================================================
+async function getWiki(query){
+  try{
+    const su=`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query+' mythology')}&utf8=&format=json&origin=*&srlimit=1`;
+    const sr=await fetch(su,{signal:AbortSignal.timeout(6000)});
+    const sd=await sr.json();
+    if(!sd.query||!sd.query.search||!sd.query.search.length)return null;
+    const t=sd.query.search[0].title;
+    const mu=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t)}`;
+    const mr=await fetch(mu,{signal:AbortSignal.timeout(6000)});
+    if(!mr.ok)return null;
+    const md=await mr.json();
+    return{title:md.title,extract:md.extract,thumbnail:md.thumbnail?md.thumbnail.source:null,url:md.content_urls?md.content_urls.desktop.page:null};
+  }catch(e){return null}
+}
+
+// ============================================================
+// RESPONSE GENERATOR — 100% local, always works
+// ============================================================
+class RG {
+  constructor(nlp,ctx,db){this.nlp=nlp;this.ctx=ctx;this.db=db}
+
+  async gen(input){
+    try{
+      const nr=this.nlp.process(input);
+      this.ctx.update(nr);
+      const{intent:i,entities:e}=nr;
+
+      // Handle save/view locally
+      if(i==='save'&&this.ctx.cf)return await this.hSave();
+      if(i==='view')return await this.hView();
+
+      const fig=e.figures.length>0?e.figures[0]:this.ctx.cf;
+      const cul=e.cultures.length>0?e.cultures[0]:this.ctx.cc;
+
+      // Try Wikipedia in background (non-blocking)
+      let wiki=null;
+      try{
+        if(fig)wiki=await getWiki(fig.n);
+        else if(cul)wiki=await getWiki(cul+' mythology');
+      }catch(e){}
+
+      // Generate primary response from local KB
+      const text=this.gLocal(i,e,fig,cul);
+
+      // Append Wikipedia enrichment if available and relevant
+      let finalText=text;
+      if(wiki&&wiki.extract&&i!=='greeting'&&i!=='thanks'&&i!=='bye'){
+        const snippet=wiki.extract.length>400?wiki.extract.substring(0,400)+'...':wiki.extract;
+        finalText+=`\n\n---\n\nFrom the ancient scrolls (Wikipedia):\n${snippet}`;
+        if(wiki.url)finalText+=`\n\nRead more on Wikipedia`;
       }
-    }
 
-    // Update current culture
-    if (entities.cultures.length > 0) {
-      this.currentCulture = entities.cultures[0];
-    } else if (this.currentFigure) {
-      this.currentCulture = this.currentFigure.culture;
-    }
-
-    // Update flow
-    if (intent === 'tell_story') this.conversationFlow = 'storytelling';
-    if (intent === 'greeting' || intent === 'goodbye') this.conversationFlow = 'idle';
-
-    // Handle "tell me more" type queries - keep current figure
-    if (['ask_about','tell_story'].includes(intent) && entities.figures.length === 0 && this.currentFigure) {
-      nlpResult.entities.figures = [this.currentFigure];
-    }
-
-    return this;
-  }
-
-  getContextString() {
-    let ctx = '';
-    if (this.currentFigure) ctx += `Currently discussing: ${this.currentFigure.name} (${this.currentFigure.culture} mythology). `;
-    if (this.currentCulture) ctx += `Active culture: ${this.currentCulture}. `;
-    if (this.mentionedFigures.length > 0) ctx += `Figures mentioned in conversation: ${this.mentionedFigures.map(f => f.name).join(', ')}. `;
-    if (this.conversationFlow !== 'idle') ctx += `Conversation flow: ${this.conversationFlow}. `;
-    return ctx;
-  }
-}
-
-// ============================================================
-// DATABASE - IndexedDB for persistent storage
-// ============================================================
-class Database {
-  constructor() {
-    this.dbName = 'LoreKeeperDB';
-    this.dbVersion = 1;
-    this.db = null;
-  }
-
-  async init() {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.dbName, this.dbVersion);
-
-      request.onupgradeneeded = (e) => {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains('messages')) {
-          db.createObjectStore('messages', { keyPath: 'id', autoIncrement: true });
-        }
-        if (!db.objectStoreNames.contains('collection')) {
-          const store = db.createObjectStore('collection', { keyPath: 'id', autoIncrement: true });
-          store.createIndex('name', 'name', { unique: false });
-        }
-      };
-
-      request.onsuccess = (e) => {
-        this.db = e.target.result;
-        resolve(this.db);
-      };
-
-      request.onerror = (e) => reject(e.target.error);
-    });
-  }
-
-  async saveMessage(role, content, metadata = {}) {
-    const tx = this.db.transaction('messages', 'readwrite');
-    const store = tx.objectStore('messages');
-    store.add({ role, content, metadata, timestamp: Date.now() });
-    return new Promise((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = (e) => reject(e.target.error);
-    });
-  }
-
-  async getMessages(limit = 50) {
-    const tx = this.db.transaction('messages', 'readonly');
-    const store = tx.objectStore('messages');
-    const request = store.getAll();
-    return new Promise((resolve, reject) => {
-      request.onsuccess = () => {
-        const messages = request.result.slice(-limit);
-        resolve(messages);
-      };
-      request.onerror = (e) => reject(e.target.error);
-    });
-  }
-
-  async clearMessages() {
-    const tx = this.db.transaction('messages', 'readwrite');
-    tx.objectStore('messages').clear();
-    return new Promise((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = (e) => reject(e.target.error);
-    });
-  }
-
-  async saveToCollection(figure) {
-    // Check if already saved
-    const existing = await this.getCollection();
-    if (existing.find(f => f.name === figure.name)) {
-      return false; // Already saved
-    }
-    const tx = this.db.transaction('collection', 'readwrite');
-    tx.objectStore('collection').add({
-      name: figure.name,
-      culture: figure.culture,
-      domain: figure.domain,
-      role: figure.role,
-      savedAt: Date.now()
-    });
-    return new Promise((resolve, reject) => {
-      tx.oncomplete = () => resolve(true);
-      tx.onerror = (e) => reject(e.target.error);
-    });
-  }
-
-  async getCollection() {
-    const tx = this.db.transaction('collection', 'readonly');
-    const request = tx.objectStore('collection').getAll();
-    return new Promise((resolve, reject) => {
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = (e) => reject(e.target.error);
-    });
-  }
-
-  async removeFromCollection(id) {
-    const tx = this.db.transaction('collection', 'readwrite');
-    tx.objectStore('collection').delete(id);
-    return new Promise((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = (e) => reject(e.target.error);
-    });
-  }
-
-  async clearAll() {
-    const tx1 = this.db.transaction('messages', 'readwrite');
-    tx1.objectStore('messages').clear();
-    const tx2 = this.db.transaction('collection', 'readwrite');
-    tx2.objectStore('collection').clear();
-    return Promise.all([
-      new Promise(r => { tx1.oncomplete = r; }),
-      new Promise(r => { tx2.oncomplete = r; })
-    ]);
-  }
-}
-
-// ============================================================
-// WIKIPEDIA API - Free, no authentication needed
-// ============================================================
-class WikipediaAPI {
-  static async search(query) {
-    try {
-      const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query + ' mythology')}&utf8=&format=json&origin=*&srlimit=3`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.query && data.query.search && data.query.search.length > 0) {
-        return data.query.search[0].title;
-      }
-      return null;
-    } catch (e) {
-      console.warn('Wikipedia search failed:', e);
-      return null;
+      return{text:finalText,figure:fig,culture:cul,wiki,intent:i,source:wiki?'local+wiki':'local'};
+    }catch(e){
+      console.error("Gen error:",e);
+      return{text:this.fallback(input),figure:this.ctx.cf,culture:this.ctx.cc,wiki:null,intent:'fallback',source:'local'};
     }
   }
 
-  static async getSummary(title) {
-    try {
-      const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
-      const res = await fetch(url);
-      if (!res.ok) return null;
-      const data = await res.json();
-      return {
-        title: data.title,
-        extract: data.extract,
-        thumbnail: data.thumbnail ? data.thumbnail.source : null,
-        url: data.content_urls ? data.content_urls.desktop.page : null
-      };
-    } catch (e) {
-      console.warn('Wikipedia summary failed:', e);
-      return null;
-    }
-  }
-
-  static async getInfo(query) {
-    const title = await this.search(query);
-    if (!title) return null;
-    return await this.getSummary(title);
-  }
-}
-
-// ============================================================
-// POLLINATIONS AI API - Free, no key needed
-// ============================================================
-class PollinationsAPI {
-  static async chat(messages, model = 'openai') {
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000);
-
-      const res = await fetch('https://text.pollinations.ai/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          messages,
-          model,
-          temperature: 0.8,
-          max_tokens: 600
-        })
-      });
-
-      clearTimeout(timeout);
-
-      if (!res.ok) throw new Error(`API returned ${res.status}`);
-      const text = await res.text();
-      return text.trim();
-    } catch (e) {
-      console.warn('Pollinations API failed:', e);
-      return null;
-    }
-  }
-}
-
-// ============================================================
-// RESPONSE GENERATOR - Combines AI + KB + API + Context
-// ============================================================
-class ResponseGenerator {
-  constructor(nlp, context, db) {
-    this.nlp = nlp;
-    this.context = context;
-    this.db = db;
-    this.conversationHistory = [];
-  }
-
-  addToHistory(role, content) {
-    this.conversationHistory.push({ role, content });
-    // Keep last 20 messages for context window
-    if (this.conversationHistory.length > 20) {
-      this.conversationHistory = this.conversationHistory.slice(-20);
-    }
-  }
-
-  async generate(userInput) {
-    // Process with NLP
-    const nlpResult = this.nlp.process(userInput);
-    // Update context
-    this.context.update(nlpResult);
-
-    const { intent, entities } = nlpResult;
-
-    // Handle certain intents locally for speed
-    if (intent === 'save' && this.context.currentFigure) {
-      return await this.handleSave();
-    }
-    if (intent === 'view_collection') {
-      return await this.handleViewCollection();
-    }
-
-    // Build context-aware system prompt
-    const systemPrompt = this.buildSystemPrompt(nlpResult);
-
-    // Try to get Wikipedia data for enrichment
-    let wikiData = null;
-    const figureToLookup = entities.figures.length > 0 ? entities.figures[0] : null;
-    const cultureToLookup = entities.cultures.length > 0 ? entities.cultures[0] : null;
-
-    if (figureToLookup) {
-      wikiData = await WikipediaAPI.getInfo(figureToLookup.name);
-    } else if (cultureToLookup && intent === 'list_culture') {
-      wikiData = await WikipediaAPI.getInfo(cultureToLookup + ' mythology');
-    }
-
-    // Build enriched prompt with reference data
-    let enrichedSystem = systemPrompt;
-    if (wikiData && wikiData.extract) {
-      enrichedSystem += `\n\nWikipedia reference for ${wikiData.title}:\n${wikiData.extract}`;
-    }
-
-    // Add KB data if available
-    if (figureToLookup && MYTHOLOGY_DB.find(f => f.name === figureToLookup.name)) {
-      const figData = MYTHOLOGY_DB.find(f => f.name === figureToLookup.name);
-      enrichedSystem += `\n\nLocal knowledge base entry:\nName: ${figData.name}, Culture: ${figData.culture}, Domain: ${figData.domain.join(', ')}, Role: ${figData.role}, Symbols: ${figData.symbols.join(', ')}, Related: ${figData.related.join(', ')}`;
-    }
-
-    // Build messages array for API
-    const messages = [
-      { role: 'system', content: enrichedSystem },
-      ...this.conversationHistory.slice(-10),
-      { role: 'user', content: userInput }
-    ];
-
-    // Try Pollinations AI
-    const aiResponse = await PollinationsAPI.chat(messages);
-
-    if (aiResponse) {
-      this.addToHistory('user', userInput);
-      this.addToHistory('assistant', aiResponse);
-
-      // Build response object with metadata
-      const response = {
-        text: aiResponse,
-        figure: figureToLookup,
-        culture: this.context.currentCulture,
-        wikiData,
-        intent
-      };
-
-      return response;
-    }
-
-    // Fallback to local response generation
-    return this.generateLocal(nlpResult, wikiData);
-  }
-
-  buildSystemPrompt(nlpResult) {
-    let prompt = `You are LoreKeeper, an ancient and wise guardian of myths, legends, and folklore from cultures across the world. You speak with eloquence, a touch of mystery, and deep knowledge.
-
-Current conversation context:
- ${this.context.getContextString()}
-
-Guidelines:
-- Stay in character as LoreKeeper at all times — you are a mystical keeper of ancient stories
-- Be informative but engaging, weaving facts into compelling narratives
-- When discussing figures, mention their domains, symbols, and cultural significance
-- Draw connections between similar deities across different cultures when relevant
-- Use evocative, slightly poetic language befitting a keeper of ancient lore
-- Suggest related figures, myths, or stories the user might find interesting
-- Never break character or mention being an AI
-- Keep responses concise but rich (2-3 paragraphs unless telling a story, which can be longer)
-- If asked to compare, provide meaningful parallels and contrasts
-- When listing deities, give brief descriptions for each
-- Address the user warmly as "seeker" or "traveler" occasionally`;
-
-    if (nlpResult.intent === 'tell_story') {
-      prompt += '\n- The user wants a story. Narrate an actual myth or legend in a storytelling style, with dramatic pacing and vivid imagery.';
-    }
-    if (nlpResult.intent === 'compare') {
-      prompt += '\n- The user wants a comparison. Structure your response with clear parallels and contrasts between the figures mentioned.';
-    }
-
-    return prompt;
-  }
-
-  async generateLocal(nlpResult, wikiData) {
-    const { intent, entities } = nlpResult;
-    let text = '';
-    const figure = entities.figures.length > 0 ? entities.figures[0] : this.context.currentFigure;
-    const culture = entities.cultures.length > 0 ? entities.cultures[0] : this.context.currentCulture;
-
-    switch (intent) {
+  gLocal(i,e,fig,cul){
+    switch(i){
       case 'greeting':
-        text = 'Welcome, seeker of ancient wisdom. I am LoreKeeper, guardian of myths and legends from across the ages. What tale or deity calls to you this day?';
-        break;
+        return 'Welcome, seeker of ancient wisdom. I am **LoreKeeper**, guardian of myths and legends from across the ages. Ask me about any deity, hero, creature, or legend — or say **"guide me"** and I shall illuminate the paths that await you.\n\nI hold tales from **Greek**, **Norse**, **Egyptian**, **Japanese**, **Hindu**, **Celtic**, **Aztec**, and **Akan** traditions.';
 
-      case 'ask_about':
-        if (figure) {
-          text = `Ah, ${figure.name} — ${figure.role}. In ${figure.culture} mythology, ${figure.gender === 'female' ? 'she' : 'he'} rules over ${figure.domain.join(', ')}. Sacred symbols of ${figure.name} include ${figure.symbols.join(', ')}. ${figure.name} is closely connected to ${figure.related.slice(0, 3).join(', ')}. Would you like me to delve deeper into ${figure.gender === 'female' ? 'her' : 'his'} legends?`;
-          if (wikiData && wikiData.extract) {
-            text += `\n\nFrom the ancient scrolls: ${wikiData.extract.substring(0, 300)}...`;
-          }
-        } else if (wikiData) {
-          text = `From the ancient scrolls, I have uncovered this knowledge:\n\n${wikiData.extract}`;
-        } else {
-          text = 'The scrolls do not reveal that name to me. Could you rephrase your question, or perhaps ask about a specific mythology? I guard tales from Greek, Norse, Egyptian, Japanese, Hindu, Celtic, Aztec, and Akan traditions.';
+      case 'ask':
+        if(fig){
+          const p=fig.g==='f'?'she':'he';
+          const ps=fig.g==='f'?'her':'his';
+          let resp=`**${fig.n}** — ${fig.r}\n\nIn ${fig.c} mythology, ${p} holds dominion over ${fig.d.join(', ')}. The sacred symbols of ${fig.n} include ${fig.s.join(', ')}. ${fig.n} is closely connected to ${fig.rel.slice(0,4).join(', ')}, ${ps} story woven into the very fabric of ${fig.c} belief.`;
+          if(fig.story)resp+=`\n\nWould you like me to **tell the story** of ${fig.n}, or learn about ${fig.rel.slice(0,2).join(' or ')}?`;
+          else resp+=`\n\nWould you like to learn about ${fig.rel.slice(0,2).join(' or ')}?`;
+          return resp;
         }
-        break;
+        return 'The scrolls do not reveal that name clearly, seeker. Could you rephrase your question? I guard tales from **Greek**, **Norse**, **Egyptian**, **Japanese**, **Hindu**, **Celtic**, **Aztec**, and **Akan** traditions.';
 
-      case 'list_culture':
-        if (culture && CULTURES[culture]) {
-          const cult = CULTURES[culture];
-          text = `${cult.desc}\n\nKey figures of ${culture} mythology: ${cult.keyFigures.join(', ')}. Which one calls to you?`;
-        } else {
-          text = 'I guard tales from many traditions: Greek, Norse, Egyptian, Japanese, Hindu, Celtic, Aztec, and Akan. Which mythology calls to you, seeker?';
+      case 'list':
+        if(cul&&CUL[cul]){
+          const c=CUL[cul];
+          return `**${cul} Mythology**\n\n${c.desc}\n\nKey figures: ${c.kf.map(f=>`**${f}**`).join(', ')}\n\nWhich one calls to you, seeker?`;
         }
-        break;
+        return 'I guard tales from many traditions:\n\n• **Greek** — Olympian gods, the Trojan War, the Labors of Hercules\n• **Norse** — Aesir and Vanir, Yggdrasil, Ragnarok\n• **Egyptian** — The sun, the afterlife, the weighing of the heart\n• **Japanese** — Kami spirits, the sun goddess, the storm god\n• **Hindu** — The Trimurti, the Ramayana, the Mahabharata\n• **Celtic** — The Tuatha De Danann, sacred groves, the Otherworld\n• **Aztec** — Five suns, the feathered serpent, cosmic sacrifice\n• **Akan** — Anansi the spider, the sky god Nyame\n\nWhich mythology calls to you?';
 
       case 'compare':
-        if (entities.figures.length >= 2) {
-          const [f1, f2] = entities.figures;
-          text = `A fascinating comparison, seeker. ${f1.name} of ${f1.culture} myth and ${f2.name} of ${f2.culture} myth.\n\n${f1.name} governs ${f1.domain.join(', ')}, while ${f2.name} presides over ${f2.domain.join(', ')}. Both share the sacred symbols: ${f1.symbols.filter(s => f2.symbols.some(s2 => s2.toLowerCase().includes(s.toLowerCase()))).join(', ') || 'their symbols are distinct'}. They represent different aspects of their respective pantheons, yet echo universal human archetypes.`;
-        } else {
-          text = 'To compare two figures, name them both. For example: "Compare Thor and Zeus." Which two shall I place side by side?';
+        if(e.figures.length>=2){
+          const[f1,f2]=e.figures;
+          const cd=f1.d.filter(d=>f2.d.includes(d));
+          let resp=`**${f1.n}** (${f1.c}) vs **${f2.name||f2.n}** (${f2.c})\n\n`;
+          resp+=`**${f1.n}** governs ${f1.d.join(', ')}, while **${f2.name||f2.n}** presides over ${f2.d.join(', ')}.`;
+          if(cd.length>0)resp+=` They share dominion over **${cd.join(', ')}** — a fascinating parallel across cultures.`;
+          resp+=`\n\n**${f1.n}** is symbolized by ${f1.s.join(', ')}, while **${f2.name||f2.n}** is associated with ${f2.s.join(', ')}.`;
+          if(f1.g===f2.g)resp+=` Both are ${f1.g==='f'?'female':'male'} deities.`;
+          resp+=`\n\nDespite arising from different cultures, both figures reveal how humanity grapples with the same fundamental forces. The sky-father, the trickster, the mother-goddess — these archetypes echo across every tradition because they answer questions that every civilization asks.`;
+          return resp;
         }
-        break;
+        return 'To compare two figures, name them both — for example: **"Compare Thor and Zeus"** or **"Difference between Athena and Freya"**. Which two shall I place side by side?';
 
-      case 'tell_story':
-        if (figure) {
-          text = `Let me weave the tale of ${figure.name}, ${figure.role}...\n\nIn the age when ${figure.culture} gods walked among mortals, ${figure.name} wielded dominion over ${figure.domain.join(', ')}. Armed with ${figure.symbols[0]}, ${figure.gender === 'female' ? 'she' : 'he'} shaped the fates of gods and mortals alike. The legends speak of great deeds, fierce battles, and divine wisdom that echoes through the ages. ${figure.name}'s story intertwines with ${figure.related.slice(0, 2).join(' and ')}, creating a tapestry of myth that endures to this day.`;
-        } else {
-          text = 'Name a figure or mythology, and I shall weave their tale for you. The Norse sagas, the Greek epics, the Egyptian mysteries — all await your curiosity.';
+      case 'story':
+        if(fig&&fig.story){
+          return `**The Legend of ${fig.n}**\n\n${fig.story}`;
         }
-        break;
+        if(fig){
+          const p=fig.g==='f'?'she':'he';
+          return `The tale of **${fig.n}** is one of the great legends of ${fig.c} mythology. ${p} is ${fig.r.toLowerCase()}, wielding power over ${fig.d.join(', ')} with ${fig.s[0]} as ${fig.g==='f'?'her':'his'} sacred symbol. Connected to ${fig.rel.slice(0,3).join(', ')}, ${fig.n}'s story echoes through the ages.\n\nAsk me about a related figure for more detailed tales!`;
+        }
+        if(cul&&CUL[cul])return `Let me weave a tale from ${cul} mythology...\n\n${CUL[cul].desc}\n\nName a specific figure and I shall recount their legend in full.`;
+        return 'Name a figure or mythology, and I shall weave their tale. Try: **"Tell me a story about Zeus"** or **"Story of Norse mythology"**';
 
       case 'help':
-        text = 'I am LoreKeeper, and I can guide you through the world\'s mythologies. Here is what you can ask me:\n\n• "Tell me about Zeus" — Learn about any deity or figure\n• "Compare Thor and Zeus" — Find parallels between figures\n• "Tell me a story about Norse mythology" — Hear a myth\n• "List the Greek gods" — Browse a pantheon\n• "Save this to my collection" — Bookmark figures you love\n• "Show my collection" — View your saved figures\n\nI draw from Greek, Norse, Egyptian, Japanese, Hindu, Celtic, Aztec, and Akan traditions. What calls to you?';
-        break;
+        return `I am **LoreKeeper**, guardian of the world's mythologies. Here is what you can ask:\n\n• **"Tell me about Zeus"** — Learn about any deity\n• **"Compare Thor and Zeus"** — Find parallels\n• **"Tell me a story about Loki"** — Hear a full myth\n• **"List the Greek gods"** — Browse a pantheon\n• **"Save this to my collection"** — Bookmark figures\n• **"Show my collection"** — View saved figures\n\nI draw from **Greek**, **Norse**, **Egyptian**, **Japanese**, **Hindu**, **Celtic**, **Aztec**, and **Akan** traditions.\n\nPowered by local knowledge base + Wikipedia API.`;
 
       case 'thanks':
-        text = 'It is my purpose and pleasure, seeker. The ancient stories live on through those who seek them. Is there another tale that calls to you?';
-        break;
+        return 'It is my purpose and pleasure, seeker. The ancient stories live on through those who seek them. Is there another tale that calls to you?';
 
-      case 'goodbye':
-        text = 'Farewell, seeker. May the wisdom of the ancients light your path until we meet again. The stories will be here, waiting for your return.';
-        break;
+      case 'bye':
+        return 'Farewell, seeker. May the wisdom of the ancients light your path until we meet again. The stories will be here, waiting for your return.';
 
       default:
-        if (wikiData) {
-          text = `From the ancient scrolls, I found this wisdom:\n\n${wikiData.extract}`;
-        } else {
-          text = 'The ancient scrolls do not reveal a clear answer to that, seeker. Could you rephrase, or ask about a specific deity, culture, or myth? You can also type "help" to see what I can guide you through.';
+        if(fig){
+          const p=fig.g==='f'?'she':'he';
+          return `You speak of **${fig.n}** — ${fig.r}\n\nIn ${fig.c} mythology, ${p} rules over ${fig.d.join(', ')}. Sacred symbols include ${fig.s.join(', ')}. What would you like to know about ${fig.n}?`;
         }
-    }
-
-    this.addToHistory('user', nlpResult.original);
-    this.addToHistory('assistant', text);
-
-    return {
-      text,
-      figure,
-      culture,
-      wikiData,
-      intent
-    };
-  }
-
-  async handleSave() {
-    const fig = this.context.currentFigure;
-    if (!fig) {
-      return { text: 'I am not sure what you would like me to save, seeker. Discuss a figure first, then ask me to save it to your collection.', intent: 'save', figure: null };
-    }
-    const saved = await this.db.saveToCollection(fig);
-    if (saved) {
-      showToast(`${fig.name} saved to your collection`, 'success');
-      return { text: `${fig.name} has been inscribed in your collection, seeker. You can view your saved figures in the sidebar at any time.`, intent: 'save', figure: fig };
-    } else {
-      showToast(`${fig.name} is already in your collection`, 'info');
-      return { text: `${fig.name} is already inscribed in your collection, seeker. Perhaps another figure calls to you?`, intent: 'save', figure: fig };
+        if(cul)return `Ah, **${cul} mythology** — a rich and ancient tradition. ${CUL[cul]?CUL[cul].desc:''}\n\nWould you like me to list the key figures?`;
+        return 'The ancient scrolls do not reveal a clear answer, seeker. Could you rephrase, or ask about a specific deity, culture, or myth? Type **"help"** to see what I can guide you through.';
     }
   }
 
-  async handleViewCollection() {
-    const collection = await this.db.getCollection();
-    if (collection.length === 0) {
-      return { text: 'Your collection is empty, seeker. As we discuss figures, simply say "save this" and I shall inscribe them for you.', intent: 'view_collection', figure: null, collection: [] };
+  fallback(input){
+    if(this.ctx.cf){
+      const f=this.ctx.cf;
+      return `**${f.n}** — ${f.r}\n\nDomain: ${f.d.join(', ')}\nSymbols: ${f.s.join(', ')}\nCulture: ${f.c}\nRelated: ${f.rel.join(', ')}\n\nThe deeper scrolls are temporarily beyond reach, but this knowledge I can share.`;
     }
-    const list = collection.map(f => `• **${f.name}** (${f.culture}) — ${f.domain.join(', ')}`).join('\n');
-    return { text: `Here is your collection, seeker:\n\n${list}\n\nClick on any in the sidebar to revisit their tales.`, intent: 'view_collection', figure: null, collection };
+    return 'The scrolls are restless, seeker, but I still guard their wisdom. Ask me about a specific deity or mythology — try **"Tell me about Zeus"** or **"List the Norse gods"**.';
+  }
+
+  async hSave(){
+    const fig=this.ctx.cf;
+    if(!fig)return{text:'I am not sure what you would like me to save. Discuss a figure first, then say "save this".',intent:'save',figure:null,source:'local'};
+    const saved=await this.db.sc(fig);
+    if(saved){sToast(`${fig.n} saved to collection`,'success');return{text:`**${fig.n}** has been inscribed in your collection. View saved figures in the sidebar.`,intent:'save',figure:fig,source:'local'}}
+    sToast(`${fig.n} already in collection`,'info');return{text:`**${fig.n}** is already in your collection. Perhaps another figure calls to you?`,intent:'save',figure:fig,source:'local'}
+  }
+
+  async hView(){
+    const col=await this.db.gc();
+    if(!col.length)return{text:'Your collection is empty. Discuss a figure and say "save this" to bookmark them.',intent:'view',figure:null,source:'local'};
+    const list=col.map(f=>`• **${f.name}** (${f.culture}) — ${f.domain?f.domain.join(', '):''}`).join('\n');
+    return{text:`Your collection, seeker:\n\n${list}\n\nClick any figure in the sidebar to revisit their tales.`,intent:'view',figure:null,source:'local'};
   }
 }
 
 // ============================================================
-// PARTICLE SYSTEM - Atmospheric background
+// PARTICLES
 // ============================================================
-class ParticleSystem {
-  constructor(canvas) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
-    this.particles = [];
-    this.resize();
-    window.addEventListener('resize', () => this.resize());
-    this.init();
-    this.animate();
-  }
-
-  resize() {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
-  }
-
-  init() {
-    this.particles = [];
-    const count = Math.min(60, Math.floor(window.innerWidth / 25));
-    for (let i = 0; i < count; i++) {
-      this.particles.push({
-        x: Math.random() * this.canvas.width,
-        y: Math.random() * this.canvas.height,
-        size: Math.random() * 2 + 0.5,
-        speedY: -(Math.random() * 0.3 + 0.1),
-        speedX: (Math.random() - 0.5) * 0.2,
-        opacity: Math.random() * 0.5 + 0.1,
-        pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: Math.random() * 0.02 + 0.005
-      });
-    }
-  }
-
-  animate() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    for (const p of this.particles) {
-      p.x += p.speedX;
-      p.y += p.speedY;
-      p.pulse += p.pulseSpeed;
-
-      const currentOpacity = p.opacity * (0.5 + 0.5 * Math.sin(p.pulse));
-
-      // Wrap around
-      if (p.y < -10) p.y = this.canvas.height + 10;
-      if (p.x < -10) p.x = this.canvas.width + 10;
-      if (p.x > this.canvas.width + 10) p.x = -10;
-
-      // Draw particle as soft glow
-      const gradient = this.ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3);
-      gradient.addColorStop(0, `rgba(196, 149, 48, ${currentOpacity})`);
-      gradient.addColorStop(0.5, `rgba(196, 149, 48, ${currentOpacity * 0.3})`);
-      gradient.addColorStop(1, `rgba(196, 149, 48, 0)`);
-
-      this.ctx.beginPath();
-      this.ctx.arc(p.x, p.y, Math.max(0.1, p.size * 3), 0, Math.PI * 2);
-      this.ctx.fillStyle = gradient;
-      this.ctx.fill();
-    }
-
-    requestAnimationFrame(() => this.animate());
-  }
+class PS {
+  constructor(c){this.c=c;this.x=c.getContext('2d');this.p=[];this.rs();window.addEventListener('resize',()=>this.rs());this.in();this.an()}
+  rs(){this.c.width=window.innerWidth;this.c.height=window.innerHeight}
+  in(){this.p=[];const n=Math.min(45,Math.floor(window.innerWidth/30));for(let i=0;i<n;i++)this.p.push({x:Math.random()*this.c.width,y:Math.random()*this.c.height,sz:Math.random()*2+.5,sy:-(Math.random()*.3+.1),sx:(Math.random()-.5)*.2,o:Math.random()*.5+.1,ph:Math.random()*Math.PI*2,ps:Math.random()*.02+.005})}
+  an(){this.x.clearRect(0,0,this.c.width,this.c.height);for(const p of this.p){p.x+=p.sx;p.y+=p.sy;p.ph+=p.ps;const co=p.o*(.5+.5*Math.sin(p.ph));if(p.y<-10)p.y=this.c.height+10;if(p.x<-10)p.x=this.c.width+10;if(p.x>this.c.width+10)p.x=-10;const g=this.x.createRadialGradient(p.x,p.y,0,p.x,p.y,Math.max(.1,p.sz*3));g.addColorStop(0,`rgba(196,149,48,${co})`);g.addColorStop(.5,`rgba(196,149,48,${co*.3})`);g.addColorStop(1,`rgba(196,149,48,0)`);this.x.beginPath();this.x.arc(p.x,p.y,Math.max(.1,p.sz*3),0,Math.PI*2);this.x.fillStyle=g;this.x.fill()}requestAnimationFrame(()=>this.an())}
 }
 
 // ============================================================
-// GLOBAL APP STATE & FUNCTIONS
+// GLOBAL APP
 // ============================================================
-let db, nlp, contextManager, responseGenerator;
-let isProcessing = false;
+let _db,_nlp,_ctx,_rg;
+let _proc=false;
 
-// Initialize everything
-async function initApp() {
-  // Init database
-  db = new Database();
-  await db.init();
-
-  // Init NLP
-  nlp = new NLPProcessor();
-
-  // Init context
-  contextManager = new ContextManager();
-
-  // Init response generator
-  responseGenerator = new ResponseGenerator(nlp, contextManager, db);
-
-  // Init particles
-  new ParticleSystem(document.getElementById('particle-canvas'));
-
-  // Show welcome message
-  showWelcomeMessage();
-
-  // Load collection sidebar
-  refreshCollection();
-  refreshHistory();
-
-  // Load previous conversation
-  const prevMessages = await db.getMessages(20);
-  if (prevMessages.length > 0) {
-    for (const msg of prevMessages) {
-      addMessageToUI(msg.role, msg.content, msg.metadata, false);
-    }
-    showToast('Previous conversation restored', 'info');
-  }
-
-  // Show quick chips
-  showQuickChips();
+async function initApp(){
+  try{
+    _db=new DB_();await _db.init();
+    _nlp=new NLP();_ctx=new CTX();_rg=new RG(_nlp,_ctx,_db);
+    new PS(document.getElementById('pc'));
+    showWelcome();rCol();rHis();
+    const pm=await _db.gm(20);
+    if(pm.length>0){for(const m of pm)amUI(m.role,m.content,m.meta||{},false);sToast('Previous conversation restored','info')}
+    showChips();
+  }catch(e){console.error("Init error:",e);sToast('Init failed: '+e.message,'error')}
 }
 
-function showWelcomeMessage() {
-  const welcomeHTML = `
-    <div class="msg-enter max-w-2xl mx-auto">
-      <div class="flex gap-3">
-        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--accent)] to-amber-700 flex items-center justify-center flex-shrink-0 mt-1">
-          <i class="fas fa-book-open text-[var(--bg)] text-sm"></i>
-        </div>
-        <div class="space-y-3">
-          <div class="bg-[var(--bot-bg)] border border-[var(--border)] rounded-2xl rounded-tl-sm px-5 py-4 text-sm leading-relaxed">
-            <p class="font-display text-[var(--accent)] text-base mb-2">Welcome, Seeker</p>
-            <p class="text-[var(--fg)]">I am <strong class="text-[var(--accent)]">LoreKeeper</strong>, the ancient guardian of myths, legends, and folklore from cultures across the world. Ask me about any deity, hero, creature, or legend — or simply say <em>"guide me"</em> and I shall illuminate the paths that await you.</p>
-            <div class="mt-3 pt-3 border-t border-[var(--border)] text-[var(--fg-secondary)] text-xs">
-              <span class="inline-flex items-center gap-1"><i class="fas fa-brain"></i> NLP-powered</span>
-              <span class="mx-2">|</span>
-              <span class="inline-flex items-center gap-1"><i class="fas fa-database"></i> IndexedDB</span>
-              <span class="mx-2">|</span>
-              <span class="inline-flex items-center gap-1"><i class="fas fa-globe"></i> Wikipedia API</span>
-              <span class="mx-2">|</span>
-              <span class="inline-flex items-center gap-1"><i class="fas fa-robot"></i> Pollinations AI</span>
-            </div>
-          </div>
-        </div>
+function showWelcome(){
+  document.getElementById('cm').innerHTML=`
+  <div class="mi max-w-2xl mx-auto"><div class="flex gap-3">
+    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--acc)] to-amber-700 flex items-center justify-center flex-shrink-0 mt-1"><i class="fas fa-book-open text-[var(--bg)] text-sm"></i></div>
+    <div class="space-y-3"><div class="bg-[var(--bot)] border border-[var(--bdr)] rounded-2xl rounded-tl-sm px-5 py-4 text-sm leading-relaxed">
+      <p class="fd text-[var(--acc)] text-base mb-2">Welcome, Seeker</p>
+      <p class="text-[var(--fg)]">I am <strong class="text-[var(--acc)]">LoreKeeper</strong>, the ancient guardian of myths, legends, and folklore from cultures across the world. Ask me about any deity, hero, creature, or legend — or say <em>"guide me"</em> and I shall illuminate the paths that await you.</p>
+      <div class="mt-3 pt-3 border-t border-[var(--bdr)] flex flex-wrap gap-3 text-[var(--fg2)] text-xs">
+        <span class="inline-flex items-center gap-1"><i class="fas fa-brain"></i> NLP Engine</span>
+        <span class="inline-flex items-center gap-1"><i class="fas fa-database"></i> IndexedDB</span>
+        <span class="inline-flex items-center gap-1"><i class="fas fa-globe"></i> Wikipedia API</span>
+        <span class="inline-flex items-center gap-1"><i class="fas fa-scroll"></i> Local Knowledge</span>
       </div>
-    </div>
-  `;
-  document.getElementById('chat-messages').innerHTML = welcomeHTML;
+    </div></div>
+  </div></div>`;
 }
 
-function showQuickChips() {
-  const chips = [
-    { text: 'Tell me about Norse gods', icon: 'fa-hammer' },
-    { text: 'Who is Amaterasu?', icon: 'fa-sun' },
-    { text: 'Compare Zeus and Odin', icon: 'fa-arrows-left-right' },
-    { text: 'Tell me a Greek myth', icon: 'fa-scroll' },
-    { text: 'List Hindu deities', icon: 'fa-om' },
-    { text: 'Who is Anansi?', icon: 'fa-spider' }
+function showChips(){
+  const ch=[
+    {t:'Tell me about Norse gods',i:'fa-hammer'},
+    {t:'Who is Amaterasu?',i:'fa-sun'},
+    {t:'Compare Zeus and Odin',i:'fa-arrows-left-right'},
+    {t:'Story of Loki',i:'fa-scroll'},
+    {t:'List Hindu deities',i:'fa-om'},
+    {t:'Who is Anansi?',i:'fa-spider'}
   ];
-
-  const container = document.getElementById('quick-chips');
-  container.innerHTML = chips.map(c =>
-    `<button class="chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--border)] text-xs text-[var(--fg-secondary)] bg-[var(--card)]" onclick="sendQuickChip('${c.text.replace(/'/g, "\\'")}')">
-      <i class="fas ${c.icon}" style="font-size:10px"></i> ${c.text}
-    </button>`
-  ).join('');
+  document.getElementById('qc').innerHTML=ch.map(c=>`<button class="ch inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--bdr)] text-xs text-[var(--fg2)] bg-[var(--card)]" onclick="sqc('${c.t.replace(/'/g,"\\'")}')"><i class="fas ${c.i}" style="font-size:10px"></i> ${c.t}</button>`).join('');
 }
 
-function sendQuickChip(text) {
-  document.getElementById('chat-input').value = text;
-  sendMessage();
-}
+function sqc(t){document.getElementById('ci').value=t;sm()}
 
-async function sendMessage() {
-  if (isProcessing) return;
-
-  const input = document.getElementById('chat-input').value.trim();
-  if (!input) return;
-
-  isProcessing = true;
-  const inputEl = document.getElementById('chat-input');
-  inputEl.value = '';
-  autoResize(inputEl);
-
-  // Add user message to UI and DB
-  addMessageToUI('user', input);
-  await db.saveMessage('user', input);
-
-  // Show typing indicator
-  showTypingIndicator();
-
-  try {
-    // Generate response
-    const response = await responseGenerator.generate(input);
-
-    // Remove typing indicator
-    removeTypingIndicator();
-
-    // Add bot message to UI
-    addMessageToUI('assistant', response.text, {
-      figure: response.figure ? response.figure.name : null,
-      culture: response.culture,
-      wikiData: response.wikiData,
-      intent: response.intent
-    });
-
-    // Save to DB
-    await db.saveMessage('assistant', response.text, {
-      figure: response.figure ? response.figure.name : null,
-      culture: response.culture,
-      intent: response.intent
-    });
-
-    // Refresh sidebar if needed
-    if (response.intent === 'save' || response.intent === 'view_collection') {
-      refreshCollection();
-    }
-
-    // Update quick chips contextually
-    updateQuickChips(response);
-
-  } catch (e) {
-    removeTypingIndicator();
-    addMessageToUI('assistant', 'The ancient scrolls have gone silent for a moment, seeker. The spirits may be restless. Please try again.');
-    console.error('Response generation failed:', e);
+async function sm(){
+  if(_proc)return;
+  const input=document.getElementById('ci').value.trim();
+  if(!input)return;
+  _proc=true;
+  const el=document.getElementById('ci');el.value='';ars(el);
+  amUI('user',input);await _db.sm('user',input);
+  sTyp();
+  try{
+    const r=await _rg.gen(input);
+    rTyp();
+    amUI('assistant',r.text,{figure:r.figure?r.figure.n:null,culture:r.culture,wiki:r.wiki,intent:r.intent,source:r.source});
+    await _db.sm('assistant',r.text,{figure:r.figure?r.figure.n:null,culture:r.culture,intent:r.intent,source:r.source});
+    if(r.intent==='save'||r.intent==='view')rCol();
+    uChips(r);
+  }catch(e){
+    rTyp();amUI('assistant','The scrolls flickered for a moment, but I am still here. Please try asking again.');console.error(e);
   }
-
-  isProcessing = false;
+  _proc=false;
 }
 
-function addMessageToUI(role, content, metadata = {}, animate = true) {
-  const container = document.getElementById('chat-messages');
+function amUI(role,content,meta={},anim=true){
+  const c=document.getElementById('cm');const w=document.createElement('div');w.className=`max-w-2xl mx-auto ${anim?'mi':''}`;
+  if(role==='user'){
+    w.innerHTML=`<div class="flex gap-3 justify-end"><div class="bg-[var(--usr)] border border-[var(--bdr)] rounded-2xl rounded-tr-sm px-5 py-3 text-sm leading-relaxed max-w-[80%]">${esc(content)}</div><div class="w-9 h-9 rounded-lg bg-[var(--card)] border border-[var(--bdr)] flex items-center justify-center flex-shrink-0 mt-1"><i class="fas fa-user text-[var(--fg2)] text-sm"></i></div></div>`;
+  }else{
+    let fc='';
+    if(meta.figure){const fig=DB.find(f=>f.n===meta.figure);if(fig){
+      fc=`<div class="fc mt-3 p-4"><div class="flex items-start justify-between mb-2"><div><h4 class="fd text-[var(--acc)] text-sm">${fig.n}</h4><span class="text-xs text-[var(--fg2)] bg-[var(--bg)] px-2 py-0.5 rounded-full inline-block mt-1">${fig.c}</span></div><button class="ch text-[var(--fg2)] hover:text-[var(--acc)] text-xs" onclick="sfc('${fig.n}')" title="Save"><i class="far fa-bookmark"></i></button></div><p class="text-xs text-[var(--fg2)] mb-2">${fig.r}</p><div class="flex flex-wrap gap-1">${fig.d.map(d=>`<span class="text-[10px] px-2 py-0.5 rounded-full border border-[var(--bdr)] text-[var(--fg2)]">${d}</span>`).join('')}</div><div class="mt-2 text-[10px] text-[var(--fg2)]"><i class="fas fa-shapes mr-1"></i>${fig.s.join(', ')}</div>${fig.rel.length?`<div class="mt-1 text-[10px] text-[var(--fg2)]"><i class="fas fa-link mr-1"></i>${fig.rel.slice(0,4).join(', ')}</div>`:''}${meta.wiki&&meta.wiki.url?`<a href="${meta.wiki.url}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 mt-2 text-[10px] text-[var(--acc)] hover:underline"><i class="fas fa-external-link-alt"></i> Wikipedia</a>`:''}</div>`;
+    }}
+    let sb='';
+    if(meta.source==='local+wiki')sb='<span class="sb bg-blue-900/50 text-blue-300 border border-blue-700 mt-2"><i class="fas fa-globe"></i> Local + Wikipedia</span>';
+    else sb='<span class="sb bg-amber-900/50 text-amber-300 border border-amber-700 mt-2"><i class="fas fa-scroll"></i> Local Knowledge</span>';
 
-  const wrapper = document.createElement('div');
-  wrapper.className = `max-w-2xl mx-auto ${animate ? 'msg-enter' : ''}`;
-
-  if (role === 'user') {
-    wrapper.innerHTML = `
-      <div class="flex gap-3 justify-end">
-        <div class="bg-[var(--user-bg)] border border-[var(--border)] rounded-2xl rounded-tr-sm px-5 py-3 text-sm leading-relaxed max-w-[80%]">
-          ${escapeHtml(content)}
-        </div>
-        <div class="w-9 h-9 rounded-lg bg-[var(--card)] border border-[var(--border)] flex items-center justify-center flex-shrink-0 mt-1">
-          <i class="fas fa-user text-[var(--fg-secondary)] text-sm"></i>
-        </div>
-      </div>
-    `;
-  } else {
-    // Bot message with optional figure card
-    let figureCard = '';
-    if (metadata.figure) {
-      const fig = MYTHOLOGY_DB.find(f => f.name === metadata.figure);
-      if (fig) {
-        figureCard = `
-          <div class="figure-card mt-3 p-4">
-            <div class="flex items-start justify-between mb-2">
-              <div>
-                <h4 class="font-display text-[var(--accent)] text-sm">${fig.name}</h4>
-                <span class="text-xs text-[var(--fg-secondary)] bg-[var(--bg)] px-2 py-0.5 rounded-full inline-block mt-1">${fig.culture}</span>
-              </div>
-              <button class="save-btn text-[var(--fg-secondary)] hover:text-[var(--accent)] text-xs" onclick="saveFigureFromChat('${fig.name}')" title="Save to collection">
-                <i class="far fa-bookmark"></i>
-              </button>
-            </div>
-            <p class="text-xs text-[var(--fg-secondary)] mb-2">${fig.role}</p>
-            <div class="flex flex-wrap gap-1">
-              ${fig.domain.map(d => `<span class="text-[10px] px-2 py-0.5 rounded-full border border-[var(--border)] text-[var(--fg-secondary)]">${d}</span>`).join('')}
-            </div>
-            <div class="mt-2 text-[10px] text-[var(--fg-secondary)]">
-              <i class="fas fa-shapes mr-1"></i> Symbols: ${fig.symbols.join(', ')}
-            </div>
-            ${fig.related.length > 0 ? `<div class="mt-1 text-[10px] text-[var(--fg-secondary)]"><i class="fas fa-link mr-1"></i> Related: ${fig.related.slice(0, 4).join(', ')}</div>` : ''}
-            ${metadata.wikiData && metadata.wikiData.url ? `<a href="${metadata.wikiData.url}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 mt-2 text-[10px] text-[var(--accent)] hover:underline"><i class="fas fa-external-link-alt"></i> Read on Wikipedia</a>` : ''}
-          </div>
-        `;
-      }
-    }
-
-    // Format markdown-like text
-    const formattedContent = formatMessage(content);
-
-    wrapper.innerHTML = `
-      <div class="flex gap-3">
-        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--accent)] to-amber-700 flex items-center justify-center flex-shrink-0 mt-1">
-          <i class="fas fa-book-open text-[var(--bg)] text-sm"></i>
-        </div>
-        <div class="min-w-0">
-          <div class="bg-[var(--bot-bg)] border border-[var(--border)] rounded-2xl rounded-tl-sm px-5 py-3 text-sm leading-relaxed">
-            ${formattedContent}
-          </div>
-          ${figureCard}
-        </div>
-      </div>
-    `;
+    w.innerHTML=`<div class="flex gap-3"><div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--acc)] to-amber-700 flex items-center justify-center flex-shrink-0 mt-1"><i class="fas fa-book-open text-[var(--bg)] text-sm"></i></div><div class="min-w-0"><div class="bg-[var(--bot)] border border-[var(--bdr)] rounded-2xl rounded-tl-sm px-5 py-3 text-sm leading-relaxed">${fmt(content)}</div>${fc}<div class="mt-1">${sb}</div></div></div>`;
   }
-
-  container.appendChild(wrapper);
-  container.scrollTop = container.scrollHeight;
+  c.appendChild(w);c.scrollTop=c.scrollHeight;
 }
 
-function formatMessage(text) {
-  // Convert markdown-style formatting to HTML
-  let html = escapeHtml(text);
-
-  // Bold: **text**
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="text-[var(--accent)]">$1</strong>');
-
-  // Italic: *text*
-  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-  // Bullet points: • or -
-  html = html.replace(/^[•\-]\s+(.+)$/gm, '<div class="flex gap-2 ml-2"><span class="text-[var(--accent)]">•</span><span>$1</span></div>');
-
-  // Line breaks
-  html = html.replace(/\n\n/g, '</p><p class="mt-2">');
-  html = html.replace(/\n/g, '<br>');
-
-  // Wrap in paragraph if not already
-  if (!html.startsWith('<')) html = `<p>${html}</p>`;
-
-  return html;
+function fmt(t){let h=esc(t);h=h.replace(/\*\*(.*?)\*\*/g,'<strong class="text-[var(--acc)]">$1</strong>');h=h.replace(/\*(.*?)\*/g,'<em>$1</em>');h=h.replace(/^---$/gm,'<hr class="border-[var(--bdr)] my-2">');h=h.replace(/^[•\-]\s+(.+)$/gm,'<div class="flex gap-2 ml-2"><span class="text-[var(--acc)]">•</span><span>$1</span></div>');h=h.replace(/\n\n/g,'</p><p class="mt-2">');h=h.replace(/\n/g,'<br>');return h}
+function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function sTyp(){const c=document.getElementById('cm');const d=document.createElement('div');d.id='tyi';d.className='max-w-2xl mx-auto mi';d.innerHTML=`<div class="flex gap-3"><div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--acc)] to-amber-700 flex items-center justify-center flex-shrink-0"><i class="fas fa-book-open text-[var(--bg)] text-sm"></i></div><div class="bg-[var(--bot)] border border-[var(--bdr)] rounded-2xl rounded-tl-sm px-5 py-4"><div class="flex gap-1.5"><div class="td"></div><div class="td"></div><div class="td"></div></div></div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight}
+function rTyp(){const d=document.getElementById('tyi');if(d)d.remove()}
+function uChips(r){
+  const s=[];
+  if(r.figure&&r.figure.rel)s.push(...r.figure.rel.slice(0,2).map(f=>({t:`Tell me about ${f}`,i:'fa-user'})));
+  if(r.culture)s.push({t:`More about ${r.culture} mythology`,i:'fa-globe'});
+  if(r.figure){s.push({t:`Tell me a story about ${r.figure.n}`,i:'fa-scroll'});s.push({t:`Save ${r.figure.n} to collection`,i:'fa-bookmark'})}
+  document.getElementById('qc').innerHTML=s.slice(0,4).map(c=>`<button class="ch inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--bdr)] text-xs text-[var(--fg2)] bg-[var(--card)]" onclick="sqc('${c.t.replace(/'/g,"\\'")}')"><i class="fas ${c.i}" style="font-size:10px"></i> ${c.t}</button>`).join('');
 }
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+function tsb(o){document.getElementById('sb').classList.toggle('op',o);document.getElementById('sov').classList.toggle('op',o)}
+function st(t){document.querySelectorAll('.tb').forEach(b=>{b.classList.toggle('ac',b.dataset.t===t);b.classList.toggle('text-[var(--fg2)]',b.dataset.t!==t)});document.getElementById('tcol').classList.toggle('hidden',t!=='col');document.getElementById('this').classList.toggle('hidden',t!=='his')}
+async function rCol(){
+  const col=await _db.gc();const c=document.getElementById('cl');
+  if(!col.length){c.innerHTML='<div class="text-center py-8 text-[var(--fg2)] text-sm"><i class="far fa-bookmark text-2xl mb-2 block opacity-40"></i><p>No saved figures yet</p><p class="text-xs mt-1">Discuss a figure and say "save this"</p></div>';return}
+  c.innerHTML=col.map(i=>`<div class="ci p-3 rounded-lg border border-[var(--bdr)] mb-2 cursor-pointer" onclick="aaf('${i.name}')"><div class="flex items-start justify-between"><div><h4 class="fd text-sm text-[var(--acc)]">${i.name}</h4><span class="text-[10px] text-[var(--fg2)] bg-[var(--bg)] px-1.5 py-0.5 rounded-full">${i.culture}</span></div><button onclick="event.stopPropagation();rfc(${i.id})" class="text-[var(--fg2)] hover:text-[var(--err)] text-xs"><i class="fas fa-xmark"></i></button></div><p class="text-xs text-[var(--fg2)] mt-1 line-clamp-1">${i.domain?i.domain.join(', '):''}</p></div>`).join('');
 }
-
-function showTypingIndicator() {
-  const container = document.getElementById('chat-messages');
-  const indicator = document.createElement('div');
-  indicator.id = 'typing-indicator';
-  indicator.className = 'max-w-2xl mx-auto msg-enter';
-  indicator.innerHTML = `
-    <div class="flex gap-3">
-      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--accent)] to-amber-700 flex items-center justify-center flex-shrink-0">
-        <i class="fas fa-book-open text-[var(--bg)] text-sm"></i>
-      </div>
-      <div class="bg-[var(--bot-bg)] border border-[var(--border)] rounded-2xl rounded-tl-sm px-5 py-4">
-        <div class="flex gap-1.5">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-        </div>
-      </div>
-    </div>
-  `;
-  container.appendChild(indicator);
-  container.scrollTop = container.scrollHeight;
+async function rHis(){
+  const ms=await _db.gm(30);const c=document.getElementById('hl');const um=ms.filter(m=>m.role==='user');
+  if(!um.length){c.innerHTML='<div class="text-center py-8 text-[var(--fg2)] text-sm"><i class="fas fa-clock-rotate-left text-2xl mb-2 block opacity-40"></i><p>No history yet</p></div>';return}
+  c.innerHTML=um.reverse().slice(0,15).map(m=>`<div class="ci p-3 rounded-lg border border-[var(--bdr)] mb-2 cursor-pointer" onclick="aaf('${esc(m.content).replace(/'/g,"\\'")}')"><p class="text-xs text-[var(--fg)] line-clamp-2">${esc(m.content)}</p><span class="text-[10px] text-[var(--fg2)] mt-1 block">${new Date(m.ts).toLocaleString()}</span></div>`).join('');
 }
-
-function removeTypingIndicator() {
-  const indicator = document.getElementById('typing-indicator');
-  if (indicator) indicator.remove();
+function aaf(n){document.getElementById('ci').value=`Tell me about ${n}`;tsb(false);sm()}
+async function sfc(n){const fig=DB.find(f=>f.n===n);if(fig){const s=await _db.sc(fig);sToast(s?`${n} saved to collection`:`${n} already in collection`,s?'success':'info');if(s)rCol()}}
+async function rfc(id){await _db.rc(id);rCol();sToast('Removed from collection','info')}
+async function cc(){await _db.cm();_ctx.reset();showWelcome();showChips();sToast('Chat cleared','info')}
+async function cad(){await _db.ca();_ctx.reset();showWelcome();showChips();rCol();rHis();sToast('All data cleared','info')}
+function ec(){
+  const ms=document.querySelectorAll('#cm > div');let t='LoreKeeper Conversation Export\n'+'='.repeat(40)+'\n\n';
+  ms.forEach(m=>{const ct=m.querySelector('[class*="rounded-2xl"]')?.textContent||'';const u=m.querySelector('.fa-user');if(ct.trim())t+=`${u?'You':'LoreKeeper'}: ${ct.trim()}\n\n`});
+  const b=new Blob([t],{type:'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=`lorekeeper-${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(u);sToast('Chat exported','success')
 }
-
-function updateQuickChips(response) {
-  const suggestions = [];
-
-  if (response.figure && response.figure.related) {
-    // Suggest related figures
-    const relFigures = response.figure.related.slice(0, 2);
-    relFigures.forEach(f => {
-      if (!suggestions.find(s => s.text.includes(f))) {
-        suggestions.push({ text: `Tell me about ${f}`, icon: 'fa-user' });
-      }
-    });
-  }
-
-  if (response.culture) {
-    suggestions.push({ text: `More about ${response.culture} mythology`, icon: 'fa-globe' });
-  }
-
-  // Always offer story and compare
-  if (response.figure) {
-    suggestions.push({ text: `Tell me a story about ${response.figure.name}`, icon: 'fa-scroll' });
-    if (response.figure.culture !== 'Greek' && response.figure.culture !== 'Norse') {
-      // Suggest cross-cultural comparison
-      suggestions.push({ text: `Compare ${response.figure.name} with a similar deity`, icon: 'fa-arrows-left-right' });
-    }
-  }
-
-  suggestions.push({ text: 'Save this to my collection', icon: 'fa-bookmark' });
-
-  // Limit to 4
-  const finalSuggestions = suggestions.slice(0, 4);
-
-  const container = document.getElementById('quick-chips');
-  container.innerHTML = finalSuggestions.map(s =>
-    `<button class="chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--border)] text-xs text-[var(--fg-secondary)] bg-[var(--card)]" onclick="sendQuickChip('${s.text.replace(/'/g, "\\'")}')">
-      <i class="fas ${s.icon}" style="font-size:10px"></i> ${s.text}
-    </button>`
-  ).join('');
+function hik(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sm()}}
+function ars(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
+function sToast(msg,type='info'){
+  const c=document.getElementById('tc');const t=document.createElement('div');
+  const cl={success:'border-emerald-500 bg-emerald-900/80',info:'border-amber-500 bg-amber-900/80',error:'border-red-500 bg-red-900/80'};
+  const ic={success:'fa-check-circle text-emerald-400',info:'fa-info-circle text-amber-400',error:'fa-exclamation-circle text-red-400'};
+  t.className=`to flex items-center gap-2 px-4 py-2.5 rounded-lg border ${cl[type]} text-sm text-white backdrop-blur-sm`;
+  t.innerHTML=`<i class="fas ${ic[type]}"></i> ${msg}`;c.appendChild(t);setTimeout(()=>t.remove(),3200)
 }
-
-// Sidebar functions
-function toggleSidebar(open) {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
-  if (open) {
-    sidebar.classList.add('open');
-    overlay.classList.add('open');
-  } else {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('open');
-  }
-}
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.remove('active');
-    btn.classList.add('text-[var(--fg-secondary)]');
-    if (btn.dataset.tab === tab) {
-      btn.classList.add('active');
-      btn.classList.remove('text-[var(--fg-secondary)]');
-    }
-  });
-  document.getElementById('tab-collection').classList.toggle('hidden', tab !== 'collection');
-  document.getElementById('tab-history').classList.toggle('hidden', tab !== 'history');
-}
-
-async function refreshCollection() {
-  const collection = await db.getCollection();
-  const container = document.getElementById('collection-list');
-
-  if (collection.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-8 text-[var(--fg-secondary)] text-sm">
-        <i class="far fa-bookmark text-2xl mb-2 block opacity-40"></i>
-        <p>No saved figures yet</p>
-        <p class="text-xs mt-1">Discuss a figure and say "save this"</p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = collection.map(item => `
-    <div class="collection-item p-3 rounded-lg border border-[var(--border)] mb-2 cursor-pointer" onclick="askAboutFigure('${item.name}')">
-      <div class="flex items-start justify-between">
-        <div>
-          <h4 class="font-display text-sm text-[var(--accent)]">${item.name}</h4>
-          <span class="text-[10px] text-[var(--fg-secondary)] bg-[var(--bg)] px-1.5 py-0.5 rounded-full">${item.culture}</span>
-        </div>
-        <button onclick="event.stopPropagation(); removeFigureFromCollection(${item.id})" class="text-[var(--fg-secondary)] hover:text-[var(--danger)] text-xs" title="Remove">
-          <i class="fas fa-xmark"></i>
-        </button>
-      </div>
-      <p class="text-xs text-[var(--fg-secondary)] mt-1 line-clamp-1">${item.domain ? item.domain.join(', ') : ''}</p>
-    </div>
-  `).join('');
-}
-
-async function refreshHistory() {
-  const messages = await db.getMessages(30);
-  const container = document.getElementById('history-list');
-
-  const userMessages = messages.filter(m => m.role === 'user');
-
-  if (userMessages.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-8 text-[var(--fg-secondary)] text-sm">
-        <i class="fas fa-clock-rotate-left text-2xl mb-2 block opacity-40"></i>
-        <p>No conversation history</p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = userMessages.reverse().map(m => `
-    <div class="collection-item p-3 rounded-lg border border-[var(--border)] mb-2 cursor-pointer" onclick="askAboutFigure('${escapeHtml(m.content).replace(/'/g, "\\'")}')">
-      <p class="text-xs text-[var(--fg)] line-clamp-2">${escapeHtml(m.content)}</p>
-      <span class="text-[10px] text-[var(--fg-secondary)] mt-1 block">${new Date(m.timestamp).toLocaleString()}</span>
-    </div>
-  `).join('');
-}
-
-function askAboutFigure(name) {
-  document.getElementById('chat-input').value = `Tell me about ${name}`;
-  toggleSidebar(false);
-  sendMessage();
-}
-
-async function saveFigureFromChat(name) {
-  const fig = MYTHOLOGY_DB.find(f => f.name === name);
-  if (fig) {
-    const saved = await db.saveToCollection(fig);
-    if (saved) {
-      showToast(`${name} saved to your collection`, 'success');
-      refreshCollection();
-    } else {
-      showToast(`${name} is already in your collection`, 'info');
-    }
-  }
-}
-
-async function removeFigureFromCollection(id) {
-  await db.removeFromCollection(id);
-  refreshCollection();
-  showToast('Figure removed from collection', 'info');
-}
-
-async function clearChat() {
-  await db.clearMessages();
-  contextManager.reset();
-  responseGenerator.conversationHistory = [];
-  showWelcomeMessage();
-  showQuickChips();
-  showToast('Chat cleared', 'info');
-}
-
-async function clearAllData() {
-  await db.clearAll();
-  contextManager.reset();
-  responseGenerator.conversationHistory = [];
-  showWelcomeMessage();
-  showQuickChips();
-  refreshCollection();
-  refreshHistory();
-  showToast('All data cleared', 'info');
-}
-
-function exportChat() {
-  const messages = document.querySelectorAll('#chat-messages > div');
-  let text = 'LoreKeeper Conversation Export\n' + '='.repeat(40) + '\n\n';
-  messages.forEach(msg => {
-    const isUser = msg.querySelector('.fa-user');
-    const content = msg.querySelector('.bg-\\[var--bot-bg\\], .bg-\\[var--user-bg\\]')?.textContent ||
-                    msg.querySelector('[class*="rounded-2xl"]')?.textContent || '';
-    const role = isUser ? 'You' : 'LoreKeeper';
-    if (content.trim()) text += `${role}: ${content.trim()}\n\n`;
-  });
-
-  const blob = new Blob([text], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `lorekeeper-chat-${new Date().toISOString().slice(0, 10)}.txt`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('Chat exported', 'success');
-}
-
-// Input handling
-function handleInputKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-// Toast notifications
-function showToast(message, type = 'info') {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  const colors = {
-    success: 'border-emerald-500 bg-emerald-900/80',
-    info: 'border-amber-500 bg-amber-900/80',
-    error: 'border-red-500 bg-red-900/80'
-  };
-  const icons = {
-    success: 'fa-check-circle text-emerald-400',
-    info: 'fa-info-circle text-amber-400',
-    error: 'fa-exclamation-circle text-red-400'
-  };
-
-  toast.className = `toast flex items-center gap-2 px-4 py-2.5 rounded-lg border ${colors[type]} text-sm text-white backdrop-blur-sm`;
-  toast.innerHTML = `<i class="fas ${icons[type]}"></i> ${message}`;
-  container.appendChild(toast);
-
-  setTimeout(() => toast.remove(), 3200);
-}
-
-// Initialize app on load
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded',initApp);
 </script>
 </body>
 </html>
